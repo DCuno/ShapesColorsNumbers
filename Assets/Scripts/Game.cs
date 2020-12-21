@@ -8,10 +8,13 @@ public class Game : MonoBehaviour
 
 
     private Rigidbody2D _rigidbody2D;
-    private BoxCollider2D _boxCollider2D;
+    private PolygonCollider2D _polyCollider2D;
     private LineRenderer _lineRenderer;
     private MeshFilter _meshFilter;
-    
+
+    private float velNeg = -0.02f;
+    private float velPos = 0.02f;
+
     private bool _simulating;
     public bool SimulatingPhysics
     {
@@ -28,21 +31,21 @@ public class Game : MonoBehaviour
     {
         _meshFilter = GetComponent<MeshFilter>();
         _lineRenderer = GetComponent<LineRenderer>();
-        _boxCollider2D = GetComponent<BoxCollider2D>();
+        _polyCollider2D = GetComponent<PolygonCollider2D>();
         _lineRenderer = GetComponent<LineRenderer>();
 
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _rigidbody2D.useAutoMass = true;
+        //_rigidbody2D.useAutoMass = true;                // Mass is automatic
     }
 
     public Color FillColor = Color.white;
 
     // Start and end vertices (in absolute coordinates)
-    private readonly List<Vector2> _vertices = new List<Vector2>(2);
+    private readonly List<Vector2> _vertices = new List<Vector2>(3);
 
     public bool ShapeFinished { get { return _vertices.Count >= 2; } }
 
-    public void AddVertex(Vector2 vertex)
+/*    public void AddVertex(Vector2 vertex)
     {
         if (ShapeFinished)
         {
@@ -67,8 +70,8 @@ public class Game : MonoBehaviour
         transform.position = center;
 
         // Update the mesh relative to the transform
-        var relativeVertices = _vertices.Select(v => v - center).ToArray();
-        _meshFilter.mesh = RectangleMesh(relativeVertices[0], relativeVertices[1], FillColor);
+        var relativeVertices = _vertices.ToArray();
+        _meshFilter.mesh = RectangleMesh(relativeVertices[0], relativeVertices[1], relativeVertices[2], FillColor);
 
         // Update the shape's outline
         _lineRenderer.positionCount = _meshFilter.mesh.vertices.Length;
@@ -78,7 +81,7 @@ public class Game : MonoBehaviour
         var dimensions = Abs((_vertices[1] - _vertices[0]));
         _boxCollider2D.size = dimensions;
     }
-
+*/
     /// <summary>
     /// Creates and returns a rectangle mesh given two vertices on its 
     /// opposite corners and fills it with the given color. 
@@ -111,6 +114,36 @@ public class Game : MonoBehaviour
 
         return mesh;
     }
+
+    /// <summary>
+    /// Creates and returns a triangle mesh given three vertices 
+    /// and fills it with the given color. 
+    /// </summary>
+    private static Mesh TriangleMesh(Vector2 v0, Vector2 v1, Vector2 v2, Color fillColor)
+    {
+        var triangleVertices = new[] { v0, v1, v2 };
+
+        // Find all the triangles in the shape
+        var triangles = new Triangulator(triangleVertices).Triangulate();
+
+        // Assign each vertex the fill color
+        var colors = Enumerable.Repeat(fillColor, triangleVertices.Length).ToArray();
+
+        var mesh = new Mesh
+        {
+            name = "Rectangle",
+            vertices = ToVector3(triangleVertices),
+            triangles = triangles,
+            colors = colors
+        };
+
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        mesh.RecalculateTangents();
+
+        return mesh;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -151,12 +184,25 @@ public class Game : MonoBehaviour
 
         var filter = gameObject.AddComponent<MeshFilter>();
         filter.mesh = mesh;
+
+        // Collider
+        _polyCollider2D.points = vertices2D;
+
+        _rigidbody2D.velocity = new Vector2(2,2);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (_rigidbody2D.velocity.x <= velPos && _rigidbody2D.velocity.x >= velNeg || _rigidbody2D.velocity.y <= velPos && _rigidbody2D.velocity.y >= velNeg)
+        {
+            float randomAngularVelocity = Random.Range(-100f, 100f);
+            Vector2 randomVelocity = new Vector2(Random.Range(0.5f, 2.0f), Random.Range(0.5f, 2.0f));
+
+            _rigidbody2D.velocity = randomVelocity;
+            _rigidbody2D.angularVelocity = randomAngularVelocity;
+            Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+        }
     }
 
     /// <summary>
