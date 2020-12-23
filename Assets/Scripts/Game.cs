@@ -11,6 +11,7 @@ public class Game : MonoBehaviour
     private PolygonCollider2D _polyCollider2D;
     private LineRenderer _lineRenderer;
     private MeshFilter _meshFilter;
+    private MeshRenderer _meshRenderer;
 
     private float velNeg = -0.02f;
     private float velPos = 0.02f;
@@ -30,11 +31,15 @@ public class Game : MonoBehaviour
     private void Awake()
     {
         _meshFilter = GetComponent<MeshFilter>();
+        _meshRenderer = GetComponent<MeshRenderer>();
         _lineRenderer = GetComponent<LineRenderer>();
         _polyCollider2D = GetComponent<PolygonCollider2D>();
-        _lineRenderer = GetComponent<LineRenderer>();
-
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _lineRenderer.loop = true;
+        _lineRenderer.startWidth = 0.4f;
+        _lineRenderer.endWidth = 0.4f;
+        _lineRenderer.numCapVertices = 10;
+        _lineRenderer.numCornerVertices = 10;
         //_rigidbody2D.useAutoMass = true;                // Mass is automatic
     }
 
@@ -43,9 +48,9 @@ public class Game : MonoBehaviour
     // Start and end vertices (in absolute coordinates)
     private readonly List<Vector2> _vertices = new List<Vector2>(3);
 
-    public bool ShapeFinished { get { return _vertices.Count >= 2; } }
+    public bool ShapeFinished { get { return _vertices.Count >= 3; } }
 
-/*    public void AddVertex(Vector2 vertex)
+    public void AddVertex(Vector2 vertex)
     {
         if (ShapeFinished)
         {
@@ -58,7 +63,7 @@ public class Game : MonoBehaviour
 
     public void UpdateShape(Vector2 newVertex)
     {
-        if (_vertices.Count < 2)
+        if (_vertices.Count < 3)
         {
             return;
         }
@@ -71,17 +76,17 @@ public class Game : MonoBehaviour
 
         // Update the mesh relative to the transform
         var relativeVertices = _vertices.ToArray();
-        _meshFilter.mesh = RectangleMesh(relativeVertices[0], relativeVertices[1], relativeVertices[2], FillColor);
+        _meshFilter.mesh = TriangleMesh(relativeVertices[0], relativeVertices[1], relativeVertices[2], FillColor);
 
         // Update the shape's outline
         _lineRenderer.positionCount = _meshFilter.mesh.vertices.Length;
         _lineRenderer.SetPositions(_meshFilter.mesh.vertices);
 
         // Update the collider
-        var dimensions = Abs((_vertices[1] - _vertices[0]));
-        _boxCollider2D.size = dimensions;
+        Vector2[] vector2vertices = ToVector2(_meshFilter.mesh.vertices);
+        _polyCollider2D.points = vector2vertices;
     }
-*/
+
     /// <summary>
     /// Creates and returns a rectangle mesh given two vertices on its 
     /// opposite corners and fills it with the given color. 
@@ -131,7 +136,7 @@ public class Game : MonoBehaviour
 
         var mesh = new Mesh
         {
-            name = "Rectangle",
+            name = "Triangle",
             vertices = ToVector3(triangleVertices),
             triangles = triangles,
             colors = colors
@@ -150,40 +155,13 @@ public class Game : MonoBehaviour
         // Create Vector2 vertices
         var vertices2D = new Vector2[] {
             new Vector2(0,0),
-            new Vector2(0,1),
-            new Vector2(1,1),
+            new Vector2(0,2),
+            new Vector2(2,2),
         };
 
-        var vertices3D = System.Array.ConvertAll<Vector2, Vector3>(vertices2D, v => v);
-
-        // Use the triangulator to get indices for creating triangles
-        var triangulator = new Triangulator(vertices2D);
-        var indices = triangulator.Triangulate();
-
-        // Generate a color for each vertex
-        Color[] colors = new Color[3];
-        colors[0] = Color.white;
-        colors[1] = Color.white;
-        colors[2] = Color.white;
-            //Enumerable.Range(0, vertices3D.Length).Select(i => Random.ColorHSV()).ToArray();
-
-        // Create the mesh
-        var mesh = new Mesh
-        {
-            vertices = vertices3D,
-            triangles = indices,
-            colors = colors
-        };
-
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-
-        // Set up game object with mesh;
-        var meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        meshRenderer.material = new Material(Shader.Find("Sprites/Default"));
-
-        var filter = gameObject.AddComponent<MeshFilter>();
-        filter.mesh = mesh;
+        AddVertex(vertices2D[0]);
+        AddVertex(vertices2D[1]);
+        AddVertex(vertices2D[2]);
 
         // Collider
         _polyCollider2D.points = vertices2D;
@@ -211,6 +189,14 @@ public class Game : MonoBehaviour
     public static Vector3[] ToVector3(Vector2[] vectors)
     {
         return System.Array.ConvertAll<Vector2, Vector3>(vectors, v => v);
+    }
+
+    /// <summary>
+    /// Extension that converts an array of Vector3 to an array of Vector2
+    /// </summary>
+    public static Vector2[] ToVector2(Vector3[] vectors)
+    {
+        return System.Array.ConvertAll<Vector3, Vector2>(vectors, v => v);
     }
 
     /// <summary>
