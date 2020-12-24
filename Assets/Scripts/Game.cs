@@ -16,6 +16,11 @@ public class Game : MonoBehaviour
     private float velNeg = -0.02f;
     private float velPos = 0.02f;
 
+    public Color FillColor = Color.white;
+
+    // Start and end vertices (in absolute coordinates)
+    private readonly List<Vector2> _vertices = new List<Vector2>();
+
     private bool _simulating;
     public bool SimulatingPhysics
     {
@@ -36,34 +41,24 @@ public class Game : MonoBehaviour
         _polyCollider2D = GetComponent<PolygonCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _lineRenderer.loop = true;
-        _lineRenderer.startWidth = 0.4f;
-        _lineRenderer.endWidth = 0.4f;
+        _lineRenderer.startWidth = 0.2f;
+        _lineRenderer.endWidth = 0.2f;
         _lineRenderer.numCapVertices = 10;
         _lineRenderer.numCornerVertices = 10;
         //_rigidbody2D.useAutoMass = true;                // Mass is automatic
     }
 
-    public Color FillColor = Color.white;
-
-    // Start and end vertices (in absolute coordinates)
-    private readonly List<Vector2> _vertices = new List<Vector2>(3);
-
     public bool ShapeFinished { get { return _vertices.Count >= 3; } }
 
     public void AddVertex(Vector2 vertex)
     {
-        if (ShapeFinished)
-        {
-            return;
-        }
-
         _vertices.Add(vertex);
         UpdateShape(vertex);
     }
 
     public void UpdateShape(Vector2 newVertex)
     {
-        if (_vertices.Count < 3)
+        if (_vertices.Count < 2)
         {
             return;
         }
@@ -75,8 +70,7 @@ public class Game : MonoBehaviour
         transform.position = center;
 
         // Update the mesh relative to the transform
-        var relativeVertices = _vertices.ToArray();
-        _meshFilter.mesh = TriangleMesh(relativeVertices[0], relativeVertices[1], relativeVertices[2], FillColor);
+        _meshFilter.mesh = MeshGen(_vertices.ToArray(), FillColor);
 
         // Update the shape's outline
         _lineRenderer.positionCount = _meshFilter.mesh.vertices.Length;
@@ -88,56 +82,21 @@ public class Game : MonoBehaviour
     }
 
     /// <summary>
-    /// Creates and returns a rectangle mesh given two vertices on its 
-    /// opposite corners and fills it with the given color. 
-    /// </summary>
-    private static Mesh RectangleMesh(Vector2 v0, Vector2 v1, Color fillColor)
-    {
-        // Calculate implied verticies from corner vertices
-        // Note: vertices must be adjacent to each other for Triangulator to work properly
-        var v2 = new Vector2(v0.x, v1.y);
-        var v3 = new Vector2(v1.x, v0.y);
-        var rectangleVertices = new[] { v0, v2, v1, v3 };
-
-        // Find all the triangles in the shape
-        var triangles = new Triangulator(rectangleVertices).Triangulate();
-
-        // Assign each vertex the fill color
-        var colors = Enumerable.Repeat(fillColor, rectangleVertices.Length).ToArray();
-
-        var mesh = new Mesh
-        {
-            name = "Rectangle",
-            vertices = ToVector3(rectangleVertices), 
-            triangles = triangles,
-            colors = colors
-        };
-
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-        mesh.RecalculateTangents();
-
-        return mesh;
-    }
-
-    /// <summary>
     /// Creates and returns a triangle mesh given three vertices 
     /// and fills it with the given color. 
     /// </summary>
-    private static Mesh TriangleMesh(Vector2 v0, Vector2 v1, Vector2 v2, Color fillColor)
+    private static Mesh MeshGen(Vector2[] v, Color fillColor)
     {
-        var triangleVertices = new[] { v0, v1, v2 };
-
         // Find all the triangles in the shape
-        var triangles = new Triangulator(triangleVertices).Triangulate();
+        var triangles = new Triangulator(v).Triangulate();
 
         // Assign each vertex the fill color
-        var colors = Enumerable.Repeat(fillColor, triangleVertices.Length).ToArray();
+        var colors = Enumerable.Repeat(fillColor, v.Length).ToArray();
 
         var mesh = new Mesh
         {
-            name = "Triangle",
-            vertices = ToVector3(triangleVertices),
+            name = "Shape",
+            vertices = ToVector3(v),
             triangles = triangles,
             colors = colors
         };
@@ -152,19 +111,45 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Create Vector2 vertices
+        // Triangle
         var vertices2D = new Vector2[] {
             new Vector2(0,0),
             new Vector2(0,2),
             new Vector2(2,2),
         };
 
+        // Pentagon
+         vertices2D = new Vector2[] {
+            new Vector2(-1,0),
+            new Vector2(-1.618f,1.902f),
+            new Vector2(0,3.077f),
+            new Vector2(1.618f,1.902f),
+            new Vector2(1,0),
+        };
+
         AddVertex(vertices2D[0]);
         AddVertex(vertices2D[1]);
         AddVertex(vertices2D[2]);
+        AddVertex(vertices2D[3]);
+        AddVertex(vertices2D[4]);
 
         // Collider
         _polyCollider2D.points = vertices2D;
+
+        // Fix pointy triangle ends
+/*        _polyCollider2D.points = new Vector2[] {
+            new Vector2(0,0.1f),
+            new Vector2(0,2),
+            new Vector2(1.9f,2),
+        };
+        _meshFilter.mesh.vertices = new Vector3[] {
+            new Vector3(0,0.1f,0),
+            new Vector3(0,2,0),
+            new Vector3(1.9f,2,0),
+        };*/
+
+        // find line renderer vertices and reshape collider? maybe also reshape mesh?
+        //_lineRenderer.
 
         _rigidbody2D.velocity = new Vector2(2,2);
     }
