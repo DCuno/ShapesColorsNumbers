@@ -13,8 +13,8 @@ public class Game : MonoBehaviour
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
 
-    private float velNeg = -0.02f;
-    private float velPos = 0.02f;
+    //private float velNeg = -0.04f;
+    //private float velPos = 0.04f;
 
     public Color FillColor = Color.white;
 
@@ -47,8 +47,6 @@ public class Game : MonoBehaviour
         _lineRenderer.numCornerVertices = 10;
         //_rigidbody2D.useAutoMass = true;                // Mass is automatic
     }
-
-    public bool ShapeFinished { get { return _vertices.Count >= 3; } }
 
     public void AddVertex(Vector2 vertex)
     {
@@ -111,21 +109,7 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Triangle
-        var vertices2D = new Vector2[] {
-            new Vector2(0,0),
-            new Vector2(0,2),
-            new Vector2(2,2),
-        };
-
-        // Pentagon
-         vertices2D = new Vector2[] {
-            new Vector2(-1,0),
-            new Vector2(-1.618f,1.902f),
-            new Vector2(0,3.077f),
-            new Vector2(1.618f,1.902f),
-            new Vector2(1,0),
-        };
+/*        Vector2[] vertices2D = { 0,1,2,3,4 };
 
         AddVertex(vertices2D[0]);
         AddVertex(vertices2D[1]);
@@ -134,38 +118,61 @@ public class Game : MonoBehaviour
         AddVertex(vertices2D[4]);
 
         // Collider
-        _polyCollider2D.points = vertices2D;
+        _polyCollider2D.points = vertices2D;*/
 
         // Fix pointy triangle ends
-/*        _polyCollider2D.points = new Vector2[] {
-            new Vector2(0,0.1f),
-            new Vector2(0,2),
-            new Vector2(1.9f,2),
-        };
-        _meshFilter.mesh.vertices = new Vector3[] {
-            new Vector3(0,0.1f,0),
-            new Vector3(0,2,0),
-            new Vector3(1.9f,2,0),
-        };*/
+        /*        _polyCollider2D.points = new Vector2[] {
+                    new Vector2(0,0.1f),
+                    new Vector2(0,2),
+                    new Vector2(1.9f,2),
+                };
+                _meshFilter.mesh.vertices = new Vector3[] {
+                    new Vector3(0,0.1f,0),
+                    new Vector3(0,2,0),
+                    new Vector3(1.9f,2,0),
+                };*/
 
-        // find line renderer vertices and reshape collider? maybe also reshape mesh?
-        //_lineRenderer.
-
-        _rigidbody2D.velocity = new Vector2(2,2);
+        //_rigidbody2D.velocity = new Vector2(Random.Range(-2.0f, 2.0f), Random.Range(1.0f, 2.5f));
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_rigidbody2D.velocity.x <= velPos && _rigidbody2D.velocity.x >= velNeg || _rigidbody2D.velocity.y <= velPos && _rigidbody2D.velocity.y >= velNeg)
+        // Push slow shapes to speed them back up
+        /*if (_rigidbody2D.velocity.x <= velPos && _rigidbody2D.velocity.x >= velNeg || _rigidbody2D.velocity.y <= velPos && _rigidbody2D.velocity.y >= velNeg)
         {
-            float randomAngularVelocity = Random.Range(-100f, 100f);
-            Vector2 randomVelocity = new Vector2(Random.Range(0.5f, 2.0f), Random.Range(0.5f, 2.0f));
+            float randomAngularVelocity = Random.Range(-150f, 150f);
+            Vector2 randomVelocity = new Vector2(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f));
 
             _rigidbody2D.velocity = randomVelocity;
             _rigidbody2D.angularVelocity = randomAngularVelocity;
             Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+        }*/
+    }
+
+    // Tap pop shapes!
+    void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+
+            print("POP");
+            Destroy(this.gameObject);
         }
+    }
+
+    // Collecting all vertices of a line renderer
+    public List<Vector3> GetVertices(LineRenderer line)
+    {
+        List<Vector3> list = new List<Vector3>();
+
+        for(int i = 0; i < line.positionCount; i++)
+        {
+            list.Add(line.GetPosition(i));
+            print(line.GetPosition(i));
+        }
+
+        return list;
     }
 
     /// <summary>

@@ -9,15 +9,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2194859948556307524}
-  - component: {fileID: 2194859948556307525}
+  - component: {fileID: 5152814394095922299}
   - component: {fileID: 2194859948556307576}
   - component: {fileID: 2194859948556307578}
   - component: {fileID: 2194859948556307579}
   - component: {fileID: 2194859948556307577}
   - component: {fileID: 2194859948556307582}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: shape
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,13 +30,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2194859948556307527}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2194859948556307525
+--- !u!114 &5152814394095922299
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,10 +45,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 2194859948556307527}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c6ca919195e8344a824f856b25d4ac7, type: 3}
+  m_Script: {fileID: 11500000, guid: b812a9d81f606134bbeb2473946bb4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FillColor: {r: 1, g: 1, b: 1, a: 1}
+  vertices:
+  - {x: 0, y: 0}
+  - {x: 0, y: 2}
+  - {x: 2, y: 2}
+  color: {r: 1, g: 1, b: 1, a: 1}
+  sizes: 
+  speed: {x: 0, y: 0}
+  rotSpeed: {x: 0, y: 0}
 --- !u!120 &2194859948556307576
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -68,7 +75,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
