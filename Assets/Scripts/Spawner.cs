@@ -28,7 +28,7 @@ public class Spawner : MonoBehaviour
 
     Color RandomColor()
     {
-        int i = Random.Range(0, 5);
+        int i = Random.Range(0, 6);
 
         switch(i)
         {
@@ -43,6 +43,8 @@ public class Spawner : MonoBehaviour
             case 4:
                 return new Color(1.0f, 0.64f, 0.0f); // Orange
             case 5:
+                return new Color(0.5f, 0f, 0.5f); // Purple
+            case 6:
                 return Color.white;
             default:
                 return Color.white;
