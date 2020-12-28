@@ -12,10 +12,15 @@ public class Polygon : MonoBehaviour
     private LineRenderer _lineRenderer;
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
-    private bool solid = false;
+    public bool solid = false;
 
-    private float velNeg = -0.03f;
-    private float velPos = 0.03f;
+    private float initVMin = 5.0f;
+    private float initVMax = 8.0f;
+    private float pushVMin = 4.0f;
+    private float pushVMax = 6.0f;
+    private float pushAngV = 250.0f;
+    private float slowestV = 0.03f;
+    private float relV;
 
     // Start and end vertices (in absolute coordinates)
     private readonly List<Vector2> _vertices = new List<Vector2>();
@@ -27,34 +32,36 @@ public class Polygon : MonoBehaviour
     public Vector2 speed;
     public Vector2 rotSpeed;
 
-    public void Creation(Shape s, Color c)
+    public void Creation(Shape s, Color c, float size)
     {
+        relV = (size - 1.0f) == 0 ? 1 : Mathf.Abs(size - 1.0f); // Change velocity relative to the size of the shapes
+
         switch(s)
         {
             case Shape.Triangle:
                 vertices = new Vector2[] {
-                    new Vector2(0,0),
-                    new Vector2(0,2),
-                    new Vector2(2,2),
+                    new Vector2(0,0)*size,
+                    new Vector2(0,2.75f)*size,
+                    new Vector2(2.75f,2.75f)*size,
                 };
                 color = c;
                 break;
             case Shape.Square:
                 vertices = new Vector2[] {
-                    new Vector2(0,0),
-                    new Vector2(0,1.7f),
-                    new Vector2(1.7f,1.7f),
-                    new Vector2(1.7f,0),
+                    new Vector2(0,0)*size,
+                    new Vector2(0,2.5f)*size,
+                    new Vector2(2.5f,2.5f)*size,
+                    new Vector2(2.5f,0)*size,
                 };
                 color = c;
                 break;
             case Shape.Pentagon:
-                vertices = new Vector2[] {              // size 2
-                    new Vector2(-0.666f, 0),          //new Vector2(-1,0),
-                    new Vector2(-1.068f, 1.255f),     //new Vector2(-1.618f,1.902f),
-                    new Vector2(0, 2.031f),           //new Vector2(0,3.077f),
-                    new Vector2(1.068f, 1.255f),      //new Vector2(1.618f,1.902f),
-                    new Vector2(0.666f, 0),           //new Vector2(1,0),
+                vertices = new Vector2[] { // size 2 pentagon
+                    new Vector2(-1f, 0)*size,
+                    new Vector2(-1.618f, 1.902f)*size,
+                    new Vector2(0, 3.077f)*size,
+                    new Vector2(1.618f, 1.902f)*size,
+                    new Vector2(1f, 0)*size,        
                 };
                 color = c;
                 break;
@@ -77,20 +84,13 @@ public class Polygon : MonoBehaviour
         // Fix pointy triangle ends
         if (s == Shape.Triangle)
         {
-            _polyCollider2D.points = new Vector2[] {
-                new Vector2(0,0.1f),
-                new Vector2(0,2),
-                new Vector2(1.9f,2),
-            };
-            _meshFilter.mesh.vertices = new Vector3[] {
-                new Vector3(0,0.1f,0),
-                new Vector3(0,2,0),
-                new Vector3(1.9f,2,0),
-            };
+            _polyCollider2D.points = TriangleFix(_polyCollider2D.points);
+            _meshFilter.mesh.vertices = ToVector3(TriangleFix(ToVector2(_meshFilter.mesh.vertices)));
         }
 
-        float randomX = Random.Range(0.4f, 0.5f);
-        float randomY = Random.Range(-3.0f, -5.0f);
+        // Initial x and y velocities. Randomize if the x velocity is negative or positive.
+        float randomX = Random.Range(0.5f, 1f);
+        float randomY = Random.Range(-initVMin * relV, -initVMax * relV);
         int randomFlip = Random.Range(0, 2);
 
         if (randomFlip == 0)
@@ -114,18 +114,25 @@ public class Polygon : MonoBehaviour
 
     private void Awake()
     {
+        _polyCollider2D = GetComponent<PolygonCollider2D>();
         _meshFilter = GetComponent<MeshFilter>();
         _meshRenderer = GetComponent<MeshRenderer>();
         _lineRenderer = GetComponent<LineRenderer>();
-        _polyCollider2D = GetComponent<PolygonCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        Physics2D.IgnoreLayerCollision(3, 3, true);
-        Physics2D.IgnoreCollision(_polyCollider2D, GameObject.FindGameObjectWithTag("edge").GetComponent<EdgeCollider2D>(), true);
+
+        // lineRenderer Properties
         _lineRenderer.loop = true;
-        _lineRenderer.startWidth = 0.2f;
-        _lineRenderer.endWidth = 0.2f;
+        _lineRenderer.startWidth = 0.3f;
+        _lineRenderer.endWidth = 0.3f;
         _lineRenderer.numCapVertices = 10;
         _lineRenderer.numCornerVertices = 10;
+
+        // rigidbody2D Properties
+        _rigidbody2D.angularDrag = 0.2f;
+
+        // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider
+        Physics2D.IgnoreLayerCollision(3, 3, true);
+        Physics2D.IgnoreCollision(_polyCollider2D, GameObject.FindGameObjectWithTag("edge").GetComponent<EdgeCollider2D>(), true);
     }
 
     public void AddVertex(Vector2 vertex)
@@ -197,10 +204,10 @@ public class Polygon : MonoBehaviour
     void Update()
     {
         // Push slow shapes to speed them back up
-        if (_rigidbody2D.velocity.x <= velPos && _rigidbody2D.velocity.x >= velNeg || _rigidbody2D.velocity.y <= velPos && _rigidbody2D.velocity.y >= velNeg)
+        if (_rigidbody2D.velocity.x <= slowestV * relV && _rigidbody2D.velocity.x >= -slowestV * relV || _rigidbody2D.velocity.y <= slowestV * relV && _rigidbody2D.velocity.y >= -slowestV * relV)
         {
-            float randomAngularVelocity = Random.Range(-150f, 150f);
-            Vector2 randomVelocity = new Vector2(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f));
+            float randomAngularVelocity = Random.Range(-pushAngV * relV, pushAngV * relV);
+            Vector2 randomVelocity = new Vector2(Random.Range(pushVMin * relV, pushVMax * relV), Random.Range(pushVMin * relV, pushVMax * relV));
 
             _rigidbody2D.velocity = randomVelocity;
             _rigidbody2D.angularVelocity = randomAngularVelocity;
@@ -219,34 +226,52 @@ public class Polygon : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Extension that converts an array of Vector2 to an array of Vector3
-    /// </summary>
+    // Fix triangle pointy ends
+    public static Vector2[] TriangleFix(Vector2[] v)
+    {
+        Vector2[] temp = new Vector2[v.Length];
+        for (int i = 0; i < v.Length; i++)
+        {
+            if (i == 0) // move first vertice's y up 0.1
+            {
+                temp[i] = v[i];
+                temp[i].y += 0.1f;
+                continue;
+            }
+
+            if (i == 2) // move last vertice's x down 0.1
+            {
+                temp[i] = v[i];
+                temp[i].x -= 0.1f;
+                continue;
+            }
+
+            temp[i] = v[i];
+        }
+
+        return temp;
+    }
+
+    // Extension that converts an array of Vector2 to an array of Vector3
     public static Vector3[] ToVector3(Vector2[] vectors)
     {
         return System.Array.ConvertAll<Vector2, Vector3>(vectors, v => v);
     }
 
-    /// <summary>
-    /// Extension that converts an array of Vector3 to an array of Vector2
-    /// </summary>
+    // Extension that converts an array of Vector3 to an array of Vector2
     public static Vector2[] ToVector2(Vector3[] vectors)
     {
         return System.Array.ConvertAll<Vector3, Vector2>(vectors, v => v);
     }
 
-    /// <summary>
     /// Extension that, given a collection of vectors, returns a centroid 
     /// (i.e., an average of all vectors) 
-    /// </summary>
     public static Vector2 Centroid(ICollection<Vector2> vectors)
     {
         return vectors.Aggregate((agg, next) => agg + next) / vectors.Count();
     }
 
-    /// <summary>
     /// Extension returning the absolute value of a vector
-    /// </summary>
     public static Vector2 Abs(Vector2 vector)
     {
         return new Vector2(Mathf.Abs(vector.x), Mathf.Abs(vector.y));

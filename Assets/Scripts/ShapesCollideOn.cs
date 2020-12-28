@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShapesCollideZone : MonoBehaviour
+public class ShapesCollideOn : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {

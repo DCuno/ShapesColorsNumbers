@@ -10,19 +10,10 @@ public class Spawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-        shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-
-        foreach (GameObject g in shapesList)
+        for (int i = 0; i < 10; i++)
         {
-            g.GetComponent<Polygon>().Creation(RandomShape(), RandomColor());
+            shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
+            shapesList[i].GetComponent<Polygon>().Creation(RandomShape(), RandomColor(), 1f);
         }
     }
 
@@ -33,7 +24,7 @@ public class Spawner : MonoBehaviour
         switch(i)
         {
             case 0:
-                return Color.red;
+                return Color.Lerp(Color.red, Color.black, 0.2f); // Darkens red by 20%
             case 1:
                 return Color.green;
             case 2:
