@@ -65,6 +65,8 @@
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Polygon.cs" />
     <Compile Include="Assets\Scripts\ShapesCollideOn.cs" />
+    <Compile Include="Assets\Scripts\GravityScene\PolygonGravity.cs" />
+    <Compile Include="Assets\Scripts\GravityScene\SpawnerGravity.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

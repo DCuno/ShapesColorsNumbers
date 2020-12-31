@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    List<GameObject> shapesList = new List<GameObject>();
+    public List<GameObject> shapesList = new List<GameObject>();
     public GameObject shape;
 
     // Start is called before the first frame update

@@ -12,6 +12,7 @@ public class Polygon : MonoBehaviour
     private LineRenderer _lineRenderer;
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
+    private AudioSource _audioSource;
     public bool solid = false;
 
     private float initVMin = 5.0f;
@@ -21,6 +22,10 @@ public class Polygon : MonoBehaviour
     private float pushAngV = 250.0f;
     private float slowestV = 0.03f;
     private float relV;
+
+    private AudioClip pop1;
+    private AudioClip pop2;
+    private AudioClip pop3;
 
     // Start and end vertices (in absolute coordinates)
     private readonly List<Vector2> _vertices = new List<Vector2>();
@@ -119,6 +124,7 @@ public class Polygon : MonoBehaviour
         _meshRenderer = GetComponent<MeshRenderer>();
         _lineRenderer = GetComponent<LineRenderer>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _audioSource = FindObjectOfType<AudioSource>();
 
         // lineRenderer Properties
         _lineRenderer.loop = true;
@@ -133,7 +139,12 @@ public class Polygon : MonoBehaviour
         // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider
         Physics2D.IgnoreLayerCollision(3, 3, true);
         Physics2D.IgnoreCollision(_polyCollider2D, GameObject.FindGameObjectWithTag("edge").GetComponent<EdgeCollider2D>(), true);
-    }
+
+        // Audio
+        pop1 = Resources.Load("Audio/pop1") as AudioClip;
+        pop2 = Resources.Load("Audio/pop2") as AudioClip;
+        pop3 = Resources.Load("Audio/pop3") as AudioClip;
+}
 
     public void AddVertex(Vector2 vertex)
     {
@@ -220,6 +231,21 @@ public class Polygon : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            int x = Random.Range(0, 2);
+
+            switch (x)
+            {
+                case 0:
+                    _audioSource.PlayOneShot(pop1);
+                    break;
+                case 1:
+                    _audioSource.PlayOneShot(pop2);
+                    break;
+                case 2:
+                    _audioSource.PlayOneShot(pop3);
+                    break;
+            }
+
 
             print("POP");
             Destroy(this.gameObject);
