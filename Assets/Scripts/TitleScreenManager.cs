@@ -7,6 +7,6 @@ public class TitleScreenManager : MonoBehaviour
 {
     public void StartButton()
     {
-        SceneManager.LoadScene(sceneName: "GameScene");
+        SceneManager.LoadScene(sceneName: "RandomGameScene");
     }
 }
