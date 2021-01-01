@@ -7,6 +7,7 @@ TagManager:
   - shape
   - edge
   - spawn
+  - spawner
   layers:
   - Default
   - TransparentFX

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using TMPro;
 
 public class Polygon : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class Polygon : MonoBehaviour
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
     private AudioSource _audioSource;
+    public GameObject popParticles;
+    public GameObject countNumber;
     public bool solid = false;
 
     private float initVMin = 5.0f;
@@ -163,6 +166,7 @@ public class Polygon : MonoBehaviour
 
         // Set the gameobject's position to be the center of mass
         var center = Centroid(_vertices);
+        this.gameObject.transform.localPosition = center;
 
         // Update the mesh relative to the transform
         _meshFilter.mesh = MeshGen(_vertices.ToArray(), this.color);
@@ -178,10 +182,8 @@ public class Polygon : MonoBehaviour
         _polyCollider2D.points = vector2vertices;
     }
 
-    /// <summary>
-    /// Creates and returns a triangle mesh given three vertices 
-    /// and fills it with the given color. 
-    /// </summary>
+    // Creates and returns a triangle mesh given three vertices 
+    // and fills it with the given color. 
     private static Mesh MeshGen(Vector2[] v, Color fillColor)
     {
         // Find all the triangles in the shape
@@ -231,7 +233,7 @@ public class Polygon : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            int x = Random.Range(0, 2);
+            int x = Random.Range(0, 3);
 
             switch (x)
             {
@@ -246,6 +248,12 @@ public class Polygon : MonoBehaviour
                     break;
             }
 
+            GameObject pop = Instantiate(popParticles, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            GameObject num = Instantiate(countNumber, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            int newCount = ++GetComponentInParent<Spawner>().count;
+            num.GetComponent<TextMeshPro>().text = newCount.ToString();
+            /*var sh = pop.GetComponent<ParticleSystem>().shape;
+            sh.mesh = _meshFilter.mesh;*/
 
             print("POP");
             Destroy(this.gameObject);
@@ -294,6 +302,18 @@ public class Polygon : MonoBehaviour
     /// (i.e., an average of all vectors) 
     public static Vector2 Centroid(ICollection<Vector2> vectors)
     {
+        int numSides = vectors.Count;
+
+        if (numSides == 3)
+        {
+            return new Vector2(vectors.ElementAt(0).x + (0.66f * (vectors.ElementAt(1).x - vectors.ElementAt(0).x)),
+                                vectors.ElementAt(0).y + (0.66f * (vectors.ElementAt(1).y - vectors.ElementAt(0).y)));
+        }
+        else if (numSides == 4)
+        {
+            return vectors.Aggregate((agg, next) => agg + next) / vectors.Count();
+        }
+
         return vectors.Aggregate((agg, next) => agg + next) / vectors.Count();
     }
 
