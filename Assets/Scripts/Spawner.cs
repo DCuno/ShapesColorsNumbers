@@ -6,15 +6,26 @@ public class Spawner : MonoBehaviour
 {
     public List<GameObject> shapesList = new List<GameObject>();
     public int count = 0;
+    [Range(0, 100)]
+    public int iterations;
+    [Range(0.0f, 1.0f)]
+    public float sizeSlider;
     public GameObject shape;
 
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < 10; i++)
+        StartCoroutine("Spawn");
+    }
+
+    IEnumerator Spawn()
+    {
+        for (int i = 0; i < iterations; i++)
         {
+            yield return new WaitForSeconds(0.05f);
             shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-            shapesList[i].GetComponent<Polygon>().Creation(RandomShape(), RandomColor(), 1f);
+            shapesList[i].GetComponent<Polygon>().Creation(RandomShape(), RandomColor(), sizeSlider);
+            yield return new WaitForSeconds(0.08f);
         }
     }
 
@@ -25,7 +36,7 @@ public class Spawner : MonoBehaviour
         switch(i)
         {
             case 0:
-                return Color.Lerp(Color.red, Color.black, 0.2f); // Darkens red by 20%
+                return Color.red;//return Color.Lerp(Color.red, Color.black, 0.2f); // Darkens red by 20%
             case 1:
                 return Color.green;
             case 2:
@@ -45,7 +56,7 @@ public class Spawner : MonoBehaviour
 
     Polygon.Shape RandomShape()
     {
-        int i = Random.Range(0, 3); // increase when we make new shapes
+        int i = Random.Range(0, 6);
 
         switch (i)
         {
@@ -55,14 +66,14 @@ public class Spawner : MonoBehaviour
                 return Polygon.Shape.Square;
             case 2:
                 return Polygon.Shape.Pentagon;
-            /*case 3:
-                return Color.blue;
+            case 3:
+                return Polygon.Shape.Hexagon;
             case 4:
-                return new Color(255, 165, 0); // Orange
+                return Polygon.Shape.Circle;
             case 5:
-                return Color.yellow;*/
+                return Polygon.Shape.Star;
             default:
-                return Polygon.Shape.Triangle;
+                return Polygon.Shape.Circle;
         }
     }
     

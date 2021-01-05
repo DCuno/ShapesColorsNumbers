@@ -14,4 +14,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/RandomGameScene.unity
     guid: b26f63a6d56154244ba5a1ea75e06703
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 1620d4ccb0234e747809e6bbf747d1fd, type: 2}
