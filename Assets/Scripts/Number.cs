@@ -26,7 +26,6 @@ public class Number : MonoBehaviour
     }
     void Update()
     {
-        print(fadeRate);
         fadeTimer += Time.deltaTime;
 
         if (fadeTimer >= fadeTime)
@@ -39,9 +38,9 @@ public class Number : MonoBehaviour
                 Destroy(this.gameObject);
         }
 
-        //calculate what the new Y position will be
+        //calculate what the new z position will be
         float newZ = Mathf.Sin(Time.time * speed) * rotationAmount + rotation.z;
-        //set the object's Y to the new calculated Y
+        //set the object's z to the new calculated z
         transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, newZ, transform.rotation.w);
     }
 }

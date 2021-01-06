@@ -131,6 +131,8 @@ public class Polygon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(Input.acceleration);
+
         // Push slow shapes to speed them back up
         if (_rigidbody2D.velocity.x <= slowestV * normV && _rigidbody2D.velocity.x >= -slowestV * normV || _rigidbody2D.velocity.y <= slowestV * normV && _rigidbody2D.velocity.y >= -slowestV * normV)
         {
@@ -148,7 +150,7 @@ public class Polygon : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            int x = Random.Range(0, 3);
+            int x = Random.Range(0, pops.Length);
             _audioSource.PlayOneShot(pops[x]);
 
             GameObject pop = Instantiate(popParticles, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);

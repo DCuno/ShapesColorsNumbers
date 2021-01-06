@@ -9,6 +9,8 @@ TagManager:
   - spawn
   - spawner
   - OOB
+  - quitButton
+  - goButton
   layers:
   - Default
   - TransparentFX

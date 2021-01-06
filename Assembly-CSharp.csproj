@@ -56,18 +56,18 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Triangulator.cs" />
+    <Compile Include="Assets\Scripts\Backup\Triangulator.cs" />
     <Compile Include="Assets\Scripts\CameraManager.cs" />
-    <Compile Include="Assets\Scripts\Game.cs" />
     <Compile Include="Assets\Scripts\TitleScreenManager.cs" />
-    <Compile Include="Assets\Scripts\SpawnCollider.cs" />
+    <Compile Include="Assets\Scripts\Collider\ShapeOOB.cs" />
+    <Compile Include="Assets\Scripts\Collider\SpawnCollider.cs" />
     <Compile Include="Assets\Scripts\Spawner.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Polygon.cs" />
-    <Compile Include="Assets\Scripts\ShapesCollideOn.cs" />
-    <Compile Include="Assets\Scripts\PolygonLineRenderer.cs" />
+    <Compile Include="Assets\Scripts\Collider\ShapesCollideOn.cs" />
+    <Compile Include="Assets\Scripts\Backup\PolygonLineRenderer.cs" />
     <Compile Include="Assets\Scripts\Number.cs" />
-    <Compile Include="Assets\Scripts\ShapeOOB.cs" />
+    <Compile Include="Assets\Scripts\Canvas\GameCanvas.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

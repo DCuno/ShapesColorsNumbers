@@ -14,6 +14,9 @@ public class Spawner : MonoBehaviour
     public int sizeSlider; // when size is maxSize(Default: 10) on the spawner, shape size is 0.7f. when size is minSize(Default: 1), shape size is 0.1f.
     public GameObject shape;
 
+    private float finishedCheck = 0f;
+    public bool finished = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -102,14 +105,16 @@ public class Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine("FinishedCheck");
-    }
+        finishedCheck += Time.deltaTime;
 
-    IEnumerator FinishedCheck()
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        if (this.transform.childCount == 0)
-            SceneManager.LoadScene(sceneName: "TitleScene");
+        // After 1 second of game running time, start checking if all the shapes are gone.
+        if (finishedCheck >= 1.0f)
+        {
+            // Shapes have been popped, pull down menu. (BACK BUTTON FOR NOW)
+            if (this.transform.childCount == 0)
+            {
+                finished = true;
+            }
+        }
     }
 }
