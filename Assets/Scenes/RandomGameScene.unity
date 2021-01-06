@@ -130,6 +130,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 550948101196275372, guid: 54c310df22031f64c8d43c0c429a3624, type: 3}
+      propertyPath: iterations
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 550948101196275372, guid: 54c310df22031f64c8d43c0c429a3624, type: 3}
+      propertyPath: sizeSlider
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 550948101196275373, guid: 54c310df22031f64c8d43c0c429a3624, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -234,10 +242,6 @@ PrefabInstance:
     - target: {fileID: 1341760403281236103, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1341760403809269158, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}

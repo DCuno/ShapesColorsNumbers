@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Spawner : MonoBehaviour
 {
+    private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
     public List<GameObject> shapesList = new List<GameObject>();
     public int count = 0;
-    [Range(0, 100)]
+    [Range(minIter, maxIter)]
     public int iterations;
-    [Range(0.0f, 1.0f)]
-    public float sizeSlider;
+    [Range(minSize, maxSize)]
+    public int sizeSlider; // when size is maxSize(Default: 10) on the spawner, shape size is 0.7f. when size is minSize(Default: 1), shape size is 0.1f.
     public GameObject shape;
 
     // Start is called before the first frame update
@@ -27,6 +29,26 @@ public class Spawner : MonoBehaviour
             shapesList[i].GetComponent<Polygon>().Creation(RandomShape(), RandomColor(), sizeSlider);
             yield return new WaitForSeconds(0.08f);
         }
+    }
+
+    private void OnValidate()
+    {
+        if (sizeSlider >= 9 && iterations > 4)
+            iterations = 4;
+        else if (sizeSlider >= 7 && iterations > 8)
+            iterations = 8;
+        else if (sizeSlider >= 6 && iterations > 10)
+            iterations = 10;
+        else if (sizeSlider >= 5 && iterations > 14)
+            iterations = 14;
+        else if (sizeSlider >= 4 && iterations > 24)
+            iterations = 24;
+        else if (sizeSlider >= 3 && iterations > 35)
+            iterations = 35;
+        else if (sizeSlider >= 2 && iterations > 50)
+            iterations = 50;
+        else if (sizeSlider >= 1 && iterations > 100)
+            iterations = 100;
     }
 
     Color RandomColor()
@@ -80,6 +102,14 @@ public class Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        StartCoroutine("FinishedCheck");
+    }
+
+    IEnumerator FinishedCheck()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        if (this.transform.childCount == 0)
+            SceneManager.LoadScene(sceneName: "TitleScene");
     }
 }

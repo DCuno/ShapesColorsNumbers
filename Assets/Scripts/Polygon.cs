@@ -23,8 +23,12 @@ public class Polygon : MonoBehaviour
     private readonly float pushVMax = 8.0f;
     private readonly float pushAngV = 300.0f;
     private readonly float slowestV = 0.05f;
+    private readonly float smallestSizeSlider = 1;
+    private readonly float largestSizeSlider = 10;
+    private readonly float smallestRealSize = 0.1f;
+    private readonly float largestRealSize = 0.7f;
     private float normV;
-    private float normSize;
+    private float mapSize;
 
     private AudioClip[] pops = new AudioClip[3];
 
@@ -38,7 +42,9 @@ public class Polygon : MonoBehaviour
     public void Creation(Shape s, Color c, float size)
     {
         normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
-        normSize = size;
+        // Maps smallestSizeSlider(Default: 1) through largestSizeslider(Default: 10) to smallestRealSize(Default: 0.1f) through largestRealSize(Default: 0.7f)
+        mapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
+        print("mapSize: " + mapSize);
         switch(s)
         {
             case Shape.Triangle:
@@ -62,7 +68,7 @@ public class Polygon : MonoBehaviour
         }
 
         UpdatePolygonCollider2D();
-        this.gameObject.transform.localScale = new Vector3(normSize, normSize, 0);    
+        this.gameObject.transform.localScale = new Vector3(mapSize, mapSize, 0);    
         _spriteRenderer.color = c;
 
         // Initial x and y velocities. Randomize if the x velocity is negative or positive.
@@ -143,19 +149,7 @@ public class Polygon : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             int x = Random.Range(0, 3);
-
-            switch (x)
-            {
-                case 0:
-                    _audioSource.PlayOneShot(pops[0]);
-                    break;
-                case 1:
-                    _audioSource.PlayOneShot(pops[1]);
-                    break;
-                case 2:
-                    _audioSource.PlayOneShot(pops[2]);
-                    break;
-            }
+            _audioSource.PlayOneShot(pops[x]);
 
             GameObject pop = Instantiate(popParticles, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             GameObject num = Instantiate(countNumber, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
