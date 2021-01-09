@@ -67,7 +67,7 @@
     <Compile Include="Assets\Scripts\Collider\ShapesCollideOn.cs" />
     <Compile Include="Assets\Scripts\Backup\PolygonLineRenderer.cs" />
     <Compile Include="Assets\Scripts\Number.cs" />
-    <Compile Include="Assets\Scripts\Canvas\GameCanvas.cs" />
+    <Compile Include="Assets\Scripts\FunModeButtonManager.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

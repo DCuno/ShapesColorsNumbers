@@ -6,45 +6,86 @@ using TMPro;
 
 public class Polygon : MonoBehaviour
 {
-
+    // Components
     private Rigidbody2D _rigidbody2D;
     private PolygonCollider2D _polyCollider2D;
     private SpriteRenderer _spriteRenderer;
     private AudioSource _audioSource;
+
+    // Effects
     public GameObject popParticles;
     public GameObject countNumber;
-    public bool solid = false;
 
-    private readonly float initYV = 9.0f;
-    private readonly float initXVMin = 0.06f;
-    private readonly float initXVMax = 2.0f;
-    private readonly float initAngV = 300.0f;
-    private readonly float pushVMin = 5.0f;
-    private readonly float pushVMax = 8.0f;
-    private readonly float pushAngV = 300.0f;
-    private readonly float slowestV = 0.05f;
-    private readonly float smallestSizeSlider = 1;
-    private readonly float largestSizeSlider = 10;
-    private readonly float smallestRealSize = 0.1f;
-    private readonly float largestRealSize = 0.7f;
+    // Game Mode Variables
+    private bool gravityOn;
+    private bool edgesOn;
+    private float gravityScale = 30f;
+    private float gravityLerpTimer = 0.0f;
+    private float gravityLerpTimeTotal = 500.0f;
+    private float lerpPercent;
+    private float gravityStopMargin = 0.05f;
+    private PhysicsMaterial2D gravityOnMaterial;
+    private PhysicsMaterial2D gravityOffMaterial;
+    private float shakeForceScale = 1f;
+    public float shakeDetectionThreshold;
+    public float minShakeInterval;
+    private float sqrShakeDetectionThreshold;
+    private float timeSinceLastShake;
+
+    // Physics
+    private float initYV = 9.0f;
+    private float initXVMin = 0.06f;
+    private float initXVMax = 2.0f;
+    private float initAngV = 300.0f;
+    private float pushVMin = 5.0f;
+    private float pushVMax = 8.0f;
+    private float pushAngV = 300.0f;
+    private float slowestV = 0.05f;
+    private float smallestSizeSlider = 1;
+    private float largestSizeSlider = 10;
+    private float smallestRealSize = 0.1f;
+    private float largestRealSize = 0.7f;
     private float normV;
     private float mapSize;
 
+    // Sound
     private AudioClip[] pops = new AudioClip[3];
 
+    // Collider updater variables
     private List<Vector2> points = new List<Vector2>();
     private List<Vector2> simplifiedPoints = new List<Vector2>();
 
+    // Update timer
+    private float gravityWaitTimer = 0f;
+
+    // Polygon variables
     public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star }
     public Sprite[] polygonSprites;
     public Color color;
+    public bool solid = false;
 
-    public void Creation(Shape s, Color c, float size)
+    public void Creation(Shape s, Color c, float size, bool gravity)
     {
         normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
         // Maps smallestSizeSlider(Default: 1) through largestSizeslider(Default: 10) to smallestRealSize(Default: 0.1f) through largestRealSize(Default: 0.7f)
         mapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
-        print("mapSize: " + mapSize);
+
+        gravityOn = gravity;
+
+        // Gravity mode on or off
+        if (gravityOn)
+        {
+            // normal gravity at the start, then scale up for tilt controls in update()
+            _rigidbody2D.gravityScale = 1f;
+            _rigidbody2D.sharedMaterial = gravityOnMaterial;
+            initYV /= 100f;
+        }
+        else
+        {
+            _rigidbody2D.gravityScale = 0;
+            _rigidbody2D.sharedMaterial = gravityOffMaterial;
+        }
+
         switch(s)
         {
             case Shape.Triangle:
@@ -87,7 +128,6 @@ public class Polygon : MonoBehaviour
             _rigidbody2D.velocity = new Vector2(randomX * -1, randomY);
             _rigidbody2D.angularVelocity = randomAngularVel;
         }
-
     }
 
     private bool _simulating;
@@ -108,6 +148,10 @@ public class Polygon : MonoBehaviour
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _audioSource = FindObjectOfType<AudioSource>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
+        gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
+        sqrShakeDetectionThreshold = Mathf.Pow(shakeDetectionThreshold, 2);
 
         // rigidbody2D Properties
         _rigidbody2D.angularDrag = 0.5f;
@@ -131,17 +175,61 @@ public class Polygon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Input.acceleration);
-
-        // Push slow shapes to speed them back up
-        if (_rigidbody2D.velocity.x <= slowestV * normV && _rigidbody2D.velocity.x >= -slowestV * normV || _rigidbody2D.velocity.y <= slowestV * normV && _rigidbody2D.velocity.y >= -slowestV * normV)
+        if (gravityOn)
         {
-            float randomAngularVelocity = Random.Range(-pushAngV * normV, pushAngV * normV);
-            Vector2 randomVelocity = new Vector2(Random.Range(pushVMin * normV, pushVMax * normV), Random.Range(pushVMin * normV, pushVMax * normV));
+            gravityWaitTimer += Time.deltaTime;
 
-            _rigidbody2D.velocity = randomVelocity;
-            _rigidbody2D.angularVelocity = randomAngularVelocity;
-            Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+            if (gravityWaitTimer >= 3.0f)
+            {
+                _rigidbody2D.gravityScale = gravityScale;
+
+                // Within -0.1f and 0.1f, the shape will slow to a halt instead of floating in zero G.
+                if ((Input.acceleration.x <= gravityStopMargin && Input.acceleration.x >= -gravityStopMargin) && (Input.acceleration.y <= gravityStopMargin && Input.acceleration.y >= -gravityStopMargin))
+                {
+                    Physics2D.gravity = new Vector2(0f, 0f);
+                    //Physics2D.gravity = new Vector2(Mathf.Lerp(Physics2D.gravity.x, 0, gravityLerpTime), Mathf.Lerp(Physics2D.gravity.y, 0, gravityLerpTime));
+                    gravityLerpTimer += Time.deltaTime;
+                    if (gravityLerpTimer > gravityLerpTimeTotal)
+                    {
+                        gravityLerpTimer = gravityLerpTimeTotal;
+                    }
+
+                    lerpPercent = gravityLerpTimer / gravityLerpTimeTotal;
+                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, lerpPercent);
+                    _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, lerpPercent);
+
+                    if (Input.acceleration.sqrMagnitude >= sqrShakeDetectionThreshold
+                           && Time.unscaledTime >= timeSinceLastShake + minShakeInterval)
+                    {
+                        _rigidbody2D.AddForce(Input.acceleration * shakeForceScale, ForceMode2D.Impulse);
+                        timeSinceLastShake = Time.unscaledTime;
+                    }
+                }
+                else
+                {
+                    Physics2D.gravity = new Vector2(Input.acceleration.x * 1.5f, Input.acceleration.y * 1.5f);
+
+                    if (Input.acceleration.sqrMagnitude >= sqrShakeDetectionThreshold
+                           && Time.unscaledTime >= timeSinceLastShake + minShakeInterval)
+                    {
+                        _rigidbody2D.AddForce(Input.acceleration * shakeForceScale, ForceMode2D.Impulse);
+                        timeSinceLastShake = Time.unscaledTime;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // Push slow shapes to speed them back up
+            if (_rigidbody2D.velocity.x <= slowestV * normV && _rigidbody2D.velocity.x >= -slowestV * normV || _rigidbody2D.velocity.y <= slowestV * normV && _rigidbody2D.velocity.y >= -slowestV * normV)
+            {
+                float randomAngularVelocity = Random.Range(-pushAngV * normV, pushAngV * normV);
+                Vector2 randomVelocity = new Vector2(Random.Range(pushVMin * normV, pushVMax * normV), Random.Range(pushVMin * normV, pushVMax * normV));
+
+                _rigidbody2D.velocity = randomVelocity;
+                _rigidbody2D.angularVelocity = randomAngularVelocity;
+                Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+            }
         }
     }
 

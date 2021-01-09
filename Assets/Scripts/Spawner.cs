@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class Spawner : MonoBehaviour
 {
+    private GameObject canvas;
+
     private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
     public List<GameObject> shapesList = new List<GameObject>();
     public int count = 0;
@@ -25,11 +27,13 @@ public class Spawner : MonoBehaviour
 
     IEnumerator Spawn()
     {
+        // GET CANVAS VARIABLES HERE
+
         for (int i = 0; i < iterations; i++)
         {
             yield return new WaitForSeconds(0.05f);
             shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-            shapesList[i].GetComponent<Polygon>().Creation(RandomShape(), RandomColor(), sizeSlider);
+            shapesList[i].GetComponent<Polygon>().Creation(RandomShape(), RandomColor(), sizeSlider, true);
             yield return new WaitForSeconds(0.08f);
         }
     }
