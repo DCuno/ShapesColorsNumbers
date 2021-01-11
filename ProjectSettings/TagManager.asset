@@ -13,6 +13,14 @@ TagManager:
   - playButton
   - randomButton
   - quitButton
+  - SettingsPanel
+  - ShapesPanelGroup
+  - ColorsPanelGroup
+  - EdgesPanelGroup
+  - GravityPanelGroup
+  - TiltPanelGroup
+  - VoicePanelGroup
+  - TextPanelGroup
   layers:
   - Default
   - TransparentFX

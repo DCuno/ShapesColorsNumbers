@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class Spawner : MonoBehaviour
 {
+    public enum Colors { Red, Orange, Yellow, Green, Blue, Purple, White };
+    public enum Topics { Shapes, Colors, Numbers };
+
     private GameObject canvas;
 
     private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
@@ -19,21 +22,18 @@ public class Spawner : MonoBehaviour
     private float finishedCheck = 0f;
     public bool finished = false;
 
-    // Start is called before the first frame update
-    void Start()
+    public void SettingsSetup(List<Polygon.Shape> shapes, List<Colors> colors, int size, int amount, bool edges, bool gravity, bool tilt, List<Topics> voice, List<Topics> text)
     {
-        StartCoroutine("Spawn");
+        StartCoroutine(Spawn(shapes, colors, size, amount, edges, gravity, tilt, voice, text));
     }
 
-    IEnumerator Spawn()
+    IEnumerator Spawn(List<Polygon.Shape> shapes, List<Colors> colors, int size, int amount, bool edges, bool gravity, bool tilt, List<Topics> voice, List<Topics> text)
     {
-        // GET CANVAS VARIABLES HERE
-
-        for (int i = 0; i < iterations; i++)
+        for (int i = 0; i < amount; i++)
         {
             yield return new WaitForSeconds(0.05f);
             shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-            shapesList[i].GetComponent<Polygon>().Creation(RandomShape(), RandomColor(), sizeSlider, true);
+            shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), RandomColorSelect(colors), size, true);
             yield return new WaitForSeconds(0.08f);
         }
     }
@@ -58,6 +58,7 @@ public class Spawner : MonoBehaviour
             iterations = 100;
     }
 
+    // Random Color returned out of all colors except white
     Color RandomColor()
     {
         int i = Random.Range(0, 6);
@@ -76,13 +77,26 @@ public class Spawner : MonoBehaviour
                 return new Color(1.0f, 0.64f, 0.0f); // Orange
             case 5:
                 return new Color(0.5f, 0f, 0.5f); // Purple
-            case 6:
-                return Color.white;
             default:
                 return Color.white;
         }
     }
 
+    // Random Color selected from given list
+    public static Color RandomColorSelect(List<Colors> arr) =>
+        arr[Random.Range(0, arr.Count)] switch
+        {
+            Colors.Red => Color.red,//return Color.Lerp(Color.red, Color.black, 0.2f); // Darkens red by 20%
+            Colors.Green => Color.green,
+            Colors.Blue => Color.blue,
+            Colors.Yellow => Color.yellow,
+            Colors.Orange => new Color(1.0f, 0.64f, 0.0f), // Orange
+            Colors.Purple => new Color(0.5f, 0f, 0.5f), // Purple
+            Colors.White => Color.white,
+            _ => Color.white,
+        };
+
+    // Random Shape returned out of all shapes
     Polygon.Shape RandomShape()
     {
         int i = Random.Range(0, 6);
@@ -105,7 +119,13 @@ public class Spawner : MonoBehaviour
                 return Polygon.Shape.Circle;
         }
     }
-    
+
+    // Random Shape selected from given array
+    Polygon.Shape RandomShapeSelect(List<Polygon.Shape> arr)
+    {
+        return arr[Random.Range(0, arr.Count)];
+    }
+
     // Update is called once per frame
     void Update()
     {
