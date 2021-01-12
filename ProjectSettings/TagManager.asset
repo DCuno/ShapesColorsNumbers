@@ -16,11 +16,17 @@ TagManager:
   - SettingsPanel
   - ShapesPanelGroup
   - ColorsPanelGroup
-  - EdgesPanelGroup
-  - GravityPanelGroup
-  - TiltPanelGroup
   - VoicePanelGroup
   - TextPanelGroup
+  - SizePanelGroup
+  - AmountPanelGroup
+  - ToggleOn
+  - EdgesToggleOn
+  - GravityToggleOn
+  - TiltToggleOn
+  - SizeSliderCounter
+  - AmountSliderCounter
+  - FunModeButtonManager
   layers:
   - Default
   - TransparentFX

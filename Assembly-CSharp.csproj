@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scripts\Backup\Triangulator.cs" />
     <Compile Include="Assets\Scripts\CameraManager.cs" />
     <Compile Include="Assets\Scripts\TitleScreenManager.cs" />
+    <Compile Include="Assets\Scripts\FunModeButtonManager.cs" />
     <Compile Include="Assets\Scripts\Collider\ShapeOOB.cs" />
     <Compile Include="Assets\Scripts\Collider\SpawnCollider.cs" />
     <Compile Include="Assets\Scripts\Spawner.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="Assets\Scripts\Collider\ShapesCollideOn.cs" />
     <Compile Include="Assets\Scripts\Backup\PolygonLineRenderer.cs" />
     <Compile Include="Assets\Scripts\Number.cs" />
-    <Compile Include="Assets\Scripts\FunModeButtonManager.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

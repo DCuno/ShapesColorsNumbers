@@ -17,8 +17,10 @@ public class Polygon : MonoBehaviour
     public GameObject countNumber;
 
     // Game Mode Variables
-    private bool gravityOn;
+    private bool tiltOn;
     private bool edgesOn;
+    private Spawner.Topics voice;
+    private Spawner.Topics text;
     private float gravityScale = 30f;
     private float gravityLerpTimer = 0.0f;
     private float gravityLerpTimeTotal = 500.0f;
@@ -64,16 +66,19 @@ public class Polygon : MonoBehaviour
     public Color color;
     public bool solid = false;
 
-    public void Creation(Shape s, Color c, float size, bool gravity)
+    public void Creation(Shape shape, Color color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
     {
         normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
         // Maps smallestSizeSlider(Default: 1) through largestSizeslider(Default: 10) to smallestRealSize(Default: 0.1f) through largestRealSize(Default: 0.7f)
         mapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
 
-        gravityOn = gravity;
+        tiltOn = tilt;
+        edgesOn = edges;
+        this.voice = voice;
+        this.text = text;
 
         // Gravity mode on or off
-        if (gravityOn)
+        if (tiltOn)
         {
             // normal gravity at the start, then scale up for tilt controls in update()
             _rigidbody2D.gravityScale = 1f;
@@ -86,7 +91,7 @@ public class Polygon : MonoBehaviour
             _rigidbody2D.sharedMaterial = gravityOffMaterial;
         }
 
-        switch(s)
+        switch(shape)
         {
             case Shape.Triangle:
                 _spriteRenderer.sprite = polygonSprites[0];
@@ -110,7 +115,7 @@ public class Polygon : MonoBehaviour
 
         UpdatePolygonCollider2D();
         this.gameObject.transform.localScale = new Vector3(mapSize, mapSize, 0);    
-        _spriteRenderer.color = c;
+        _spriteRenderer.color = color;
 
         // Initial x and y velocities. Randomize if the x velocity is negative or positive.
         float randomX = Random.Range(initXVMin, initXVMax);
@@ -175,7 +180,7 @@ public class Polygon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gravityOn)
+        if (tiltOn)
         {
             gravityWaitTimer += Time.deltaTime;
 

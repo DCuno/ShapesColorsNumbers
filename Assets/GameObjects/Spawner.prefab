@@ -43,8 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b331d578dab22364b98617c6ad4e0ba0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  settingsCanvas: {fileID: 3643401440641471910, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
   shapesList: []
   count: 0
   iterations: 10
   sizeSlider: 5
   shape: {fileID: 2194859948556307527, guid: ea07d57bcd05a9d4c8581e9bddf62e91, type: 3}
+  finished: 0
+  started: 0

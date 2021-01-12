@@ -6,9 +6,10 @@ using UnityEngine.SceneManagement;
 public class Spawner : MonoBehaviour
 {
     public enum Colors { Red, Orange, Yellow, Green, Blue, Purple, White };
-    public enum Topics { Shapes, Colors, Numbers };
+    public enum Topics { Shapes, Colors, Numbers, Off };
 
-    private GameObject canvas;
+    public GameObject settingsCanvas;
+    private GameObject spawnedSettingsCanvas;
 
     private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
     public List<GameObject> shapesList = new List<GameObject>();
@@ -21,21 +22,46 @@ public class Spawner : MonoBehaviour
 
     private float finishedCheck = 0f;
     public bool finished = false;
+    public bool started = false;
+    public settingsStruct currentSettings;
 
-    public void SettingsSetup(List<Polygon.Shape> shapes, List<Colors> colors, int size, int amount, bool edges, bool gravity, bool tilt, List<Topics> voice, List<Topics> text)
+    public struct settingsStruct
     {
-        StartCoroutine(Spawn(shapes, colors, size, amount, edges, gravity, tilt, voice, text));
+        public List<Polygon.Shape> shapes;
+        public List<Colors> colors;
+        public float size;
+        public bool edges;
+        public bool tilt;
+        public Spawner.Topics voice;
+        public Spawner.Topics text;
     }
 
-    IEnumerator Spawn(List<Polygon.Shape> shapes, List<Colors> colors, int size, int amount, bool edges, bool gravity, bool tilt, List<Topics> voice, List<Topics> text)
+    public void SettingsSetup(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
     {
+        StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, voice, text));
+    }
+
+    IEnumerator Spawn(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
+    {
+        shapesList.Clear();
+        count = 0;
+        finished = false;
         for (int i = 0; i < amount; i++)
         {
             yield return new WaitForSeconds(0.05f);
             shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-            shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), RandomColorSelect(colors), size, true);
+            shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), RandomColorSelect(colors), size, edges, tilt, voice, text);
             yield return new WaitForSeconds(0.08f);
         }
+
+        currentSettings = new settingsStruct();
+        currentSettings.shapes = shapes;
+        currentSettings.colors = colors;
+        currentSettings.size = size;
+        currentSettings.edges = edges;
+        currentSettings.tilt = tilt;
+        currentSettings.voice = voice;
+        currentSettings.text = text;
     }
 
     private void OnValidate()
@@ -129,16 +155,24 @@ public class Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        finishedCheck += Time.deltaTime;
-
-        // After 1 second of game running time, start checking if all the shapes are gone.
-        if (finishedCheck >= 1.0f)
+        if (started)
         {
-            // Shapes have been popped, pull down menu. (BACK BUTTON FOR NOW)
-            if (this.transform.childCount == 0)
+            finishedCheck += Time.deltaTime;
+
+            // After 1 second of game running time, start checking if all the shapes are gone.
+            if (finishedCheck >= 1.0f)
             {
-                finished = true;
+                // Shapes have been popped, pull down menu. (BACK BUTTON FOR NOW)
+                if (this.transform.childCount == 0)
+                {
+                    finished = true;
+                    started = false;
+                    finishedCheck = 0f;
+                    spawnedSettingsCanvas = Instantiate(settingsCanvas);
+
+                }
             }
         }
+
     }
 }

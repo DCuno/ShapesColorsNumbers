@@ -2,45 +2,103 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.;
+using TMPro;
 
 public class FunModeButtonManager : MonoBehaviour
 {
-    public void PlayButton()
+    GameObject spawner;
+    GameObject settingsPanel;
+    List<Polygon.Shape> shapes;
+    List<Spawner.Colors> colors;
+    float size;
+    float amount;
+    bool edges;
+    bool tilt;
+    Spawner.Topics voice;
+    Spawner.Topics text;
+
+    private void Start()
     {
-        GameObject[] tempToggles;
-        GameObject spawner = GameObject.FindGameObjectWithTag("spawner");
-        GameObject settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
+        Toggle[] tempToggles;
 
-        List<Polygon.Shape> shapes = new List<Polygon.Shape>();
+        spawner = GameObject.FindGameObjectWithTag("spawner");
+        settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
 
-        tempToggles = GameObject.FindGameObjectsWithTag("ShapesPanelGroup");
-        foreach (GameObject i in tempToggles)
+        shapes = new List<Polygon.Shape>();
+
+        tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
         {
-            if (i.GetComponent<Toggle>().isOn)
+            if (i.isOn)
                 if (System.Enum.TryParse(i.name, out Polygon.Shape result))
                     shapes.Add(result);
+
         }
 
-        List<Spawner.Colors> colors = new List<Spawner.Colors>();
+        if (shapes.Count == 0)
+            shapes.Add(Polygon.Shape.Circle);
 
-        tempToggles = GameObject.FindGameObjectsWithTag("ColorsPanelGroup");
-        foreach (GameObject i in tempToggles)
+        colors = new List<Spawner.Colors>();
+
+        tempToggles = GameObject.FindGameObjectWithTag("ColorsPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
         {
-            if (i.GetComponent<Toggle>().isOn)
+            if (i.isOn)
                 if (System.Enum.TryParse(i.name, out Spawner.Colors result))
                     colors.Add(result);
+
         }
 
-        int size;
-        int amount;
-        bool edges;
-        bool gravity;
-        bool tilt;
-        List<Spawner.Topics> voice;
-        List<Spawner.Topics> text;
+        if (colors.Count == 0)
+            colors.Add(Spawner.Colors.White);
 
-        spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, gravity, tilt, voice, text);
+        size = GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>().value;
+        amount = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>().value;
+        edges = GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn;
+        tilt = GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn;
+
+        voice = Spawner.Topics.Off;
+
+        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            if (i.isOn)
+                if (System.Enum.TryParse(i.name, out Spawner.Topics result))
+                {
+                    voice = result;
+                    break;
+                }
+        }
+
+        text = Spawner.Topics.Off;
+
+        tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            if (i.isOn)
+                if (System.Enum.TryParse(i.name, out Spawner.Topics result))
+                {
+                    text = result;
+                    break;
+                }
+        }
+    }
+    public void FunModeButtonManagerConstructor(Spawner.settingsStruct settingsStruct)
+    {
+        shapes = settingsStruct.shapes;
+        colors = settingsStruct.colors;
+        size = settingsStruct.size;
+        edges = settingsStruct.edges;
+        tilt = settingsStruct.tilt;
+        voice = settingsStruct.voice;
+        text = settingsStruct.text;
+    }
+
+    public void PlayButton()
+    {
+        spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, voice, text);
+        spawner.GetComponent<Spawner>().started = true;
+        Destroy(GameObject.FindGameObjectWithTag("SettingsPanel"));
     }
 
     public void BackButton()
@@ -53,5 +111,73 @@ public class FunModeButtonManager : MonoBehaviour
 
     }
 
-    private void 
+    public void SizeSliderAmount()
+    {
+        Slider sizeSlider = GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponent<Slider>();
+        Slider amountSlider = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponent<Slider>();
+        GameObject.FindGameObjectWithTag("SizeSliderCounter").GetComponent<TextMeshProUGUI>().text = sizeSlider.value.ToString();
+
+        if (sizeSlider.value >= 9)
+        {
+            if (amountSlider.value > 4)
+                amountSlider.value = 4;
+            
+            amountSlider.maxValue = 4;
+        }
+        else if (sizeSlider.value >= 7)
+        {
+            if (amountSlider.value > 8)
+                amountSlider.value = 8;
+            
+            amountSlider.maxValue = 8;
+        }
+        else if (sizeSlider.value >= 6)
+        {
+            if (amountSlider.value > 10)
+                amountSlider.value = 10;
+            
+            amountSlider.maxValue = 10;
+        }
+        else if (sizeSlider.value >= 5)
+        {
+            if (amountSlider.value > 14)
+                amountSlider.value = 14;
+            
+            amountSlider.maxValue = 14;
+        }
+        else if (sizeSlider.value >= 4)
+        {
+            if (amountSlider.value > 24)
+                amountSlider.value = 24;
+
+            amountSlider.maxValue = 24;
+        }
+        else if (sizeSlider.value >= 3)
+        {
+            if (amountSlider.value > 35)
+                amountSlider.value = 35;
+            
+            amountSlider.maxValue = 35;
+        }
+        else if (sizeSlider.value >= 2)
+        {
+            if (amountSlider.value > 50)
+                amountSlider.value = 50;
+            
+            amountSlider.maxValue = 50;
+        }
+        else if (sizeSlider.value >= 1)
+        {
+            if (amountSlider.value > 100)
+                amountSlider.value = 100;
+            
+            amountSlider.maxValue = 100;
+        }
+    }
+
+    public void AmountSliderAmount()
+    {
+        Slider amountSlider = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponent<Slider>();
+        GameObject.FindGameObjectWithTag("AmountSliderCounter").GetComponent<TextMeshProUGUI>().text = amountSlider.value.ToString();
+    }
 }
