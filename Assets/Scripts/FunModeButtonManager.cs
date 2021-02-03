@@ -17,7 +17,131 @@ public class FunModeButtonManager : MonoBehaviour
     Spawner.Topics voice;
     Spawner.Topics text;
 
-    private void Start()
+    private void Awake()
+    {
+
+    }
+
+    public void FunModeButtonManagerConstructor(Spawner.settingsStruct settingsStruct)
+    {
+        shapes = settingsStruct.shapes;
+        colors = settingsStruct.colors;
+        size = settingsStruct.size;
+        amount = settingsStruct.amount;
+        edges = settingsStruct.edges;
+        tilt = settingsStruct.tilt;
+        voice = settingsStruct.voice;
+        text = settingsStruct.text;
+
+        Toggle[] tempToggles;
+
+        //shapes = new List<Polygon.Shape>();
+
+        tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            System.Enum.TryParse(i.name, out Polygon.Shape result);
+            if (shapes.Contains(result))
+            {
+                print("shapes contains true");
+                i.isOn = true;
+            }
+            else
+            {
+                print("shapes contains false");
+                i.isOn = false;
+            }
+        }
+
+        /*if (shapes.Count == 0)
+            shapes.Add(Polygon.Shape.Circle);*/
+
+        tempToggles = GameObject.FindGameObjectWithTag("ColorsPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            System.Enum.TryParse(i.name, out Spawner.Colors result);
+            if (colors.Contains(result))
+            {
+                print("colors contains true");
+                i.isOn = true;
+            }
+            else
+            {
+                print("colors contains false");
+                i.isOn = false;
+            }
+        }
+
+        /*if (colors.Count == 0)
+            colors.Add(Spawner.Colors.White);*/
+
+        GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>().value = size;
+        GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>().value = amount;
+        GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn = edges;
+        GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn = tilt;
+
+        tempToggles = GameObject.FindGameObjectWithTag("EdgesPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            System.Enum.TryParse(i.name, out bool result);
+            if (edges.Equals(result))
+            {
+                i.isOn = true;
+            }
+            else
+            {
+                i.isOn = false;
+            }
+        }
+
+        tempToggles = GameObject.FindGameObjectWithTag("TiltPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            System.Enum.TryParse(i.name, out bool result);
+            if (tilt.Equals(result))
+            {
+                i.isOn = true;
+            }
+            else
+            {
+                i.isOn = false;
+            }
+        }
+
+        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            System.Enum.TryParse(i.name, out Spawner.Topics result);
+            if (voice.Equals(result))
+            {
+                print("voice true");
+                i.isOn = true;
+            }
+            else
+            {
+                print("voice false");
+                i.isOn = false;
+            }
+        }
+
+        tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            System.Enum.TryParse(i.name, out Spawner.Topics result);
+            if (text.Equals(result))
+            {
+                print("text true");
+                i.isOn = true;
+            }
+            else
+            {
+                print("text false");
+                i.isOn = false;
+            }
+        }
+    }
+
+    public void PlayButton()
     {
         Toggle[] tempToggles;
 
@@ -82,20 +206,7 @@ public class FunModeButtonManager : MonoBehaviour
                     break;
                 }
         }
-    }
-    public void FunModeButtonManagerConstructor(Spawner.settingsStruct settingsStruct)
-    {
-        shapes = settingsStruct.shapes;
-        colors = settingsStruct.colors;
-        size = settingsStruct.size;
-        edges = settingsStruct.edges;
-        tilt = settingsStruct.tilt;
-        voice = settingsStruct.voice;
-        text = settingsStruct.text;
-    }
 
-    public void PlayButton()
-    {
         spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, voice, text);
         spawner.GetComponent<Spawner>().started = true;
         Destroy(GameObject.FindGameObjectWithTag("SettingsPanel"));

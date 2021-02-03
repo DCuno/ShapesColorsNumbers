@@ -27,6 +27,10 @@ TagManager:
   - SizeSliderCounter
   - AmountSliderCounter
   - FunModeButtonManager
+  - EdgesToggleOff
+  - TiltToggleOff
+  - EdgesPanelGroup
+  - TiltPanelGroup
   layers:
   - Default
   - TransparentFX

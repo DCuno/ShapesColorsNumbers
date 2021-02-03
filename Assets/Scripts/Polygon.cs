@@ -18,7 +18,7 @@ public class Polygon : MonoBehaviour
 
     // Game Mode Variables
     private bool tiltOn;
-    private bool edgesOn;
+    public bool edgesOn;
     private Spawner.Topics voice;
     private Spawner.Topics text;
     private float gravityScale = 30f;
@@ -72,8 +72,8 @@ public class Polygon : MonoBehaviour
         // Maps smallestSizeSlider(Default: 1) through largestSizeslider(Default: 10) to smallestRealSize(Default: 0.1f) through largestRealSize(Default: 0.7f)
         mapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
 
-        tiltOn = tilt;
-        edgesOn = edges;
+        this.tiltOn = tilt;
+        this.edgesOn = edges;
         this.voice = voice;
         this.text = text;
 
@@ -180,6 +180,15 @@ public class Polygon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (edgesOn)
+        {
+
+        }
+        else
+        {
+
+        }
+
         if (tiltOn)
         {
             gravityWaitTimer += Time.deltaTime;

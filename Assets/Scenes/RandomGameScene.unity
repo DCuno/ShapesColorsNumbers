@@ -253,6 +253,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1903091027, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
+      propertyPath: m_EdgeRadius
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1341760403281236100, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
       propertyPath: m_Name
       value: Colliders
@@ -464,6 +468,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SettingsCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3643401440737036204, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_IsOn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401440742095495, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_TagString
+      value: EdgesPanelGroup
+      objectReference: {fileID: 0}
     - target: {fileID: 3643401440837268413, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -483,6 +495,22 @@ PrefabInstance:
     - target: {fileID: 3643401440850075285, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401441177543346, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_TagString
+      value: TiltPanelGroup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401441208507977, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_IsOn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401441502904274, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401441747386897, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 3643401442270167972, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
       propertyPath: m_AnchorMax.x

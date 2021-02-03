@@ -30,6 +30,7 @@ public class Spawner : MonoBehaviour
         public List<Polygon.Shape> shapes;
         public List<Colors> colors;
         public float size;
+        public float amount;
         public bool edges;
         public bool tilt;
         public Spawner.Topics voice;
@@ -54,16 +55,10 @@ public class Spawner : MonoBehaviour
             yield return new WaitForSeconds(0.08f);
         }
 
-        currentSettings = new settingsStruct();
-        currentSettings.shapes = shapes;
-        currentSettings.colors = colors;
-        currentSettings.size = size;
-        currentSettings.edges = edges;
-        currentSettings.tilt = tilt;
-        currentSettings.voice = voice;
-        currentSettings.text = text;
+        currentSettings = new settingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
     }
 
+    // Updates in the editor
     private void OnValidate()
     {
         if (sizeSlider >= 9 && iterations > 4)
@@ -89,30 +84,23 @@ public class Spawner : MonoBehaviour
     {
         int i = Random.Range(0, 6);
 
-        switch(i)
+        return i switch
         {
-            case 0:
-                return Color.red;//return Color.Lerp(Color.red, Color.black, 0.2f); // Darkens red by 20%
-            case 1:
-                return Color.green;
-            case 2:
-                return Color.blue;
-            case 3:
-                return Color.yellow;
-            case 4:
-                return new Color(1.0f, 0.64f, 0.0f); // Orange
-            case 5:
-                return new Color(0.5f, 0f, 0.5f); // Purple
-            default:
-                return Color.white;
-        }
+            0 => Color.red,
+            1 => Color.green,
+            2 => Color.blue,
+            3 => Color.yellow,
+            4 => new Color(1.0f, 0.64f, 0.0f),// Orange
+            5 => new Color(0.5f, 0f, 0.5f),// Purple
+            _ => Color.white,
+        };
     }
 
     // Random Color selected from given list
     public static Color RandomColorSelect(List<Colors> arr) =>
         arr[Random.Range(0, arr.Count)] switch
         {
-            Colors.Red => Color.red,//return Color.Lerp(Color.red, Color.black, 0.2f); // Darkens red by 20%
+            Colors.Red => Color.red,
             Colors.Green => Color.green,
             Colors.Blue => Color.blue,
             Colors.Yellow => Color.yellow,
@@ -162,14 +150,14 @@ public class Spawner : MonoBehaviour
             // After 1 second of game running time, start checking if all the shapes are gone.
             if (finishedCheck >= 1.0f)
             {
-                // Shapes have been popped, pull down menu. (BACK BUTTON FOR NOW)
+                // Shapes have been popped, pull down menu.
                 if (this.transform.childCount == 0)
                 {
                     finished = true;
                     started = false;
                     finishedCheck = 0f;
                     spawnedSettingsCanvas = Instantiate(settingsCanvas);
-
+                    spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
                 }
             }
         }
