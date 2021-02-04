@@ -52,6 +52,7 @@ public class Polygon : MonoBehaviour
 
     // Sound
     private AudioClip[] pops = new AudioClip[3];
+    private AudioClip[] teleports = new AudioClip[3];
 
     // Collider updater variables
     private List<Vector2> points = new List<Vector2>();
@@ -169,6 +170,9 @@ public class Polygon : MonoBehaviour
         pops[0] = Resources.Load<AudioClip>("Audio/pop1");
         pops[1] = Resources.Load<AudioClip>("Audio/pop2");
         pops[2] = Resources.Load<AudioClip>("Audio/pop3");
+        teleports[0] = Resources.Load<AudioClip>("Audio/teleport1");
+        teleports[1] = Resources.Load<AudioClip>("Audio/teleport2");
+        teleports[2] = Resources.Load<AudioClip>("Audio/teleport3");
 }
 
     // Start is called before the first frame update
@@ -235,7 +239,8 @@ public class Polygon : MonoBehaviour
         else
         {
             // Push slow shapes to speed them back up
-            if (_rigidbody2D.velocity.x <= slowestV * normV && _rigidbody2D.velocity.x >= -slowestV * normV || _rigidbody2D.velocity.y <= slowestV * normV && _rigidbody2D.velocity.y >= -slowestV * normV)
+            if (_rigidbody2D.velocity.x <= slowestV * normV && _rigidbody2D.velocity.x >= -slowestV * normV 
+                || _rigidbody2D.velocity.y <= slowestV * normV && _rigidbody2D.velocity.y >= -slowestV * normV)
             {
                 float randomAngularVelocity = Random.Range(-pushAngV * normV, pushAngV * normV);
                 Vector2 randomVelocity = new Vector2(Random.Range(pushVMin * normV, pushVMax * normV), Random.Range(pushVMin * normV, pushVMax * normV));
@@ -252,8 +257,7 @@ public class Polygon : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            int x = Random.Range(0, pops.Length);
-            _audioSource.PlayOneShot(pops[x]);
+            PopSound();
 
             GameObject pop = Instantiate(popParticles, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             GameObject num = Instantiate(countNumber, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
@@ -312,6 +316,18 @@ public class Polygon : MonoBehaviour
     public static Vector2 Abs(Vector2 vector)
     {
         return new Vector2(Mathf.Abs(vector.x), Mathf.Abs(vector.y));
+    }
+
+    public void TeleportSound()
+    {
+        int x = Random.Range(0, teleports.Length);
+        _audioSource.PlayOneShot(teleports[x]);
+    }
+
+    public void PopSound()
+    {
+        int x = Random.Range(0, pops.Length);
+        _audioSource.PlayOneShot(pops[x]);
     }
 }
 

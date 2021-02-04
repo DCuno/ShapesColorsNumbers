@@ -68,6 +68,8 @@
     <Compile Include="Assets\Scripts\Collider\ShapesCollideOn.cs" />
     <Compile Include="Assets\Scripts\Backup\PolygonLineRenderer.cs" />
     <Compile Include="Assets\Scripts\Number.cs" />
+    <Compile Include="Assets\Scripts\WrappingRenderer.cs" />
+    <Compile Include="Assets\Scripts\Collider\ShapesOOBEdgesOff.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

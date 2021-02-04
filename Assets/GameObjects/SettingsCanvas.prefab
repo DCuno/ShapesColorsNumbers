@@ -1186,7 +1186,7 @@ GameObject:
   - component: {fileID: 3643401440742095494}
   m_Layer: 5
   m_Name: Edges
-  m_TagString: Untagged
+  m_TagString: EdgesPanelGroup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3291,7 +3291,7 @@ GameObject:
   - component: {fileID: 3643401441177543341}
   m_Layer: 5
   m_Name: Tilt
-  m_TagString: Untagged
+  m_TagString: TiltPanelGroup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8993,7 +8993,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3643401440837268413}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 100
+  m_MaxValue: 14
   m_WholeNumbers: 1
   m_Value: 14
   m_OnValueChanged:
