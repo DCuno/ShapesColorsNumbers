@@ -13,7 +13,7 @@ public class Polygon : MonoBehaviour
     private AudioSource _audioSource;
 
     // Effects
-    public GameObject popParticles;
+    public GameObject[] popParticles;
     public GameObject countNumber;
 
     // Game Mode Variables
@@ -48,7 +48,9 @@ public class Polygon : MonoBehaviour
     private float smallestRealSize = 0.1f;
     private float largestRealSize = 0.7f;
     private float normV;
-    private float mapSize;
+    private float shapeMapSize;
+    private GameObject popMapSize;
+    private float numMapSize;
 
     // Sound
     private AudioClip[] pops = new AudioClip[3];
@@ -71,7 +73,14 @@ public class Polygon : MonoBehaviour
     {
         normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
         // Maps smallestSizeSlider(Default: 1) through largestSizeslider(Default: 10) to smallestRealSize(Default: 0.1f) through largestRealSize(Default: 0.7f)
-        mapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
+        shapeMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
+        numMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (1.0f - 0.3f)) + 0.3f;
+        if (size >= 8)
+            popMapSize = popParticles[0];
+        else if (size >= 4)
+            popMapSize = popParticles[1];
+        else
+            popMapSize = popParticles[2];
 
         this.tiltOn = tilt;
         this.edgesOn = edges;
@@ -115,7 +124,7 @@ public class Polygon : MonoBehaviour
         }
 
         UpdatePolygonCollider2D();
-        this.gameObject.transform.localScale = new Vector3(mapSize, mapSize, 0);    
+        this.gameObject.transform.localScale = new Vector3(shapeMapSize, shapeMapSize, 0);    
         _spriteRenderer.color = color;
 
         // Initial x and y velocities. Randomize if the x velocity is negative or positive.
@@ -184,15 +193,6 @@ public class Polygon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (edgesOn)
-        {
-
-        }
-        else
-        {
-
-        }
-
         if (tiltOn)
         {
             gravityWaitTimer += Time.deltaTime;
@@ -259,8 +259,10 @@ public class Polygon : MonoBehaviour
         {
             PopSound();
 
-            GameObject pop = Instantiate(popParticles, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+
+            GameObject pop = Instantiate(popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             GameObject num = Instantiate(countNumber, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            num.transform.localScale = new Vector3(numMapSize, numMapSize, 0);
             int newCount = ++GetComponentInParent<Spawner>().count;
             num.GetComponent<TextMeshPro>().text = newCount.ToString();
 
