@@ -51,7 +51,8 @@ public class Spawner : MonoBehaviour
         {
             yield return new WaitForSeconds(0.05f);
             shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-            shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), RandomColorSelect(colors), size, edges, tilt, voice, text);
+            Color tmpColor = RandomColorSelect(colors);
+            shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), tmpColor, UnityColorToEnumColor(tmpColor), size, edges, tilt, voice, text);
             yield return new WaitForSeconds(0.08f);
         }
 
@@ -140,8 +141,26 @@ public class Spawner : MonoBehaviour
         return arr[Random.Range(0, arr.Count)];
     }
 
-    // Update is called once per frame
-    void Update()
+    private Spawner.Colors UnityColorToEnumColor(Color color)
+    {
+        if (color == Color.red)
+            return Colors.Red;
+        else if (color == Color.green)
+            return Colors.Green;
+        else if (color == Color.blue)
+            return Colors.Blue;
+        else if (color == Color.yellow)
+            return Colors.Yellow;
+        else if (color == new Color(1.0f, 0.64f, 0.0f)) // Orange
+            return Colors.Orange;
+        else if (color == new Color(0.5f, 0f, 0.5f)) // Purple
+            return Colors.Purple;
+        else // White
+            return Colors.White;
+    }
+
+// Update is called once per frame
+void Update()
     {
         if (started)
         {

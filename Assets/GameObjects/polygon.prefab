@@ -50,7 +50,7 @@ MonoBehaviour:
   - {fileID: 2828688518706668433, guid: d6f7d48398d339e4fa88c84237fe5080, type: 3}
   - {fileID: 6811178578015051201, guid: 7b945e6a2b936454696d068879c4dbd4, type: 3}
   - {fileID: 7759873380678542989, guid: 25fa2b9211c4d79419f8c0576eef5281, type: 3}
-  countNumber: {fileID: 2002266564941493273, guid: 813593958ee44c14bbcaa1403886b066, type: 3}
+  textObj: {fileID: 2002266564941493273, guid: 813593958ee44c14bbcaa1403886b066, type: 3}
   edgesOn: 0
   shakeDetectionThreshold: 0
   minShakeInterval: 0

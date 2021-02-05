@@ -19,7 +19,9 @@ public class ShapeOOB : MonoBehaviour
         Polygon polygon = collision.gameObject.GetComponent<Polygon>();
         if (polygon.edgesOn)
         {
-            polygon.TeleportSound();
+            if (!polygon.popped)
+                polygon.TeleportSound();
+
             collision.gameObject.transform.position = new Vector3(0, 0, 0);
         }
 

@@ -79,28 +79,38 @@ public class FunModeButtonManager : MonoBehaviour
         tempToggles = GameObject.FindGameObjectWithTag("EdgesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            System.Enum.TryParse(i.name, out bool result);
-            if (edges.Equals(result))
+            if (i.name.Equals("On"))
             {
-                i.isOn = true;
+                if (edges)
+                    i.isOn = true;
+                else
+                    i.isOn = false;
             }
-            else
+            else if (i.name.Equals("Off"))
             {
-                i.isOn = false;
+                if (edges)
+                    i.isOn = false;
+                else
+                    i.isOn = true;
             }
         }
 
         tempToggles = GameObject.FindGameObjectWithTag("TiltPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            System.Enum.TryParse(i.name, out bool result);
-            if (tilt.Equals(result))
+            if (i.name.Equals("On"))
             {
-                i.isOn = true;
+                if (tilt)
+                    i.isOn = true;
+                else
+                    i.isOn = false;
             }
-            else
+            else if (i.name.Equals("Off"))
             {
-                i.isOn = false;
+                if (tilt)
+                    i.isOn = false;
+                else
+                    i.isOn = true;
             }
         }
 
@@ -201,7 +211,7 @@ public class FunModeButtonManager : MonoBehaviour
 
         spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, voice, text);
         spawner.GetComponent<Spawner>().started = true;
-        Destroy(GameObject.FindGameObjectWithTag("SettingsPanel"));
+        Destroy(GameObject.FindGameObjectWithTag("SettingsCanvas"));
     }
 
     public void BackButton()

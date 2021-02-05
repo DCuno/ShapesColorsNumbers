@@ -14,7 +14,7 @@ public class Polygon : MonoBehaviour
 
     // Effects
     public GameObject[] popParticles;
-    public GameObject countNumber;
+    public GameObject textObj;
 
     // Game Mode Variables
     private bool tiltOn;
@@ -50,7 +50,7 @@ public class Polygon : MonoBehaviour
     private float normV;
     private float shapeMapSize;
     private GameObject popMapSize;
-    private float numMapSize;
+    private float textMapSize;
 
     // Sound
     private AudioClip[] pops = new AudioClip[3];
@@ -66,15 +66,19 @@ public class Polygon : MonoBehaviour
     // Polygon variables
     public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star }
     public Sprite[] polygonSprites;
-    public Color color;
+    private Polygon.Shape shape;
+    public Spawner.Colors color;
     public bool solid = false;
+    public bool popped = false;
 
-    public void Creation(Shape shape, Color color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
+    public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
     {
         normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
+
         // Maps smallestSizeSlider(Default: 1) through largestSizeslider(Default: 10) to smallestRealSize(Default: 0.1f) through largestRealSize(Default: 0.7f)
         shapeMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
-        numMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (1.0f - 0.3f)) + 0.3f;
+        textMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (1.0f - 0.25f)) + 0.25f;
+
         if (size >= 8)
             popMapSize = popParticles[0];
         else if (size >= 4)
@@ -82,6 +86,8 @@ public class Polygon : MonoBehaviour
         else
             popMapSize = popParticles[2];
 
+        this.shape = shape;
+        this.color = color;
         this.tiltOn = tilt;
         this.edgesOn = edges;
         this.voice = voice;
@@ -125,7 +131,7 @@ public class Polygon : MonoBehaviour
 
         UpdatePolygonCollider2D();
         this.gameObject.transform.localScale = new Vector3(shapeMapSize, shapeMapSize, 0);    
-        _spriteRenderer.color = color;
+        _spriteRenderer.color = unityColor;
 
         // Initial x and y velocities. Randomize if the x velocity is negative or positive.
         float randomX = Random.Range(initXVMin, initXVMax);
@@ -182,12 +188,6 @@ public class Polygon : MonoBehaviour
         teleports[0] = Resources.Load<AudioClip>("Audio/teleport1");
         teleports[1] = Resources.Load<AudioClip>("Audio/teleport2");
         teleports[2] = Resources.Load<AudioClip>("Audio/teleport3");
-}
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
     }
 
     // Update is called once per frame
@@ -202,7 +202,8 @@ public class Polygon : MonoBehaviour
                 _rigidbody2D.gravityScale = gravityScale;
 
                 // Within -0.1f and 0.1f, the shape will slow to a halt instead of floating in zero G.
-                if ((Input.acceleration.x <= gravityStopMargin && Input.acceleration.x >= -gravityStopMargin) && (Input.acceleration.y <= gravityStopMargin && Input.acceleration.y >= -gravityStopMargin))
+                if ((Input.acceleration.x <= gravityStopMargin && Input.acceleration.x >= -gravityStopMargin) 
+                    && (Input.acceleration.y <= gravityStopMargin && Input.acceleration.y >= -gravityStopMargin))
                 {
                     Physics2D.gravity = new Vector2(0f, 0f);
                     //Physics2D.gravity = new Vector2(Mathf.Lerp(Physics2D.gravity.x, 0, gravityLerpTime), Mathf.Lerp(Physics2D.gravity.y, 0, gravityLerpTime));
@@ -257,14 +258,35 @@ public class Polygon : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            popped = true;
             PopSound();
 
 
             GameObject pop = Instantiate(popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-            GameObject num = Instantiate(countNumber, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-            num.transform.localScale = new Vector3(numMapSize, numMapSize, 0);
-            int newCount = ++GetComponentInParent<Spawner>().count;
-            num.GetComponent<TextMeshPro>().text = newCount.ToString();
+
+            if (text == Spawner.Topics.Shapes)
+            {
+                GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+                tempTextObj.transform.localScale = new Vector3(textMapSize, textMapSize, 0);
+                tempTextObj.GetComponent<TextMeshPro>().text = shape.ToString();
+            }
+            else if (text == Spawner.Topics.Colors)
+            {
+                GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+                tempTextObj.transform.localScale = new Vector3(textMapSize, textMapSize, 0);
+                tempTextObj.GetComponent<TextMeshPro>().text = color.ToString();
+            }
+            else if (text == Spawner.Topics.Numbers)
+            {
+                GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+                tempTextObj.transform.localScale = new Vector3(textMapSize, textMapSize, 0);
+                int newCount = ++GetComponentInParent<Spawner>().count;
+                tempTextObj.GetComponent<TextMeshPro>().text = newCount.ToString();
+            }
+            else // Off
+            {
+                // Dance in the emptiness
+            }
 
             print("POP");
             Destroy(this.gameObject);
