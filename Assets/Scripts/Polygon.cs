@@ -50,7 +50,8 @@ public class Polygon : MonoBehaviour
     private float normV;
     private float shapeMapSize;
     private GameObject popMapSize;
-    private float textMapSize;
+    private float numberTextMapSize;
+    private float shapeColorTextMapSize;
 
     // Sound
     private AudioClip[] pops = new AudioClip[3];
@@ -77,7 +78,8 @@ public class Polygon : MonoBehaviour
 
         // Maps smallestSizeSlider(Default: 1) through largestSizeslider(Default: 10) to smallestRealSize(Default: 0.1f) through largestRealSize(Default: 0.7f)
         shapeMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
-        textMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (1.0f - 0.25f)) + 0.25f;
+        numberTextMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (1.0f - 0.35f)) + 0.35f;
+        shapeColorTextMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (0.5f - 0.3f)) + 0.3f;
 
         if (size >= 8)
             popMapSize = popParticles[0];
@@ -267,19 +269,19 @@ public class Polygon : MonoBehaviour
             if (text == Spawner.Topics.Shapes)
             {
                 GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-                tempTextObj.transform.localScale = new Vector3(textMapSize, textMapSize, 0);
+                tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
                 tempTextObj.GetComponent<TextMeshPro>().text = shape.ToString();
             }
             else if (text == Spawner.Topics.Colors)
             {
                 GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-                tempTextObj.transform.localScale = new Vector3(textMapSize, textMapSize, 0);
+                tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
                 tempTextObj.GetComponent<TextMeshPro>().text = color.ToString();
             }
             else if (text == Spawner.Topics.Numbers)
             {
                 GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-                tempTextObj.transform.localScale = new Vector3(textMapSize, textMapSize, 0);
+                tempTextObj.transform.localScale = new Vector3(numberTextMapSize, numberTextMapSize, 0);
                 int newCount = ++GetComponentInParent<Spawner>().count;
                 tempTextObj.GetComponent<TextMeshPro>().text = newCount.ToString();
             }
