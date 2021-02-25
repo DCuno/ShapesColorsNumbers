@@ -163,7 +163,12 @@ public class PolygonLineRenderer : MonoBehaviour
 
         // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider
         Physics2D.IgnoreLayerCollision(3, 3, true);
-        Physics2D.IgnoreCollision(_polyCollider2D, GameObject.FindGameObjectWithTag("edge").GetComponent<EdgeCollider2D>(), true);
+        GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
+        foreach (GameObject edge in edges)
+        {
+            print(edge.name);
+            Physics2D.IgnoreCollision(_polyCollider2D, edge.GetComponent<BoxCollider2D>(), true);
+        }
 
         // Audio
         pop1 = Resources.Load("Audio/pop1") as AudioClip;

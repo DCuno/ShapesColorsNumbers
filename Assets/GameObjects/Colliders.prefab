@@ -150,9 +150,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1341760402793913636}
   - component: {fileID: 1341760402793913642}
+  - component: {fileID: 1341760403249788911}
   m_Layer: 2
   m_Name: Screen Edge
-  m_TagString: edge
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -178,7 +179,7 @@ EdgeCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341760402793913643}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -196,6 +197,21 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
+--- !u!114 &1341760403249788911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1341760402793913643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f596b1502eb1ce4390e8fc3272386c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colThickness: 2
+  zPosition: 0
+  physicsMaterial: {fileID: 0}
 --- !u!1 &1341760403281236100
 GameObject:
   m_ObjectHideFlags: 0

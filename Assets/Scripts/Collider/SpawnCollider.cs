@@ -8,7 +8,11 @@ public class SpawnCollider : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Polygon>().edgesOn)
         {
-            Physics2D.IgnoreCollision(collision, GameObject.FindGameObjectWithTag("edge").GetComponent<EdgeCollider2D>(), false);
+            GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
+            foreach (GameObject edge in edges)
+            {
+                Physics2D.IgnoreCollision(collision, edge.GetComponent<BoxCollider2D>(), false);
+            }
             collision.gameObject.GetComponent<Polygon>().solid = true;
         }
         else
