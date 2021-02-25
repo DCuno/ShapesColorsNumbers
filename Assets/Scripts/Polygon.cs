@@ -179,9 +179,14 @@ public class Polygon : MonoBehaviour
         // rigidbody2D Properties
         _rigidbody2D.angularDrag = 0.5f;
 
-        // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider
+        // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
         Physics2D.IgnoreLayerCollision(3, 3, true);
-        Physics2D.IgnoreCollision(_polyCollider2D, GameObject.FindGameObjectWithTag("edge").GetComponent<EdgeCollider2D>(), true);
+        Physics2D.IgnoreLayerCollision(3, 6, true);
+        GameObject[] screenEdges = GameObject.FindGameObjectsWithTag("edge");
+        foreach (GameObject screenEdge in screenEdges)
+        {
+            Physics2D.IgnoreCollision(_polyCollider2D, screenEdge.GetComponent<BoxCollider2D>(), true);
+        }
 
         // Audio
         pops[0] = Resources.Load<AudioClip>("Audio/pop1");
@@ -270,20 +275,26 @@ public class Polygon : MonoBehaviour
             {
                 GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
                 tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
-                tempTextObj.GetComponent<TextMeshPro>().text = shape.ToString();
+                TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
+                tempTextObjTMP.text = shape.ToString();
+                tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
             }
             else if (text == Spawner.Topics.Colors)
             {
                 GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
                 tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
-                tempTextObj.GetComponent<TextMeshPro>().text = color.ToString();
+                TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
+                tempTextObjTMP.text = color.ToString();
+                tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
             }
             else if (text == Spawner.Topics.Numbers)
             {
                 GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
                 tempTextObj.transform.localScale = new Vector3(numberTextMapSize, numberTextMapSize, 0);
                 int newCount = ++GetComponentInParent<Spawner>().count;
-                tempTextObj.GetComponent<TextMeshPro>().text = newCount.ToString();
+                TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
+                tempTextObjTMP.text = newCount.ToString();
+                tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
             }
             else // Off
             {
