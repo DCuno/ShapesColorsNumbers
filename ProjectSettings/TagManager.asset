@@ -35,6 +35,7 @@ TagManager:
   - number
   - SettingsCanvas
   - text
+  - edgeParent
   layers:
   - Default
   - TransparentFX
