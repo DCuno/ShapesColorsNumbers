@@ -8,10 +8,11 @@ public class ShapeOOB : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Polygon polygon = collision.gameObject.GetComponent<Polygon>();
-        if (polygon.solid && polygon.edgesOn)
+        if (polygon != null && polygon.solid && polygon.edgesOn)
         {
             polygon.TeleportSound();
             collision.gameObject.transform.position = new Vector3(0, 0, 0);
+            return;
         }
     }
 
@@ -42,13 +43,5 @@ public class ShapeOOB : MonoBehaviour
             }
             return;
         }
-
-        // NOT IMPLEMENTATED COMPLETELY. Should shift text to not be out of bounds.
-        // Only for Text objects, that's why the if statement earlier returns if it's a polygon.
-        GameObject textGO = collision.gameObject;
-        GameObject collider = GameObject.FindGameObjectWithTag("OOB");
-        float dist = textGO.transform.position.x - collider.transform.position.x;
-        textGO.transform.position = new Vector2(dist + textGO.transform.position.x, textGO.transform.position.y);
-
     }
 }

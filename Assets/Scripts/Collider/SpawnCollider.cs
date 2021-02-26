@@ -6,7 +6,8 @@ public class SpawnCollider : MonoBehaviour
 {
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<Polygon>().edgesOn)
+        Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+        if (polygon != null && polygon.edgesOn)
         {
             GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
             foreach (GameObject edge in edges)
@@ -15,7 +16,7 @@ public class SpawnCollider : MonoBehaviour
             }
             collision.gameObject.GetComponent<Polygon>().solid = true;
         }
-        else
+        else if (polygon != null && !polygon.edgesOn)
         {
             collision.gameObject.GetComponent<Polygon>().solid = true;
         }

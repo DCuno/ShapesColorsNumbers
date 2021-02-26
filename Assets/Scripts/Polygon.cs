@@ -182,6 +182,7 @@ public class Polygon : MonoBehaviour
         // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
         Physics2D.IgnoreLayerCollision(3, 3, true);
         Physics2D.IgnoreLayerCollision(3, 6, true);
+        Physics2D.IgnoreLayerCollision(6, 2, true); // Pop shapes through text colliders
         GameObject[] screenEdges = GameObject.FindGameObjectsWithTag("edge");
         foreach (GameObject screenEdge in screenEdges)
         {

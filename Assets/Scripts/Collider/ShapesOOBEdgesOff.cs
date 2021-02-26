@@ -4,23 +4,11 @@ using UnityEngine;
 
 public class ShapesOOBEdgesOff : MonoBehaviour
 {
-    /*private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.GetComponent<Polygon>().solid && !collision.gameObject.GetComponent<Polygon>().edgesOn)
-        {
-            float randX = Random.Range(-8.0f, 8.0f);
-            float randY = Random.Range(-15.0f, 15.0f);
-            collision.gameObject.transform.position = new Vector3(randX, randY, 0);
-            // random velocity and direction?
-        }
-    }*/
-
-    // redundant, but just in case
     private void OnTriggerExit2D(Collider2D collision)
     {
         GameObject obj = collision.gameObject;
         Polygon polygon = obj.GetComponent<Polygon>();
-        if (polygon.solid && !polygon.edgesOn)
+        if (polygon != null && polygon.solid && !polygon.edgesOn)
         {
             float randX = Random.Range(-8.0f, 8.0f);
             float randY = Random.Range(-15.0f, 15.0f);

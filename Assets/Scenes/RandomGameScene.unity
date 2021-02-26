@@ -253,6 +253,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1903091025, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1341760402793913643, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1341760402793913643, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
+      propertyPath: m_TagString
+      value: edgeParent
+      objectReference: {fileID: 0}
     - target: {fileID: 1341760403281236100, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
       propertyPath: m_Name
       value: Colliders
