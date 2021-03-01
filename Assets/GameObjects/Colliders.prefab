@@ -81,7 +81,7 @@ GameObject:
   - component: {fileID: 1903091026}
   - component: {fileID: 1903091027}
   - component: {fileID: 1903091028}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: ShapeOOB
   m_TagString: OOB
   m_Icon: {fileID: 0}
@@ -151,9 +151,9 @@ GameObject:
   - component: {fileID: 1341760402793913636}
   - component: {fileID: 1341760402793913642}
   - component: {fileID: 1341760403249788911}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Screen Edge
-  m_TagString: Untagged
+  m_TagString: edgeParent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

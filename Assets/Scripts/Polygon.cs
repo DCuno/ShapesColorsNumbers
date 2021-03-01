@@ -35,7 +35,7 @@ public class Polygon : MonoBehaviour
     private float timeSinceLastShake;
 
     // Physics
-    private float initYV = 9.0f;
+    private float initYV = 10.0f;
     private float initXVMin = 0.06f;
     private float initXVMax = 2.0f;
     private float initAngV = 300.0f;
@@ -277,7 +277,9 @@ public class Polygon : MonoBehaviour
                 GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
                 tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
                 TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
+                tempTextObjTMP.fontSize = 40;
                 tempTextObjTMP.text = shape.ToString();
+                tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
                 tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
             }
             else if (text == Spawner.Topics.Colors)
@@ -285,7 +287,9 @@ public class Polygon : MonoBehaviour
                 GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
                 tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
                 TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
+                tempTextObjTMP.fontSize = 40;
                 tempTextObjTMP.text = color.ToString();
+                tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
                 tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
             }
             else if (text == Spawner.Topics.Numbers)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class FunModeButtonManager : MonoBehaviour
@@ -35,8 +36,6 @@ public class FunModeButtonManager : MonoBehaviour
 
         Toggle[] tempToggles;
 
-        //shapes = new List<Polygon.Shape>();
-
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
@@ -50,9 +49,6 @@ public class FunModeButtonManager : MonoBehaviour
                 i.isOn = false;
             }
         }
-
-        /*if (shapes.Count == 0)
-            shapes.Add(Polygon.Shape.Circle);*/
 
         tempToggles = GameObject.FindGameObjectWithTag("ColorsPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
@@ -216,12 +212,85 @@ public class FunModeButtonManager : MonoBehaviour
 
     public void BackButton()
     {
-
+        SceneManager.LoadScene(sceneName: "TitleScene");
     }
 
     public void RandomButton()
     {
+        Toggle[] tempToggles;
 
+        tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            System.Enum.TryParse(i.name, out Polygon.Shape result);
+            if (Random.Range(0, 2) == 0)
+            {
+                i.isOn = true;
+            }
+            else
+            {
+                i.isOn = false;
+            }
+        }
+
+        tempToggles = GameObject.FindGameObjectWithTag("ColorsPanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            System.Enum.TryParse(i.name, out Spawner.Colors result);
+            if (Random.Range(0, 2) == 0)
+            {
+                i.isOn = true;
+            }
+            else
+            {
+                i.isOn = false;
+            }
+        }
+
+        Slider sizeSlider = GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>();
+        Slider amountSlider = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>();
+        sizeSlider.value = Random.Range(1,11);
+
+        if (sizeSlider.value >= 9)
+        {
+            amountSlider.value = Random.Range(1,5);
+            amountSlider.maxValue = 4;
+        }
+        else if (sizeSlider.value >= 7)
+        {
+            amountSlider.value = Random.Range(1,9);
+            amountSlider.maxValue = 8;
+        }
+        else if (sizeSlider.value >= 6)
+        {
+            amountSlider.value = Random.Range(1,11);
+            amountSlider.maxValue = 10;
+        }
+        else if (sizeSlider.value >= 5)
+        {
+            amountSlider.value = Random.Range(1,15);
+            amountSlider.maxValue = 14;
+        }
+        else if (sizeSlider.value >= 4)
+        {
+            amountSlider.value = Random.Range(1,25);
+            amountSlider.maxValue = 24;
+        }
+        else if (sizeSlider.value >= 3)
+        {
+            amountSlider.value = Random.Range(1,36);
+            amountSlider.maxValue = 35;
+        }
+        else if (sizeSlider.value >= 2)
+        {
+            amountSlider.value = Random.Range(1,51);
+            amountSlider.maxValue = 50;
+        }
+        else if (sizeSlider.value >= 1)
+        {
+            amountSlider.value = Random.Range(1,101);
+            amountSlider.maxValue = 100;
+        }
     }
 
     public void SizeSliderAmount()

@@ -87,10 +87,10 @@ public class Spawner : MonoBehaviour
 
         return i switch
         {
-            0 => Color.red,
-            1 => Color.green,
-            2 => Color.blue,
-            3 => Color.yellow,
+            0 => new Color(0.784f, 0.216f, 0.216f), // Red
+            1 => new Color(1.0f, 0.831f, 0.0f), // Green
+            2 => new Color(0f, 0.33f, 0.831f), // Blue
+            3 => new Color(1.0f, 0.8f, 0.0f), // Yellow
             4 => new Color(1.0f, 0.64f, 0.0f),// Orange
             5 => new Color(0.5f, 0f, 0.5f),// Purple
             _ => Color.white,
@@ -101,12 +101,12 @@ public class Spawner : MonoBehaviour
     public static Color RandomColorSelect(List<Colors> arr) =>
         arr[Random.Range(0, arr.Count)] switch
         {
-            Colors.Red => Color.red,
-            Colors.Green => Color.green,
-            Colors.Blue => Color.blue,
-            Colors.Yellow => Color.yellow,
-            Colors.Orange => new Color(1.0f, 0.64f, 0.0f), // Orange
-            Colors.Purple => new Color(0.5f, 0f, 0.5f), // Purple
+            Colors.Red => new Color(0.784f, 0.216f, 0.216f), // Red
+            Colors.Green => new Color(1.0f, 0.831f, 0.0f), // Green
+            Colors.Blue => new Color(0f, 0.33f, 0.831f), // Blue
+            Colors.Yellow => new Color(1.0f, 0.8f, 0.0f), // Yellow
+            Colors.Orange => new Color(1.0f, 0.4f, 0.0f), // Orange
+            Colors.Purple => new Color(0.443f, 0.216f, 0.784f), // Purple
             Colors.White => Color.white,
             _ => Color.white,
         };
