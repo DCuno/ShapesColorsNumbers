@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  rotationAmount: 0.25
+  rotationAmount: 0.1
   fadeTime: 2
   fadeRate: 1
 --- !u!114 &7808243277416370374

@@ -8,7 +8,7 @@ public class Number : MonoBehaviour
     //adjust this to change speed
     public float speed = 5f;
     //adjust this to change how high it goes
-    public float rotationAmount = 0.25f;
+    public float rotationAmount = 0.1f;
     // adjust this to change when the number begins to fade away
     public float fadeTime = 2f;
     // adjust this to change the rate at which the number fades away

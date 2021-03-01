@@ -253,18 +253,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1903091025, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1341760402793913643, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1341760402793913643, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
-      propertyPath: m_TagString
-      value: edgeParent
-      objectReference: {fileID: 0}
     - target: {fileID: 1341760403281236100, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
       propertyPath: m_Name
       value: Colliders
@@ -384,10 +372,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3643401440641471904, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_MatchWidthOrHeight
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3643401440641471906, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -479,50 +463,6 @@ PrefabInstance:
     - target: {fileID: 3643401440641471910, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
       propertyPath: m_Name
       value: SettingsCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401440641471910, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401440837268413, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401440837268413, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401440837268413, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401440850075285, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401440850075285, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401442270167972, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401442270167972, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401442694674971, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401442694674971, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3643401442694674971, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
