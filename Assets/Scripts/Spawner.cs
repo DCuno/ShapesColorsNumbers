@@ -159,8 +159,8 @@ public class Spawner : MonoBehaviour
             return Colors.White;
     }
 
-// Update is called once per frame
-void Update()
+    // Update is called once per frame
+    void Update()
     {
         if (started)
         {
@@ -179,7 +179,27 @@ void Update()
                     spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
                 }
             }
+
+            // Check if Back was pressed this frame
+            if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().name == "FunModeGameScene")
+            {
+                ResetFunMode();
+            }
         }
 
+    }
+
+    private void DeleteAllChildren()
+    {
+        foreach (Transform child in transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+    }
+
+    private void ResetFunMode()
+    {
+        DeleteAllChildren();
+        spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
     }
 }
