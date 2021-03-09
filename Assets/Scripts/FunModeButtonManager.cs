@@ -17,6 +17,7 @@ public class FunModeButtonManager : MonoBehaviour
     bool tilt;
     Spawner.Topics voice;
     Spawner.Topics text;
+    bool changingVoiceTextToggles = false;
 
     private void Awake()
     {
@@ -361,5 +362,74 @@ public class FunModeButtonManager : MonoBehaviour
     {
         Slider amountSlider = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponent<Slider>();
         GameObject.FindGameObjectWithTag("AmountSliderCounter").GetComponent<TextMeshProUGUI>().text = amountSlider.value.ToString();
+    }
+
+    public void VoiceToggles(Toggle toggle)
+    {
+        // Keep the onValueChanged from infinite looping
+        if (!changingVoiceTextToggles)
+        {
+            changingVoiceTextToggles = true;
+
+            // Don't change anything if the TextToggle "Off" is on.
+            if (GameObject.FindGameObjectWithTag("TextOffToggle").GetComponent<Toggle>().isOn)
+            {
+                changingVoiceTextToggles = false;
+                return;
+            }
+
+            Toggle[] textToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
+            System.Enum.TryParse(toggle.name, out Spawner.Topics voiceTopic);
+
+            // Change the TextToggles to match the VoiceToggles
+            foreach (Toggle i in textToggles)
+            {
+                System.Enum.TryParse(i.name, out Spawner.Topics result);
+                if (voiceTopic.Equals(result))
+                {
+                    i.isOn = true;
+                }
+                else
+                {
+                    i.isOn = false;
+                }
+            }
+            changingVoiceTextToggles = false;
+        }
+    }
+
+    public void TextToggles(Toggle toggle)
+    {
+        // Keep the onValueChanged from infinite looping
+        if (!changingVoiceTextToggles)
+        {
+            changingVoiceTextToggles = true;
+
+            // Don't change anything if the VoiceToggle "Off" is on.
+            if (GameObject.FindGameObjectWithTag("VoiceOffToggle").GetComponent<Toggle>().isOn)
+            {
+                changingVoiceTextToggles = false;
+                return;
+            }
+
+            Toggle[] voiceToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+            System.Enum.TryParse(toggle.name, out Spawner.Topics textTopic);
+
+            // Change the VoiceToggles to match the TextToggles
+            foreach (Toggle i in voiceToggles)
+            {
+                System.Enum.TryParse(i.name, out Spawner.Topics result);
+                if (textTopic.Equals(result))
+                {
+                    i.isOn = true;
+                }
+                else
+                {
+                    i.isOn = false;
+                }
+            }
+
+            changingVoiceTextToggles = false;
+        }
     }
 }
