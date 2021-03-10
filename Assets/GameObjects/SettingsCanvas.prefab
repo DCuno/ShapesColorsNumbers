@@ -65,9 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '14
-
-'
+  m_text: 14
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d4c9f52a57894304d83c1dffa643a224, type: 2}
   m_sharedMaterial: {fileID: -9151967357880112727, guid: d4c9f52a57894304d83c1dffa643a224, type: 2}
@@ -2718,7 +2716,19 @@ MonoBehaviour:
   m_Group: {fileID: 3643401442673032723}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3643401442281258544}
+        m_TargetAssemblyTypeName: FunModeButtonManager, Assembly-CSharp
+        m_MethodName: VoiceToggles
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3643401441059150546}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!1 &3643401441087997440
 GameObject:
@@ -2903,7 +2913,7 @@ GameObject:
   - component: {fileID: 3643401441113540795}
   m_Layer: 5
   m_Name: Off
-  m_TagString: Untagged
+  m_TagString: TextOffToggle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4297,7 +4307,19 @@ MonoBehaviour:
   m_Group: {fileID: 3643401442673032723}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3643401442281258544}
+        m_TargetAssemblyTypeName: FunModeButtonManager, Assembly-CSharp
+        m_MethodName: VoiceToggles
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3643401441360838809}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!1 &3643401441370564851
 GameObject:
@@ -6206,7 +6228,19 @@ MonoBehaviour:
   m_Group: {fileID: 3643401442673032723}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3643401442281258544}
+        m_TargetAssemblyTypeName: FunModeButtonManager, Assembly-CSharp
+        m_MethodName: VoiceToggles
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3643401441758714524}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!1 &3643401441767708469
 GameObject:
@@ -6291,7 +6325,19 @@ MonoBehaviour:
   m_Group: {fileID: 3643401441977840041}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3643401442281258544}
+        m_TargetAssemblyTypeName: FunModeButtonManager, Assembly-CSharp
+        m_MethodName: TextToggles
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3643401441767708471}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!1 &3643401441803999942
 GameObject:
@@ -7168,7 +7214,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!1 &3643401441977840047
 GameObject:
   m_ObjectHideFlags: 0
@@ -7845,9 +7891,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '5
-
-'
+  m_text: 5
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d4c9f52a57894304d83c1dffa643a224, type: 2}
   m_sharedMaterial: {fileID: -9151967357880112727, guid: d4c9f52a57894304d83c1dffa643a224, type: 2}
@@ -9010,7 +9054,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!1 &3643401442375448813
 GameObject:
   m_ObjectHideFlags: 0
@@ -9023,7 +9067,7 @@ GameObject:
   - component: {fileID: 3643401442375448815}
   m_Layer: 5
   m_Name: Off
-  m_TagString: Untagged
+  m_TagString: VoiceOffToggle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9300,7 +9344,19 @@ MonoBehaviour:
   m_Group: {fileID: 3643401441977840041}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3643401442281258544}
+        m_TargetAssemblyTypeName: FunModeButtonManager, Assembly-CSharp
+        m_MethodName: TextToggles
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3643401442392911907}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!1 &3643401442418179543
 GameObject:
@@ -10017,7 +10073,19 @@ MonoBehaviour:
   m_Group: {fileID: 3643401441977840041}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3643401442281258544}
+        m_TargetAssemblyTypeName: FunModeButtonManager, Assembly-CSharp
+        m_MethodName: TextToggles
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3643401442668370021}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
   m_IsOn: 0
 --- !u!1 &3643401442673032721
 GameObject:
