@@ -11,6 +11,7 @@ public class Polygon : MonoBehaviour
     private PolygonCollider2D _polyCollider2D;
     private SpriteRenderer _spriteRenderer;
     private AudioSource _audioSource;
+    private Audio _audio;
 
     // Effects
     public GameObject[] popParticles;
@@ -52,13 +53,6 @@ public class Polygon : MonoBehaviour
     private GameObject popMapSize;
     private float numberTextMapSize;
     private float shapeColorTextMapSize;
-
-    // Sound
-    private AudioClip[] pops = new AudioClip[3];
-    private AudioClip[] teleports = new AudioClip[3];
-    private AudioClip[] voices_shapes = new AudioClip[6];
-    private AudioClip[] voices_colors = new AudioClip[7];
-    private AudioClip[] voices_numbers = new AudioClip[100];
 
     // Collider updater variables
     private List<Vector2> points = new List<Vector2>();
@@ -173,6 +167,7 @@ public class Polygon : MonoBehaviour
         _polyCollider2D = GetComponent<PolygonCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _audioSource = FindObjectOfType<AudioSource>();
+        _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
         gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
@@ -190,31 +185,6 @@ public class Polygon : MonoBehaviour
         foreach (GameObject screenEdge in screenEdges)
         {
             Physics2D.IgnoreCollision(_polyCollider2D, screenEdge.GetComponent<BoxCollider2D>(), true);
-        }
-
-        // Audio
-        pops[0] = Resources.Load<AudioClip>("Audio/pop1");
-        pops[1] = Resources.Load<AudioClip>("Audio/pop2");
-        pops[2] = Resources.Load<AudioClip>("Audio/pop3");
-        teleports[0] = Resources.Load<AudioClip>("Audio/teleport1");
-        teleports[1] = Resources.Load<AudioClip>("Audio/teleport2");
-        teleports[2] = Resources.Load<AudioClip>("Audio/teleport3");
-        voices_shapes[0] = Resources.Load<AudioClip>("Audio/shapes_triangle");
-        voices_shapes[1] = Resources.Load<AudioClip>("Audio/shapes_square");
-        voices_shapes[2] = Resources.Load<AudioClip>("Audio/shapes_pentagon");
-        voices_shapes[3] = Resources.Load<AudioClip>("Audio/shapes_hexagon");
-        voices_shapes[4] = Resources.Load<AudioClip>("Audio/shapes_circle");
-        voices_shapes[5] = Resources.Load<AudioClip>("Audio/shapes_star");
-        voices_colors[0] = Resources.Load<AudioClip>("Audio/colors_red");
-        voices_colors[1] = Resources.Load<AudioClip>("Audio/colors_orange");
-        voices_colors[2] = Resources.Load<AudioClip>("Audio/colors_yellow");
-        voices_colors[3] = Resources.Load<AudioClip>("Audio/colors_green");
-        voices_colors[4] = Resources.Load<AudioClip>("Audio/colors_blue");
-        voices_colors[5] = Resources.Load<AudioClip>("Audio/colors_purple");
-        voices_colors[6] = Resources.Load<AudioClip>("Audio/colors_white");
-        for (int i = 0; i < 100; i++)
-        {
-            voices_numbers[i] = Resources.Load<AudioClip>("Audio/numbers_" + i+1);
         }
     }
 
@@ -276,7 +246,7 @@ public class Polygon : MonoBehaviour
 
                 _rigidbody2D.velocity = randomVelocity;
                 _rigidbody2D.angularVelocity = randomAngularVelocity;
-                Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+                //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
             }
         }
     }
@@ -346,29 +316,33 @@ public class Polygon : MonoBehaviour
 
     public void TeleportSound()
     {
-        int x = Random.Range(0, teleports.Length);
-        _audioSource.PlayOneShot(teleports[x]);
+        int x = Random.Range(0, _audio.teleports.Length);
+        _audioSource.PlayOneShot(_audio.teleports[x]);
     }
 
     public void PopSound()
     {
-        int x = Random.Range(0, pops.Length);
-        _audioSource.PlayOneShot(pops[x]);
+        int x = Random.Range(0, _audio.pops.Length);
+        _audioSource.PlayOneShot(_audio.pops[x]);
     }
 
     public void VoiceSound()
     {
         if (voice == Spawner.Topics.Shapes)
         {
-            _audioSource.PlayOneShot(voices_shapes[(int)shape]);
+            _audioSource.PlayOneShot(_audio.voices_shapes[(int)shape]);
         }
         else if (voice == Spawner.Topics.Colors)
         {
-            _audioSource.PlayOneShot(voices_colors[(int)color]);
+            _audioSource.PlayOneShot(_audio.voices_colors[(int)color]);
         }
-        else if (voice == Spawner.Topics.Colors)
+        else if (voice == Spawner.Topics.Numbers)
         {
-            _audioSource.PlayOneShot(voices_numbers[GetComponentInParent<Spawner>().count]);
+            // Need to increment the polygon count if the pop text isn't on. Because it increments in pop text otherwise.
+            if (text != Spawner.Topics.Numbers)
+                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().count++]);
+            else
+                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().count]);
         }
         else
         {

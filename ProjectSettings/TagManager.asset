@@ -38,6 +38,7 @@ TagManager:
   - edgeParent
   - VoiceOffToggle
   - TextOffToggle
+  - Audio
   layers:
   - Default
   - TransparentFX
