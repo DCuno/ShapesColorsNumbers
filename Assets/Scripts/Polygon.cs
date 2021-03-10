@@ -56,6 +56,9 @@ public class Polygon : MonoBehaviour
     // Sound
     private AudioClip[] pops = new AudioClip[3];
     private AudioClip[] teleports = new AudioClip[3];
+    private AudioClip[] voices_shapes = new AudioClip[6];
+    private AudioClip[] voices_colors = new AudioClip[7];
+    private AudioClip[] voices_numbers = new AudioClip[100];
 
     // Collider updater variables
     private List<Vector2> points = new List<Vector2>();
@@ -196,6 +199,23 @@ public class Polygon : MonoBehaviour
         teleports[0] = Resources.Load<AudioClip>("Audio/teleport1");
         teleports[1] = Resources.Load<AudioClip>("Audio/teleport2");
         teleports[2] = Resources.Load<AudioClip>("Audio/teleport3");
+        voices_shapes[0] = Resources.Load<AudioClip>("Audio/shapes_triangle");
+        voices_shapes[1] = Resources.Load<AudioClip>("Audio/shapes_square");
+        voices_shapes[2] = Resources.Load<AudioClip>("Audio/shapes_pentagon");
+        voices_shapes[3] = Resources.Load<AudioClip>("Audio/shapes_hexagon");
+        voices_shapes[4] = Resources.Load<AudioClip>("Audio/shapes_circle");
+        voices_shapes[5] = Resources.Load<AudioClip>("Audio/shapes_star");
+        voices_colors[0] = Resources.Load<AudioClip>("Audio/colors_red");
+        voices_colors[1] = Resources.Load<AudioClip>("Audio/colors_orange");
+        voices_colors[2] = Resources.Load<AudioClip>("Audio/colors_yellow");
+        voices_colors[3] = Resources.Load<AudioClip>("Audio/colors_green");
+        voices_colors[4] = Resources.Load<AudioClip>("Audio/colors_blue");
+        voices_colors[5] = Resources.Load<AudioClip>("Audio/colors_purple");
+        voices_colors[6] = Resources.Load<AudioClip>("Audio/colors_white");
+        for (int i = 0; i < 100; i++)
+        {
+            voices_numbers[i] = Resources.Load<AudioClip>("Audio/numbers_" + i+1);
+        }
     }
 
     // Update is called once per frame
@@ -268,45 +288,9 @@ public class Polygon : MonoBehaviour
         {
             popped = true;
             PopSound();
-
-
+            VoiceSound();
             GameObject pop = Instantiate(popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-
-            if (text == Spawner.Topics.Shapes)
-            {
-                GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-                tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
-                TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
-                tempTextObjTMP.fontSize = 40;
-                tempTextObjTMP.text = shape.ToString();
-                tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
-                tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
-            }
-            else if (text == Spawner.Topics.Colors)
-            {
-                GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-                tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
-                TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
-                tempTextObjTMP.fontSize = 40;
-                tempTextObjTMP.text = color.ToString();
-                tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
-                tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
-            }
-            else if (text == Spawner.Topics.Numbers)
-            {
-                GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-                tempTextObj.transform.localScale = new Vector3(numberTextMapSize, numberTextMapSize, 0);
-                int newCount = ++GetComponentInParent<Spawner>().count;
-                TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
-                tempTextObjTMP.text = newCount.ToString();
-                tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
-            }
-            else // Off
-            {
-                // Dance in the emptiness
-            }
-
-            print("POP");
+            SpawnPopText();
             Destroy(this.gameObject);
         }
     }
@@ -370,6 +354,63 @@ public class Polygon : MonoBehaviour
     {
         int x = Random.Range(0, pops.Length);
         _audioSource.PlayOneShot(pops[x]);
+    }
+
+    public void VoiceSound()
+    {
+        if (voice == Spawner.Topics.Shapes)
+        {
+            _audioSource.PlayOneShot(voices_shapes[(int)shape]);
+        }
+        else if (voice == Spawner.Topics.Colors)
+        {
+            _audioSource.PlayOneShot(voices_colors[(int)color]);
+        }
+        else if (voice == Spawner.Topics.Colors)
+        {
+            _audioSource.PlayOneShot(voices_numbers[GetComponentInParent<Spawner>().count]);
+        }
+        else
+        {
+            // Who goes there?!
+        }
+    }
+
+    public void SpawnPopText()
+    {
+        if (text == Spawner.Topics.Shapes)
+        {
+            GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
+            TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
+            tempTextObjTMP.fontSize = 40;
+            tempTextObjTMP.text = shape.ToString();
+            tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
+            tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
+        }
+        else if (text == Spawner.Topics.Colors)
+        {
+            GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
+            TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
+            tempTextObjTMP.fontSize = 40;
+            tempTextObjTMP.text = color.ToString();
+            tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
+            tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
+        }
+        else if (text == Spawner.Topics.Numbers)
+        {
+            GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            tempTextObj.transform.localScale = new Vector3(numberTextMapSize, numberTextMapSize, 0);
+            int newCount = ++GetComponentInParent<Spawner>().count;
+            TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
+            tempTextObjTMP.text = newCount.ToString();
+            tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
+        }
+        else // Off
+        {
+            // Dance in the emptiness
+        }
     }
 }
 
