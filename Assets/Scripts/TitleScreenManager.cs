@@ -5,7 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreenManager : MonoBehaviour
 {
-    public void StartButton()
+    public void LessonsButton()
+    {
+        SceneManager.LoadScene(sceneName: "LessonsScene");
+    }
+
+    public void FunModeButton()
     {
         SceneManager.LoadScene(sceneName: "FunModeGameScene");
     }
