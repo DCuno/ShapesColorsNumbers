@@ -39,6 +39,32 @@ TagManager:
   - VoiceOffToggle
   - TextOffToggle
   - Audio
+  - ShapesGroup
+  - TriangleShape
+  - SquareShape
+  - PentagonShape
+  - HexagonShape
+  - CircleShape
+  - StarShape
+  - ColorsGroup
+  - RedColor
+  - OrangeColor
+  - YellowColor
+  - GreenColor
+  - BlueColor
+  - PurpleColor
+  - NumbersGroup
+  - 1Number
+  - 2Number
+  - 3Number
+  - 4Number
+  - 5Number
+  - 6Number
+  - 7Number
+  - 8Number
+  - 9Number
+  - 10Number
+  - TitleGroup
   layers:
   - Default
   - TransparentFX

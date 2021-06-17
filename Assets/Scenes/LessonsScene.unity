@@ -123,6 +123,49 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &910769500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 910769502}
+  - component: {fileID: 910769501}
+  m_Layer: 0
+  m_Name: LessonsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &910769501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910769500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 182a203522dec7d498a778883baa8dbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &910769502
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910769500}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.4726791, y: -1.0657005, z: -86.43616}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &550948101413871971
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -313,9 +356,85 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 13303085862212835, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 7Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 154448018373539006, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: ColorsGroup
+      objectReference: {fileID: 0}
+    - target: {fileID: 939085400044136012, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 2Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333427231698813634, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 8Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 1481439267607237589, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: PentagonShape
+      objectReference: {fileID: 0}
+    - target: {fileID: 1754213774981156530, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: OrangeColor
+      objectReference: {fileID: 0}
+    - target: {fileID: 2031109075494665381, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: NumbersGroup
+      objectReference: {fileID: 0}
+    - target: {fileID: 2451974480626049336, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: RedColor
+      objectReference: {fileID: 0}
+    - target: {fileID: 3245703599546058197, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: GreenColor
+      objectReference: {fileID: 0}
+    - target: {fileID: 3318591995491451307, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 5Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 3360904555751337720, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 10Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 3613605683151623640, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: BlueColor
+      objectReference: {fileID: 0}
+    - target: {fileID: 5023013229240147317, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: HexagonShape
+      objectReference: {fileID: 0}
+    - target: {fileID: 5038495963587887276, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: StarShape
+      objectReference: {fileID: 0}
+    - target: {fileID: 5514391849059229714, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: YellowColor
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533000864971083023, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 3Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138071879583378579, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: CircleShape
+      objectReference: {fileID: 0}
+    - target: {fileID: 6214099500467158970, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: ShapesGroup
+      objectReference: {fileID: 0}
     - target: {fileID: 6401770736361738796, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
       propertyPath: m_Name
       value: Title
+      objectReference: {fileID: 0}
+    - target: {fileID: 6401770736361738796, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: TitleGroup
       objectReference: {fileID: 0}
     - target: {fileID: 6401770736361738799, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
       propertyPath: m_RootOrder
@@ -360,6 +479,34 @@ PrefabInstance:
     - target: {fileID: 6401770736361738799, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6401770738123901565, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: TriangleShape
+      objectReference: {fileID: 0}
+    - target: {fileID: 6416747630305797968, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 9Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 6565039607264215468, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 4Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572575554757145163, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 1Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 6607618292915334758, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: 6Number
+      objectReference: {fileID: 0}
+    - target: {fileID: 6921316100665068443, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: SquareShape
+      objectReference: {fileID: 0}
+    - target: {fileID: 8744252137712835112, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
+      propertyPath: m_TagString
+      value: PurpleColor
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a976a79269346704abb8990e8a7ea14d, type: 3}
