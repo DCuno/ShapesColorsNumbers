@@ -166,17 +166,34 @@ public class Spawner : MonoBehaviour
         {
             finishedCheck += Time.deltaTime;
 
-            // After 1 second of game running time, start checking if all the shapes are gone.
-            if (finishedCheck >= 1.0f)
+            if (SceneManager.GetActiveScene().name == "FunModeGameScene")
             {
-                // Shapes have been popped, pull down menu.
-                if (this.transform.childCount == 0)
+                // After 1 second of game running time, start checking if all the shapes are gone.
+                if (finishedCheck >= 1.0f)
                 {
-                    finished = true;
-                    started = false;
-                    finishedCheck = 0f;
-                    spawnedSettingsCanvas = Instantiate(settingsCanvas);
-                    spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
+                    // Shapes have been popped, pull down menu.
+                    if (this.transform.childCount == 0)
+                    {
+                        finished = true;
+                        started = false;
+                        finishedCheck = 0f;
+                        spawnedSettingsCanvas = Instantiate(settingsCanvas);
+                        spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
+                    }
+                }
+            }
+            else if (SceneManager.GetActiveScene().name == "LessonsScene")
+            {
+                // After 1 second of game running time, start checking if all the shapes are gone.
+                if (finishedCheck >= 1.0f)
+                {
+                    // Shapes have been popped, pull down menu.
+                    if (this.transform.childCount == 0)
+                    {
+                        finished = true;
+                        started = false;
+                        finishedCheck = 0f;
+                    }
                 }
             }
 
@@ -184,6 +201,10 @@ public class Spawner : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().name == "FunModeGameScene")
             {
                 ResetFunMode();
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().name == "LessonsScene")
+            {
+                LeaveLessons();
             }
         }
 
@@ -201,5 +222,11 @@ public class Spawner : MonoBehaviour
     {
         DeleteAllChildren();
         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
+    }
+
+    private void LeaveLessons()
+    {
+        DeleteAllChildren();
+        SceneManager.LoadScene(sceneName: "TitleScene");
     }
 }
