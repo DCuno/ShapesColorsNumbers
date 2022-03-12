@@ -464,6 +464,46 @@ PrefabInstance:
       propertyPath: m_Name
       value: SettingsCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3643401440837268413, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401440837268413, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401440837268413, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401440850075285, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401440850075285, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401442270167972, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401442270167972, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401442694674971, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401442694674971, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3643401442694674971, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 736b0c7bdc3b37940840a09d7706d14b, type: 3}
 --- !u!1001 &8443039609225203797
