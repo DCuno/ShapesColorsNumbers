@@ -65,6 +65,8 @@ TagManager:
   - 9Number
   - 10Number
   - TitleGroup
+  - SettingsCanvasScroll
+  - ScrollRect
   layers:
   - Default
   - TransparentFX

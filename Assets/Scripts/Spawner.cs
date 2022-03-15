@@ -44,19 +44,22 @@ public class Spawner : MonoBehaviour
 
     IEnumerator Spawn(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
     {
+        currentSettings = new settingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
         shapesList.Clear();
         count = 0;
         finished = false;
         for (int i = 0; i < amount; i++)
         {
-            yield return new WaitForSeconds(0.05f);
-            shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-            Color tmpColor = RandomColorSelect(colors);
-            shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), tmpColor, UnityColorToEnumColor(tmpColor), size, edges, tilt, voice, text);
-            yield return new WaitForSeconds(0.08f);
+            if (!finished)
+            {
+                yield return new WaitForSeconds(0.05f);
+                shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
+                Color tmpColor = RandomColorSelect(colors);
+                shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), tmpColor, UnityColorToEnumColor(tmpColor), size, edges, tilt, voice, text);
+                yield return new WaitForSeconds(0.08f);
+            }
         }
 
-        currentSettings = new settingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
     }
 
     // Updates in the editor
@@ -166,7 +169,7 @@ public class Spawner : MonoBehaviour
         {
             finishedCheck += Time.deltaTime;
 
-            if (SceneManager.GetActiveScene().name == "FunModeGameScene")
+            if (SceneManager.GetActiveScene().name == "FunModeGameScene2")
             {
                 // After 1 second of game running time, start checking if all the shapes are gone.
                 if (finishedCheck >= 1.0f)
@@ -198,7 +201,7 @@ public class Spawner : MonoBehaviour
             }
 
             // Check if Back was pressed this frame
-            if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().name == "FunModeGameScene")
+            if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().name == "FunModeGameScene2")
             {
                 ResetFunMode();
             }
@@ -220,12 +223,14 @@ public class Spawner : MonoBehaviour
 
     private void ResetFunMode()
     {
+        finished = true;
         DeleteAllChildren();
         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
     }
 
     private void LeaveLessons()
     {
+        finished = true;
         DeleteAllChildren();
         SceneManager.LoadScene(sceneName: "TitleScene");
     }
