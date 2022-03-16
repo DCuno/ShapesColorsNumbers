@@ -12,6 +12,6 @@ public class TitleScreenManager : MonoBehaviour
 
     public void FunModeButton()
     {
-        SceneManager.LoadScene(sceneName: "FunModeGameScene");
+        SceneManager.LoadScene(sceneName: "FunModeGameScene2");
     }
 }
