@@ -508,6 +508,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6311703856885127113, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6271750479153636528, guid: b0f785688264e5243807e4cea39405de, type: 3}
+    - target: {fileID: 6311703856885127113, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BackButton
+      objectReference: {fileID: 0}
     - target: {fileID: 6311703857006921384, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
       propertyPath: m_MatchWidthOrHeight
       value: 0.5
