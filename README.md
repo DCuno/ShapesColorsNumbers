@@ -12,3 +12,6 @@ There will be two game modes:
    <h3>Sandbox Mode</h3>
   <p>This mode allows the player to choose what shapes and colors the shapes will be, the size of the shapes, and the amount of the shapes. There will be a random button that will randomize these selections for the player just for fun. </p>
   <p>There will be an edgeless mode where the shapes will loop from the other side endlessly. There will be a tilt mode where the player can tilt the tablet or phone and the shapes will slide whichever direction they tilt in. Lastly, the player will be able to select what voice or text will play/show upon popping the shape. </p>
+
+### Android APK
+<p>https://github.com/DCuno/ShapesColorsNumbers/blob/main/ShapesColorsNumbers.apk</p>
