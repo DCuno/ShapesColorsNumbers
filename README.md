@@ -18,3 +18,13 @@ There will be two game modes:
 
 ### Video Demonstration
 https://youtu.be/beKu6gRWhfk
+
+### Pictures
+![image](https://user-images.githubusercontent.com/47536227/160147098-dec3f99c-2b70-43b3-b965-fb7b382f3d9a.png)
+![image](https://user-images.githubusercontent.com/47536227/160147174-ab3d83f2-311d-41dd-9a24-6e525e48ebb9.png)
+![image](https://user-images.githubusercontent.com/47536227/160147368-c48ce5dd-fa67-491d-8ddb-8ede12201cd7.png)
+![image](https://user-images.githubusercontent.com/47536227/160147422-5c6fe383-f1eb-43f2-8866-35c0bef23539.png)
+![image](https://user-images.githubusercontent.com/47536227/160147462-e3a96f42-a9b7-4eef-8e98-59ca384e5329.png)
+![image](https://user-images.githubusercontent.com/47536227/160147502-1761da52-a49f-4c91-977e-607fe11e1d2d.png)
+![image](https://user-images.githubusercontent.com/47536227/160147651-bd427a56-4c93-4e57-9c67-17e21f9a4f3a.png)
+
