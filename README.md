@@ -17,4 +17,4 @@ There will be two game modes:
 <p>https://github.com/DCuno/ShapesColorsNumbers/blob/main/ShapesColorsNumbers.apk</p>
 
 ### Video Demonstration
-<iframe width="560" height="315" src="https://www.youtube.com/embed/beKu6gRWhfk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://www.youtube.com/embed/beKu6gRWhfk
