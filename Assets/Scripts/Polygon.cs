@@ -166,7 +166,7 @@ public class Polygon : MonoBehaviour
     {
         _polyCollider2D = GetComponent<PolygonCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _audioSource = FindObjectOfType<AudioSource>();
+        _audioSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
