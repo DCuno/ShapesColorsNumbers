@@ -1669,7 +1669,7 @@ GameObject:
   - component: {fileID: 1944064022}
   - component: {fileID: 1944064021}
   m_Layer: 0
-  m_Name: ButtonManager
+  m_Name: TitleScreenManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1687,6 +1687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4592f2f0400cae340aabc361c2a39cb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mixer: {fileID: 24100000, guid: 1cc973fe64e8b4c4d91c1790a33b3fc8, type: 2}
 --- !u!4 &1944064022
 Transform:
   m_ObjectHideFlags: 0

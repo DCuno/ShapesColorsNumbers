@@ -24,6 +24,13 @@ public class FunModeButtonManager : MonoBehaviour
 
     }
 
+    void Update()
+    {
+        // Back key leave to Title
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SceneManager.LoadScene(sceneName: "TitleScene");
+    }
+
     public void FunModeButtonManagerConstructor(Spawner.settingsStruct settingsStruct)
     {
         shapes = settingsStruct.shapes;
