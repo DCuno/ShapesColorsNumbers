@@ -9,8 +9,10 @@ public class LessonsManager : MonoBehaviour
     List<GameObject> ColorsList;
     List<GameObject> NumbersList;
     GameObject spawner;
-    private static AudioSource _audioSource;
-    private static Audio _audio;
+    private static AudioSource _SFXSource;
+    private static AudioSource _MusicSource;
+    private static Audio _SFXAudio;
+    private static Audio _MusicAudio;
 
     void Start()
     {
@@ -19,8 +21,8 @@ public class LessonsManager : MonoBehaviour
         NumbersList = new List<GameObject>(10);
         spawner = GameObject.FindGameObjectWithTag("spawner");
 
-        _audioSource = FindObjectOfType<AudioSource>();
-        _audio = _audioSource.GetComponent<Audio>();
+        _SFXSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
+        _SFXAudio = _SFXSource.GetComponent<Audio>();
 
         ShapesList.Add(GameObject.FindGameObjectWithTag("TriangleShape"));
         ShapesList.Add(GameObject.FindGameObjectWithTag("SquareShape"));
@@ -162,15 +164,15 @@ public class LessonsManager : MonoBehaviour
     {
         if (_voice == Spawner.Topics.Shapes)
         {
-            _audioSource.PlayOneShot(_audio.voices_shapes[(int)_shape]);
+            _SFXSource.PlayOneShot(_SFXAudio.voices_shapes[(int)_shape]);
         }
         else if (_voice == Spawner.Topics.Colors)
         {
-            _audioSource.PlayOneShot(_audio.voices_colors[(int)_color]);
+            _SFXSource.PlayOneShot(_SFXAudio.voices_colors[(int)_color]);
         }
         else if (_voice == Spawner.Topics.Numbers)
         {
-            _audioSource.PlayOneShot(_audio.voices_numbers[_number]);
+            _SFXSource.PlayOneShot(_SFXAudio.voices_numbers[_number]);
         }
         else
         {

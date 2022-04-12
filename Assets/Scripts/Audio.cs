@@ -10,10 +10,29 @@ public class Audio : MonoBehaviour
     public AudioClip[] voices_shapes = new AudioClip[6];
     public AudioClip[] voices_colors = new AudioClip[7];
     public AudioClip[] voices_numbers = new AudioClip[100];
+    public AudioClip[] music = new AudioClip[1];
+
+    private static Audio[] instance = new Audio[2];
 
     private void Awake()
     {
+        if (instance[0] == null)
+        {
+            instance[0] = this;
+            DontDestroyOnLoad(instance[0]);
+        }
+        else if (instance[1] == null)
+        {
+            instance[1] = this;
+            DontDestroyOnLoad(instance[1]);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         // Loading Audio
+        music[0] = Resources.Load<AudioClip>("Audio/Music/princess-15181");
         pops[0] = Resources.Load<AudioClip>("Audio/pop1");
         pops[1] = Resources.Load<AudioClip>("Audio/pop2");
         pops[2] = Resources.Load<AudioClip>("Audio/pop3");

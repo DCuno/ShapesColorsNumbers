@@ -67,6 +67,12 @@ TagManager:
   - TitleGroup
   - SettingsCanvasScroll
   - ScrollRect
+  - SoundEffectsSlider
+  - MusicSlider
+  - SoundEffectsSliderCounter
+  - MusicSliderCounter
+  - SFXSource
+  - MusicSource
   layers:
   - Default
   - TransparentFX
