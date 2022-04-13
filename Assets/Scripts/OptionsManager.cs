@@ -18,16 +18,55 @@ public class OptionsManager : MonoBehaviour
     [Range(0, 1)] public float DefaultSliderPercentage = 0.31f;
     float curMusicSliderVal;
     float curSFXSliderVal;
+
+    private void Awake()
+    {
+        if (_musicSlider == null)
+        {
+            _musicSlider = GameObject.FindGameObjectWithTag("MusicSlider").GetComponent<Slider>();
+        }
+
+        if (_soundEffectsSlider == null)
+        {
+            _soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
+        }
+
+        if (_musicSliderCounter == null)
+        {
+            _musicSliderCounter = GameObject.FindGameObjectWithTag("MusicSliderCounter").GetComponent<TextMeshProUGUI>();
+        }
+
+        if (_SFXSliderCounter == null)
+        {
+            _SFXSliderCounter = GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>();
+        }
+
+        if (_mixer == null)
+        {
+            _mixer = GameObject.FindGameObjectWithTag("MusicSource").GetComponent<AudioSource>().outputAudioMixerGroup.audioMixer;
+        }
+
+        LoadFromPrefs();
+
+        curMusicSliderVal = _musicSlider.value;
+        curSFXSliderVal = _soundEffectsSlider.value;
+
+        SoundEffectsSlider();
+        MusicSlider();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         /*_soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
         _musicSlider = GameObject.FindGameObjectWithTag("MusicSlider").GetComponent<Slider>();*/
 
+        /*
         _musicSlider.value = PlayerPrefs.GetFloat("Music", _musicSlider.value);
         _soundEffectsSlider.value = PlayerPrefs.GetFloat("SFX", _soundEffectsSlider.value);
         curMusicSliderVal = _musicSlider.value;
         curSFXSliderVal = _soundEffectsSlider.value;
+        //*/
     }
 
     // Update is called once per frame
@@ -36,6 +75,7 @@ public class OptionsManager : MonoBehaviour
         if (curMusicSliderVal != _musicSlider.value)
         {
             StartCoroutine(SetMixerFloat("Music", SliderToDecibelMusic(_musicSlider.value)));
+            curMusicSliderVal = _musicSlider.value;
             /*_mixer.SetFloat("Music", (float)_musicSlider.value);
             PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);*/
         }
@@ -43,13 +83,34 @@ public class OptionsManager : MonoBehaviour
         if (curSFXSliderVal != _soundEffectsSlider.value)
         {
             StartCoroutine(SetMixerFloat("SFX", SliderToDecibelSFX(_soundEffectsSlider.value)));
+            curSFXSliderVal = _soundEffectsSlider.value;
             /*_mixer.SetFloat("Music", (float)_musicSlider.value);
             PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);*/
         }
     }
 
+    private void LoadFromPrefs()
+    {
+        _musicSlider?.SetValueWithoutNotify(PlayerPrefs.GetFloat("Music"));
+        _soundEffectsSlider?.SetValueWithoutNotify(PlayerPrefs.GetFloat("SFX"));
+    }
+
+    private void SaveToPrefs()
+    {
+        if (_musicSlider)
+            PlayerPrefs.SetFloat("Music", _musicSlider.value);
+        else
+            Debug.LogError("No music slider to get value from.");
+
+        if (_soundEffectsSlider)
+            PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
+        else
+            Debug.LogError("No sound effect slider to get value from.");
+    }
+
     public void BackButton()
     {
+        SaveToPrefs();
         SceneManager.LoadScene(sceneName: "TitleScene");
     }
 
