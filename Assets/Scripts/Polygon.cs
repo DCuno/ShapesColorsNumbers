@@ -229,6 +229,7 @@ public class Polygon : MonoBehaviour
                     if (Input.acceleration.sqrMagnitude >= sqrShakeDetectionThreshold
                            && Time.unscaledTime >= timeSinceLastShake + minShakeInterval)
                     {
+
                         _rigidbody2D.AddForce(Input.acceleration * shakeForceScale, ForceMode2D.Impulse);
                         timeSinceLastShake = Time.unscaledTime;
                     }
