@@ -124,6 +124,7 @@ MonoBehaviour:
   m_SourceFontFile: {fileID: 0}
   m_AtlasPopulationMode: 0
   m_FaceInfo:
+    m_FaceIndex: 0
     m_FamilyName: Odin Rounded
     m_StyleName: Bold
     m_PointSize: 77
@@ -1877,6 +1878,7 @@ MonoBehaviour:
   - {fileID: 522689506764343684}
   m_AtlasTextureIndex: 0
   m_IsMultiAtlasTexturesEnabled: 0
+  m_ClearDynamicDataOnBuild: 0
   m_UsedGlyphRects:
   - m_X: 0
     m_Y: 0

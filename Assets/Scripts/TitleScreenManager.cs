@@ -17,7 +17,36 @@ public class TitleScreenManager : MonoBehaviour
 
     public void LessonsButton()
     {
+        SceneManager.LoadScene(sceneName: "LessonsSelectionScene");
+    }
+
+    public void AllButton()
+    {
+        PlayerPrefs.SetString("Chapter", "All");
         SceneManager.LoadScene(sceneName: "LessonsScene");
+    }
+
+    public void ShapesButton()
+    {
+        PlayerPrefs.SetString("Chapter", "Shapes");
+        SceneManager.LoadScene(sceneName: "LessonsScene");
+    }
+
+    public void ColorsButton()
+    {
+        PlayerPrefs.SetString("Chapter", "Colors");
+        SceneManager.LoadScene(sceneName: "LessonsScene");
+    }
+
+    public void NumbersButton()
+    {
+        PlayerPrefs.SetString("Chapter", "Numbers");
+        SceneManager.LoadScene(sceneName: "LessonsScene");
+    }
+
+    public void LessonsBackButton()
+    {
+        SceneManager.LoadScene(sceneName: "TitleScene");
     }
 
     public void FunModeButton()

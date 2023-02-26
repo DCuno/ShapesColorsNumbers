@@ -8,10 +8,12 @@ public class ShapeOOB : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+        Rigidbody2D rigidbody2D = collision.gameObject.GetComponent<Polygon>().GetComponent<Rigidbody2D>();
+
         if (polygon != null && polygon.solid && polygon.edgesOn)
         {
             polygon.TeleportSound();
-            collision.gameObject.transform.position = new Vector3(0, 0, 0);
+            rigidbody2D.position = Vector2.zero;
             return;
         }
     }
@@ -19,13 +21,14 @@ public class ShapeOOB : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+        Rigidbody2D rigidbody2D = collision.gameObject.GetComponent<Polygon>().GetComponent<Rigidbody2D>();
 
         if (polygon != null && polygon.edgesOn)
         {
             if (!polygon.popped)
                 polygon.TeleportSound();
 
-            collision.gameObject.transform.position = new Vector3(0, 0, 0);
+            rigidbody2D.position = Vector2.zero;
             return;
         }
         else if (polygon != null && !polygon.edgesOn)
@@ -34,12 +37,12 @@ public class ShapeOOB : MonoBehaviour
 
             if (curPos.x > 5.0f || curPos.x < -5.0f)
             {
-                collision.gameObject.transform.position = new Vector3(-curPos.x, curPos.y, curPos.z);
+                rigidbody2D.position = new Vector2(-curPos.x, curPos.y);
             }
 
             if (curPos.y > 10.0f || curPos.y < -10.0f)
             {
-                collision.gameObject.transform.position = new Vector3(curPos.x, -curPos.y, curPos.z);
+                rigidbody2D.position = new Vector2(curPos.x, -curPos.y);
             }
             return;
         }
