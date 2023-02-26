@@ -36,6 +36,7 @@ public class Polygon : MonoBehaviour
     private float timeSinceLastShake;
 
     // Physics
+    public float flingCoefficient = 4f;
     private float initYV = 10.0f;
     private float initXVMin = 0.06f;
     private float initXVMax = 2.0f;
@@ -44,8 +45,8 @@ public class Polygon : MonoBehaviour
     private float pushVMax = 8.0f;
     private float pushAngV = 300.0f;
     private float slowestV = 0.05f;
-    private float maxVx = 15.0f;
-    private float maxVy = 15.0f;
+    private float maxVx = 20.0f;
+    private float maxVy = 20.0f;
     private float maxGravity = 1.5f;
     private float smallestSizeSlider = 1;
     private float largestSizeSlider = 10;
@@ -56,6 +57,9 @@ public class Polygon : MonoBehaviour
     private GameObject popMapSize;
     private float numberTextMapSize;
     private float shapeColorTextMapSize;
+    public bool _dragged;
+    private float downClickTime;
+    private float ClickDeltaTime = 0.2F;
 
     // Collider updater variables
     private List<Vector2> points = new List<Vector2>();
@@ -72,6 +76,10 @@ public class Polygon : MonoBehaviour
     public bool solid = false;
     public bool popped = false;
 
+    //Debug
+    public GameObject startObj;
+    public GameObject endObj;
+    
     public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
     {
         normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
@@ -194,6 +202,8 @@ public class Polygon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        PolygonVelocityLimiter();
+
         if (tiltOn)
         {
             gravityWaitTimer += Time.deltaTime;
@@ -224,15 +234,22 @@ public class Polygon : MonoBehaviour
                 {
                     GravityLimiter();
                     //PolygonShakeImpulse();
-                    PolygonVelocityLimiter();
                 }
             }
         }
         else
         {
-            // Push slow shapes to speed them back up
-            if (_rigidbody2D.velocity.x <= slowestV * normV && _rigidbody2D.velocity.x >= -slowestV * normV 
-                || _rigidbody2D.velocity.y <= slowestV * normV && _rigidbody2D.velocity.y >= -slowestV * normV)
+            PushSlowShapes();            
+        }
+    }
+    
+    // Shapes slow down and stop eventually. This keeps them always moving.
+    private void PushSlowShapes()
+    {
+        if (!_dragged)
+        {
+            if (_rigidbody2D.velocity.x <= slowestV * normV && _rigidbody2D.velocity.x >= -slowestV * normV
+                    || _rigidbody2D.velocity.y <= slowestV * normV && _rigidbody2D.velocity.y >= -slowestV * normV)
             {
                 float randomAngularVelocity = Random.Range(-pushAngV * normV, pushAngV * normV);
                 Vector2 randomVelocity = new Vector2(Random.Range(pushVMin * normV, pushVMax * normV), Random.Range(pushVMin * normV, pushVMax * normV));
@@ -244,35 +261,52 @@ public class Polygon : MonoBehaviour
         }
     }
 
+    private Vector3 mOffset;
+    private float mZCoord;
+    public float mouseSpeed;
+    public float mouseXNorm;
+    public float mouseYNorm;
+    public Vector3 mouseStartPosition;
+    public Vector3 mouseEndPosition;
+
     // Shape pop
-    void OnMouseOver()
+    private void OnMouseOver()
     {
-        StartCoroutine(TapHoldCheck());
-    }
-
-    // Check if holding or tapping
-    IEnumerator TapHoldCheck()
-    {
-        if (Input.GetMouseButtonUp(0))
-        {
-            popped = true;
-            PopSound();
-            VoiceSound();
-            GameObject pop = Instantiate(popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-            SpawnPopText();
-            Destroy(this.gameObject);
-        }
-
-        if (Input.GetMouseButton(0))
+        //TapHoldCheck();
+        /*if (Input.GetMouseButton(0))
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             _rigidbody2D.position = mousePosition;
-        }
+            _rigidbody2D.velocity = Vector2.zero;
+            _rigidbody2D.angularVelocity = 0;
+        }*/
 
-        yield return new WaitForSeconds(0.01f);
+    }
 
-        // Tap pop
-        if (Input.GetMouseButtonDown(0))
+    private void OnMouseDown()
+    {
+        downClickTime = Time.time;
+
+        //firstPos = this.transform.position;
+
+        mZCoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
+        mOffset = gameObject.transform.position - GetMouseAsWorldPoint();
+        mouseStartPosition = Input.mousePosition;
+        _rigidbody2D.velocity = Vector2.zero;
+        _dragged = true;
+    }
+
+    void OnMouseDrag()
+    {
+        transform.position = GetMouseAsWorldPoint() + mOffset;
+        mouseStartPosition = Input.mousePosition;
+        _rigidbody2D.velocity = Vector2.zero;
+        _dragged = true;
+    }
+
+    void OnMouseUp()
+    {
+        if (Time.time - downClickTime <= ClickDeltaTime)
         {
             popped = true;
             PopSound();
@@ -280,7 +314,22 @@ public class Polygon : MonoBehaviour
             GameObject pop = Instantiate(popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             SpawnPopText();
             Destroy(this.gameObject);
+
+            return;
         }
+
+        _dragged = false;
+        mouseEndPosition = Input.mousePosition;
+        Vector3 mouseVelocity = (mouseEndPosition - mouseStartPosition) / downClickTime;
+
+        _rigidbody2D.velocity = mouseVelocity * (Mathf.Exp(mouseVelocity.magnitude) * flingCoefficient);
+    }
+
+    private Vector3 GetMouseAsWorldPoint()
+    {
+        Vector3 mousePoint = Input.mousePosition;
+        mousePoint.z = mZCoord;
+        return Camera.main.ScreenToWorldPoint(mousePoint);
     }
 
     // Collider method
@@ -360,17 +409,11 @@ public class Polygon : MonoBehaviour
     // Extension that limits polygon velocity to maximum
     public void PolygonVelocityLimiter()
     {
-        if (_rigidbody2D.velocity.x > maxVx)
-            _rigidbody2D.velocity = new Vector2(maxVx, _rigidbody2D.velocity.y);
+        if (_rigidbody2D.velocity.x > maxVx || _rigidbody2D.velocity.x < -maxVx)
+            _rigidbody2D.velocity = new Vector2(maxVx * Mathf.Sign(_rigidbody2D.velocity.x), _rigidbody2D.velocity.y);
 
-        if (_rigidbody2D.velocity.x < -maxVx)
-            _rigidbody2D.velocity = new Vector2(-maxVx, _rigidbody2D.velocity.y);
-
-        if (_rigidbody2D.velocity.y > maxVy)
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, maxVy);
-
-        if (_rigidbody2D.velocity.y < -maxVy)
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, -maxVy);
+        if (_rigidbody2D.velocity.y > maxVy || _rigidbody2D.velocity.y < -maxVy)
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, maxVy * Mathf.Sign(_rigidbody2D.velocity.y));
     }
 
     // Extension that adds impulse on device shake
