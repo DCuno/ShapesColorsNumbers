@@ -334,7 +334,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Fun Mode
+  m_text: Sandbox
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1d138d9dd7433ea4fb1c54c42541b54f, type: 2}
   m_sharedMaterial: {fileID: 4521688486846391866, guid: 1d138d9dd7433ea4fb1c54c42541b54f, type: 2}
