@@ -54,6 +54,7 @@ MonoBehaviour:
   edgesOn: 0
   shakeDetectionThreshold: 0
   minShakeInterval: 0
+  flingCoefficient: 4
   _dragged: 0
   polygonSprites:
   - {fileID: 21300000, guid: c0c99ac45ee3968489beac279114099e, type: 3}
