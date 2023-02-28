@@ -13,7 +13,7 @@ public class ShapeOOB : MonoBehaviour
         if (polygon != null && polygon.solid && polygon.edgesOn)
         {
             polygon.TeleportSound();
-            rigidbody2D.position = Vector2.zero;
+            gameObject.transform.position = Vector2.zero;
             return;
         }
     }
@@ -28,7 +28,7 @@ public class ShapeOOB : MonoBehaviour
             if (!polygon.popped)
                 polygon.TeleportSound();
 
-            rigidbody2D.position = Vector2.zero;
+            gameObject.transform.position = Vector2.zero;
             return;
         }
         else if (polygon != null && !polygon.edgesOn)
@@ -37,12 +37,12 @@ public class ShapeOOB : MonoBehaviour
 
             if (curPos.x > 5.0f || curPos.x < -5.0f)
             {
-                rigidbody2D.position = new Vector2(-curPos.x, curPos.y);
+                gameObject.transform.position = new Vector2(-curPos.x, curPos.y);
             }
 
             if (curPos.y > 10.0f || curPos.y < -10.0f)
             {
-                rigidbody2D.position = new Vector2(curPos.x, -curPos.y);
+                gameObject.transform.position = new Vector2(curPos.x, -curPos.y);
             }
             return;
         }

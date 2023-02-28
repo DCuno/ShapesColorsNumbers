@@ -75,6 +75,7 @@ public class Polygon : MonoBehaviour
     public Spawner.Colors color;
     public bool solid = false;
     public bool popped = false;
+    [SerializeField] public int ID;
 
     //Debug
     public GameObject startObj;
@@ -181,6 +182,9 @@ public class Polygon : MonoBehaviour
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
+        this.ID = PlayerPrefs.GetInt("PolygonID") + 1;
+        PlayerPrefs.SetInt("PolygonID", this.ID);
+
         gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
         sqrShakeDetectionThreshold = Mathf.Pow(shakeDetectionThreshold, 2);
@@ -241,6 +245,14 @@ public class Polygon : MonoBehaviour
         {
             PushSlowShapes();            
         }
+
+        if (gameObject.transform.position.x > (Screen.width/Camera.current.orthographicSize) * 1.5 || gameObject.transform.position.y > (Screen.height/Camera.current.orthographicSize) * 1.5
+                || gameObject.transform.position.x < -(Screen.width / Camera.current.orthographicSize) * 1.5 || gameObject.transform.position.y < -(Screen.height / Camera.current.orthographicSize) * 1.5)
+        {
+            TeleportSound();
+            gameObject.transform.position = Vector2.zero;
+        }
+
     }
     
     // Shapes slow down and stop eventually. This keeps them always moving.
@@ -269,21 +281,36 @@ public class Polygon : MonoBehaviour
     public Vector3 mouseStartPosition;
     public Vector3 mouseEndPosition;
 
+    private void Pop()
+    {
+        popped = true;
+        PopSound();
+        VoiceSound();
+        Instantiate(popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+        SpawnPopText();
+        Destroy(this.gameObject);
+    }
+
     // Shape pop
     private void OnMouseOver()
     {
-        //TapHoldCheck();
-        /*if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            _rigidbody2D.position = mousePosition;
-            _rigidbody2D.velocity = Vector2.zero;
-            _rigidbody2D.angularVelocity = 0;
-        }*/
+            Pop();
 
+            //TapHoldCheck();
+            /*if (Input.GetMouseButton(0))
+            {
+                Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                _rigidbody2D.position = mousePosition;
+                _rigidbody2D.velocity = Vector2.zero;
+                _rigidbody2D.angularVelocity = 0;
+            }*/
+
+        }
     }
 
-    private void OnMouseDown()
+    /*private void OnMouseDown()
     {
         downClickTime = Time.time;
 
@@ -323,7 +350,7 @@ public class Polygon : MonoBehaviour
         Vector3 mouseVelocity = (mouseEndPosition - mouseStartPosition) / downClickTime;
 
         _rigidbody2D.velocity = mouseVelocity * (Mathf.Exp(mouseVelocity.magnitude) * flingCoefficient);
-    }
+    }*/
 
     private Vector3 GetMouseAsWorldPoint()
     {
