@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/TitleScene.unity
     guid: d3fd2492254f0ee42b4abe78c7d323b1
   - enabled: 1
-    path: Assets/Scenes/LessonsSelectionScene.unity
-    guid: 4ecef3a69291ee648bf2b57a7d2a5c51
-  - enabled: 1
     path: Assets/Scenes/LessonsScene.unity
     guid: ced51a0d39fd0bc48ab2b5b79a377a75
   - enabled: 1
