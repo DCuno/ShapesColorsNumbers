@@ -46,7 +46,7 @@ public class OptionsManager : MonoBehaviour
             _mixer = GameObject.FindGameObjectWithTag("MusicSource").GetComponent<AudioSource>().outputAudioMixerGroup.audioMixer;
         }
 
-        LoadFromPrefs();
+        //LoadFromPrefs();
 
         curMusicSliderVal = _musicSlider.value;
         curSFXSliderVal = _soundEffectsSlider.value;
@@ -151,7 +151,7 @@ public class OptionsManager : MonoBehaviour
     {
         switch (value)
         {
-            case 0:
+/*            case 0:
                 return -80f;
             case 1:
                 return -10f;
@@ -173,6 +173,31 @@ public class OptionsManager : MonoBehaviour
                 return -2f;
             case 10:
                 return 0f;
+            default:
+                return -6f;*/
+
+            case 0:
+                return -80f;
+            case 1:
+                return -18f;
+            case 2:
+                return -15f;
+            case 3:
+                return -12f;
+            case 4:
+                return -9f;
+            case 5:
+                return -6f;
+            case 6:
+                return -3f;
+            case 7:
+                return 0f;
+            case 8:
+                return 3f;
+            case 9:
+                return 6f;
+            case 10:
+                return 9f;
             default:
                 return -6f;
         }
