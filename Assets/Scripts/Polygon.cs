@@ -246,8 +246,8 @@ public class Polygon : MonoBehaviour
             PushSlowShapes();            
         }
 
-        if (gameObject.transform.position.x > (Screen.width/Camera.current.orthographicSize) * 1.5 || gameObject.transform.position.y > (Screen.height/Camera.current.orthographicSize) * 1.5
-                || gameObject.transform.position.x < -(Screen.width / Camera.current.orthographicSize) * 1.5 || gameObject.transform.position.y < -(Screen.height / Camera.current.orthographicSize) * 1.5)
+        if (gameObject.transform.position.x > (Screen.width/Camera.main.orthographicSize) * 1.5 || gameObject.transform.position.y > (Screen.height/Camera.main.orthographicSize) * 1.5
+                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) * 1.5 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) * 1.5)
         {
             TeleportSound();
             gameObject.transform.position = Vector2.zero;
