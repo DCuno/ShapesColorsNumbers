@@ -246,8 +246,21 @@ public class Polygon : MonoBehaviour
             PushSlowShapes();            
         }
 
-        if (gameObject.transform.position.x > (Screen.width/Camera.main.orthographicSize) * 1.5 || gameObject.transform.position.y > (Screen.height/Camera.main.orthographicSize) * 1.5
-                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) * 1.5 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) * 1.5)
+        if (!edgesOn)
+        {
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 4 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 4)
+            {
+                gameObject.transform.position = new Vector2(-gameObject.transform.position.x, gameObject.transform.position.y);
+            }
+
+            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 4 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 4)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, -gameObject.transform.position.y);
+            }
+        }
+
+        if (gameObject.transform.position.x > (Screen.width/Camera.main.orthographicSize) || gameObject.transform.position.y > (Screen.height/Camera.main.orthographicSize)
+                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize))
         {
             TeleportSound();
             gameObject.transform.position = Vector2.zero;

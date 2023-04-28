@@ -253,6 +253,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1244634460, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 68.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 1244634460, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 68.82
+      objectReference: {fileID: 0}
     - target: {fileID: 1341760403281236100, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
       propertyPath: m_Name
       value: Colliders
