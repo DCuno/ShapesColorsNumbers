@@ -66,6 +66,7 @@ MonoBehaviour:
   color: 0
   solid: 0
   popped: 0
+  ID: 0
   startObj: {fileID: 4723275800577982847, guid: 16fecc700f4d8004bb1eacb62a06f066, type: 3}
   endObj: {fileID: 4723275800577982847, guid: 16fecc700f4d8004bb1eacb62a06f066, type: 3}
   mouseSpeed: 0
@@ -92,7 +93,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 3cf157793bf141d45b03c1c3b9a87952, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -112,7 +113,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: c0530922c76ede0489b7a4a844359ecd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
