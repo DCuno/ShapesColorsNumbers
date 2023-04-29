@@ -58,7 +58,9 @@ public class Spawner : MonoBehaviour
                 yield return new WaitForSeconds(0.05f);
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
                 Color tmpColor = RandomColorSelect(colors);
+                shapesList[i].GetComponent<SpriteRenderer>().sortingOrder = (i * 2) + 1;
                 shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), tmpColor, UnityColorToEnumColor(tmpColor), size, edges, tilt, voice, text);
+                // shapesList[i].transform.position = new Vector3(shapesList[i].transform.position.x, shapesList[i].transform.position.y, (float)(-1 - i));
                 yield return new WaitForSeconds(0.08f);
             }
         }
