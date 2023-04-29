@@ -218,16 +218,24 @@ public class Polygon : MonoBehaviour
         shadow_sr.sprite = _spriteRenderer.sprite;
         shadow_sr.color = Color.black;
         shadow_sr.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-        shadow_sr.sortingOrder = _spriteRenderer.sortingOrder - 1;
+        // shadow_sr.sortingOrder = _spriteRenderer.sortingOrder - 1;
+        shadow_sr.sortingOrder = 0;
 
-        // Scale slightly bigger than original
-        _shadowObj.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
-        _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + 0.5f);
+        // Scale slightly bigger than original (for outline)
+        // _shadowObj.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+        // _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + 0.5f);
+
+        // For actual shadows
+        _shadowObj.transform.localScale = new Vector3(1f, 1f, 1f);
+        _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x+0.2f, this.gameObject.transform.position.y+0.2f, this.gameObject.transform.position.z + 0.5f);
     }
 
     // Update is called once per frame
     void Update()
     {
+        var dist = 0.5f;
+        _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x + dist, this.gameObject.transform.position.y + dist, this.gameObject.transform.position.z + 0.5f);
+
         PolygonVelocityLimiter();
 
         if (tiltOn)
