@@ -80,6 +80,8 @@ public class Polygon : MonoBehaviour
     //Debug
     public GameObject startObj;
     public GameObject endObj;
+
+    private GameObject _shadowObj;
     
     public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
     {
@@ -160,6 +162,8 @@ public class Polygon : MonoBehaviour
             _rigidbody2D.velocity = new Vector2(randomX * -1, randomY);
             _rigidbody2D.angularVelocity = randomAngularVel;
         }
+
+        CreateShadow();
     }
 
     private bool _simulating;
@@ -201,6 +205,24 @@ public class Polygon : MonoBehaviour
         {
             Physics2D.IgnoreCollision(_polyCollider2D, screenEdge.GetComponent<BoxCollider2D>(), true);
         }
+    }
+
+    public void CreateShadow()
+    {
+        // Create an empty gameobject to be the shadow
+        _shadowObj = new GameObject("Shadow");
+        _shadowObj.transform.parent = this.gameObject.transform;
+
+        // Attach a sprite renderer component and set its color to black
+        SpriteRenderer shadow_sr = _shadowObj.AddComponent<SpriteRenderer>();
+        shadow_sr.sprite = _spriteRenderer.sprite;
+        shadow_sr.color = Color.black;
+        shadow_sr.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+        shadow_sr.sortingOrder = _spriteRenderer.sortingOrder - 1;
+
+        // Scale slightly bigger than original
+        _shadowObj.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+        _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z + 0.5f);
     }
 
     // Update is called once per frame
