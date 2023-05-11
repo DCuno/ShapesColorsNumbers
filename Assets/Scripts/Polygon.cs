@@ -68,7 +68,7 @@ public class Polygon : MonoBehaviour
     public bool IsPopped = false;
     [SerializeField] public int ID;
     private GameObject _shadowObj;
-    
+  
     public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
     {
         _normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
@@ -168,7 +168,7 @@ public class Polygon : MonoBehaviour
     {
         _polyCollider2D = GetComponent<PolygonCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _audioSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
+        _audioSource = FindObjectOfType<AudioSource>();
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
