@@ -8,7 +8,7 @@ public class ShapeOOB : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Polygon polygon = collision.gameObject.GetComponent<Polygon>();
-        if (polygon != null && polygon.solid && polygon.edgesOn)
+        if (polygon != null && polygon.IsSolid && polygon.EdgesOn)
         {
             polygon.TeleportSound();
             collision.gameObject.transform.position = new Vector3(0, 0, 0);

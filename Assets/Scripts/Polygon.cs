@@ -86,7 +86,7 @@ public class Polygon : MonoBehaviour
             _popMapSize = PopParticles[2];
 
         _shape = shape;
-        this.Color = color;
+        Color = color;
         _tiltOn = tilt;
         EdgesOn = edges;
         _voice = voice;
