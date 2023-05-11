@@ -18,9 +18,10 @@ public class ShapeOOB : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+        /*Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+        Rigidbody2D rigidbody2D = collision.gameObject.GetComponent<Polygon>().GetComponent<Rigidbody2D>();
 
-        if (polygon != null && polygon.edgesOn)
+        if (polygon != null && polygon.solid && polygon.edgesOn)
         {
             if (!polygon.popped)
                 polygon.TeleportSound();
@@ -28,20 +29,20 @@ public class ShapeOOB : MonoBehaviour
             collision.gameObject.transform.position = new Vector3(0, 0, 0);
             return;
         }
-        else if (polygon != null && !polygon.edgesOn)
+        else if (polygon != null && polygon.solid && !polygon.edgesOn)
         {
             Vector3 curPos = collision.gameObject.transform.position;
 
-            if (curPos.x > 5.0f || curPos.x < -5.0f)
+            if (curPos.x > (Screen.width / Camera.main.orthographicSize) / 4 || curPos.x < -(Screen.width / Camera.main.orthographicSize) / 4)
             {
                 collision.gameObject.transform.position = new Vector3(-curPos.x, curPos.y, curPos.z);
             }
 
-            if (curPos.y > 10.0f || curPos.y < -10.0f)
+            if (curPos.y > (Screen.height / Camera.main.orthographicSize) / 4 || curPos.y < -(Screen.height / Camera.main.orthographicSize) / 4)
             {
                 collision.gameObject.transform.position = new Vector3(curPos.x, -curPos.y, curPos.z);
             }
             return;
-        }
+        }*/
     }
 }
