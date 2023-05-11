@@ -127,7 +127,7 @@ public class LessonsManager : MonoBehaviour
             idx++;
         }
 
-        SceneManager.LoadScene(sceneName: "TitleScene");
+        SceneManager.LoadScene(sceneName: "LessonsSelectionScene");
         yield return null;
     }
 

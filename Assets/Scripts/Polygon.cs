@@ -14,128 +14,128 @@ public class Polygon : MonoBehaviour
     private Audio _audio;
 
     // Effects
-    public GameObject[] popParticles;
-    public GameObject textObj;
+    public GameObject[] PopParticles;
+    public GameObject TextObj;
 
     // Game Mode Variables
-    private bool tiltOn;
-    public bool edgesOn;
-    private Spawner.Topics voice;
-    private Spawner.Topics text;
-    private float gravityScale = 30f;
-    private float gravityLerpTimer = 0.0f;
-    private float gravityLerpTimeTotal = 500.0f;
-    private float lerpPercent;
-    private float gravityStopMargin = 0.05f;
-    private PhysicsMaterial2D gravityOnMaterial;
-    private PhysicsMaterial2D gravityOffMaterial;
-    private float shakeForceScale = 1f;
-    public float shakeDetectionThreshold;
-    public float minShakeInterval;
-    private float sqrShakeDetectionThreshold;
-    private float timeSinceLastShake;
+    private bool _tiltOn;
+    public bool EdgesOn;
+    private Spawner.Topics _voice;
+    private Spawner.Topics _text;
+    static private float s_gravityScale = 30f;
+    static private float s_gravityLerpTimer = 0.0f;
+    static private float s_gravityLerpTimeTotal = 500.0f;
+    private float _lerpPercent;
+    static private float s_gravityStopMargin = 0.05f;
+    private PhysicsMaterial2D _gravityOnMaterial;
+    private PhysicsMaterial2D _gravityOffMaterial;
 
     // Physics
-    private float initYV = 10.0f;
-    private float initXVMin = 0.06f;
-    private float initXVMax = 2.0f;
-    private float initAngV = 300.0f;
-    private float pushVMin = 5.0f;
-    private float pushVMax = 8.0f;
-    private float pushAngV = 300.0f;
-    private float slowestV = 0.05f;
-    private float smallestSizeSlider = 1;
-    private float largestSizeSlider = 10;
-    private float smallestRealSize = 0.1f;
-    private float largestRealSize = 0.7f;
-    private float normV;
-    private float shapeMapSize;
-    private GameObject popMapSize;
-    private float numberTextMapSize;
-    private float shapeColorTextMapSize;
+    private float _initYV = 10.0f;
+    static private float s_initXVMin = 0.06f;
+    static private float s_initXVMax = 2.0f;
+    static private float s_initAngV = 300.0f;
+    static private float s_pushVMin = 5.0f;
+    static private float s_pushVMax = 8.0f;
+    static private float s_pushAngV = 300.0f;
+    static private float s_slowestV = 0.05f;
+    static private float s_maxVx = 20.0f;
+    static private float s_maxVy = 20.0f;
+    static private float s_maxGravity = 1.5f;
+    static private float s_smallestSizeSlider = 1;
+    static private float s_largestSizeSlider = 10;
+    static private float s_smallestRealSize = 0.1f;
+    static private float s_largestRealSize = 0.7f;
+    private float _normV;
+    private float _shapeMapSize;
+    private GameObject _popMapSize;
+    private float _numberTextMapSize;
+    private float _shapeColorTextMapSize;
 
     // Collider updater variables
-    private List<Vector2> points = new List<Vector2>();
-    private List<Vector2> simplifiedPoints = new List<Vector2>();
+    private List<Vector2> _points = new List<Vector2>();
+    private List<Vector2> _simplifiedPoints = new List<Vector2>();
 
     // Update timer
-    private float gravityWaitTimer = 0f;
+    private float _gravityWaitTimer = 0f;
 
     // Polygon variables
     public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star }
-    public Sprite[] polygonSprites;
-    private Polygon.Shape shape;
-    public Spawner.Colors color;
-    public bool solid = false;
-    public bool popped = false;
-
+    public Sprite[] PolygonSprites;
+    private Shape _shape;
+    public Spawner.Colors Color;
+    public bool IsSolid = false;
+    public bool IsPopped = false;
+    [SerializeField] public int ID;
+    private GameObject _shadowObj;
+  
     public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
     {
-        normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
+        _normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
 
-        // Maps smallestSizeSlider(Default: 1) through largestSizeslider(Default: 10) to smallestRealSize(Default: 0.1f) through largestRealSize(Default: 0.7f)
-        shapeMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (largestRealSize - smallestRealSize)) + smallestRealSize;
-        numberTextMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (1.0f - 0.35f)) + 0.35f;
-        shapeColorTextMapSize = ((size - smallestSizeSlider) /(largestSizeSlider - smallestSizeSlider) * (0.5f - 0.3f)) + 0.3f;
+        // Maps s_smallestSizeSlider(Default: 1) through s_largestSizeSlider(Default: 10) to s_smallestRealSize(Default: 0.1f) through s_largestRealSize(Default: 0.7f)
+        _shapeMapSize = ((size - s_smallestSizeSlider) /(s_largestSizeSlider - s_smallestSizeSlider) * (s_largestRealSize - s_smallestRealSize)) + s_smallestRealSize;
+        _numberTextMapSize = ((size - s_smallestSizeSlider) /(s_largestSizeSlider - s_smallestSizeSlider) * (1.0f - 0.35f)) + 0.35f;
+        _shapeColorTextMapSize = ((size - s_smallestSizeSlider) /(s_largestSizeSlider - s_smallestSizeSlider) * (0.5f - 0.3f)) + 0.3f;
 
         if (size >= 8)
-            popMapSize = popParticles[0];
+            _popMapSize = PopParticles[0];
         else if (size >= 4)
-            popMapSize = popParticles[1];
+            _popMapSize = PopParticles[1];
         else
-            popMapSize = popParticles[2];
+            _popMapSize = PopParticles[2];
 
-        this.shape = shape;
-        this.color = color;
-        this.tiltOn = tilt;
-        this.edgesOn = edges;
-        this.voice = voice;
-        this.text = text;
+        _shape = shape;
+        this.Color = color;
+        _tiltOn = tilt;
+        EdgesOn = edges;
+        _voice = voice;
+        _text = text;
 
         // Gravity mode on or off
-        if (tiltOn)
+        if (_tiltOn)
         {
             // normal gravity at the start, then scale up for tilt controls in update()
             _rigidbody2D.gravityScale = 1f;
-            _rigidbody2D.sharedMaterial = gravityOnMaterial;
-            initYV /= 100f;
+            _rigidbody2D.sharedMaterial = _gravityOnMaterial;
+            _initYV /= 100f;
         }
         else
         {
             _rigidbody2D.gravityScale = 0;
-            _rigidbody2D.sharedMaterial = gravityOffMaterial;
+            _rigidbody2D.sharedMaterial = _gravityOffMaterial;
         }
 
         switch(shape)
         {
             case Shape.Triangle:
-                _spriteRenderer.sprite = polygonSprites[0];
+                _spriteRenderer.sprite = PolygonSprites[0];
                 break;
             case Shape.Square:
-                _spriteRenderer.sprite = polygonSprites[1];
+                _spriteRenderer.sprite = PolygonSprites[1];
                 break;
             case Shape.Pentagon:
-                _spriteRenderer.sprite = polygonSprites[2];
+                _spriteRenderer.sprite = PolygonSprites[2];
                 break;
             case Shape.Hexagon:
-                _spriteRenderer.sprite = polygonSprites[3];
+                _spriteRenderer.sprite = PolygonSprites[3];
                 break;
             case Shape.Circle:
-                _spriteRenderer.sprite = polygonSprites[4];
+                _spriteRenderer.sprite = PolygonSprites[4];
                 break;
             case Shape.Star:
-                _spriteRenderer.sprite = polygonSprites[5];
+                _spriteRenderer.sprite = PolygonSprites[5];
                 break;
         }
 
         UpdatePolygonCollider2D();
-        this.gameObject.transform.localScale = new Vector3(shapeMapSize, shapeMapSize, 0);    
+        this.gameObject.transform.localScale = new Vector3(_shapeMapSize, _shapeMapSize, 0);    
         _spriteRenderer.color = unityColor;
 
         // Initial x and y velocities. Randomize if the x velocity is negative or positive.
-        float randomX = Random.Range(initXVMin, initXVMax);
-        float randomY = Random.Range(-initYV * normV, -initYV * normV);
-        float randomAngularVel = Random.Range(initAngV, initAngV);
+        float randomX = Random.Range(s_initXVMin, s_initXVMax);
+        float randomY = Random.Range(-_initYV * _normV, -_initYV * _normV);
+        float randomAngularVel = Random.Range(-s_initAngV, s_initAngV);
         int randomFlip = Random.Range(0, 2);
 
         if (randomFlip == 0)
@@ -148,6 +148,8 @@ public class Polygon : MonoBehaviour
             _rigidbody2D.velocity = new Vector2(randomX * -1, randomY);
             _rigidbody2D.angularVelocity = randomAngularVel;
         }
+
+        CreateShadow();
     }
 
     private bool _simulating;
@@ -170,9 +172,11 @@ public class Polygon : MonoBehaviour
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
-        gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
-        gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
-        sqrShakeDetectionThreshold = Mathf.Pow(shakeDetectionThreshold, 2);
+        this.ID = PlayerPrefs.GetInt("PolygonID") + 1;
+        PlayerPrefs.SetInt("PolygonID", this.ID);
+
+        _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
+        _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
 
         // rigidbody2D Properties
         _rigidbody2D.angularDrag = 0.5f;
@@ -188,80 +192,127 @@ public class Polygon : MonoBehaviour
         }
     }
 
+    public void CreateShadow()
+    {
+        // Create an empty gameobject to be the shadow
+        _shadowObj = new GameObject("Shadow");
+        _shadowObj.transform.parent = this.gameObject.transform;
+
+        // Attach a sprite renderer component and set its color to black
+        SpriteRenderer shadow_sr = _shadowObj.AddComponent<SpriteRenderer>();
+        shadow_sr.sprite = _spriteRenderer.sprite;
+        shadow_sr.color = UnityEngine.Color.black;
+        shadow_sr.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+        shadow_sr.sortingOrder = 0;
+
+        // For actual shadows
+        _shadowObj.transform.localScale = new Vector3(1f, 1f, 1f);
+        _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x+0.2f, this.gameObject.transform.position.y+0.2f, this.gameObject.transform.position.z + 0.5f);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (tiltOn)
+        var dist = 0.5f;
+        _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x + dist, this.gameObject.transform.position.y + dist, this.gameObject.transform.position.z + 0.5f);
+
+        PolygonVelocityLimiter();
+
+        if (_tiltOn)
         {
-            gravityWaitTimer += Time.deltaTime;
+            _gravityWaitTimer += Time.deltaTime;
 
-            if (gravityWaitTimer >= 3.0f)
+            if (_gravityWaitTimer >= 3.0f)
             {
-                _rigidbody2D.gravityScale = gravityScale;
+                _rigidbody2D.gravityScale = s_gravityScale;
 
-                // Within -0.1f and 0.1f, the shape will slow to a halt instead of floating in zero G.
-                if ((Input.acceleration.x <= gravityStopMargin && Input.acceleration.x >= -gravityStopMargin) 
-                    && (Input.acceleration.y <= gravityStopMargin && Input.acceleration.y >= -gravityStopMargin))
+                // Within pre-determined margin, the shape will slow to a halt instead of moving continuously in one direction.
+                if ((Input.acceleration.x <= s_gravityStopMargin && Input.acceleration.x >= -s_gravityStopMargin) 
+                    && (Input.acceleration.y <= s_gravityStopMargin && Input.acceleration.y >= -s_gravityStopMargin))
                 {
                     Physics2D.gravity = new Vector2(0f, 0f);
-                    //Physics2D.gravity = new Vector2(Mathf.Lerp(Physics2D.gravity.x, 0, gravityLerpTime), Mathf.Lerp(Physics2D.gravity.y, 0, gravityLerpTime));
-                    gravityLerpTimer += Time.deltaTime;
-                    if (gravityLerpTimer > gravityLerpTimeTotal)
+                    s_gravityLerpTimer += Time.deltaTime;
+                    if (s_gravityLerpTimer > s_gravityLerpTimeTotal)
                     {
-                        gravityLerpTimer = gravityLerpTimeTotal;
+                        s_gravityLerpTimer = s_gravityLerpTimeTotal;
                     }
 
-                    lerpPercent = gravityLerpTimer / gravityLerpTimeTotal;
-                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, lerpPercent);
-                    _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, lerpPercent);
-
-                    if (Input.acceleration.sqrMagnitude >= sqrShakeDetectionThreshold
-                           && Time.unscaledTime >= timeSinceLastShake + minShakeInterval)
-                    {
-                        _rigidbody2D.AddForce(Input.acceleration * shakeForceScale, ForceMode2D.Impulse);
-                        timeSinceLastShake = Time.unscaledTime;
-                    }
+                    _lerpPercent = s_gravityLerpTimer / s_gravityLerpTimeTotal;
+                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, _lerpPercent);
+                    _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, _lerpPercent);
                 }
                 else
                 {
-                    Physics2D.gravity = new Vector2(Input.acceleration.x * 1.5f, Input.acceleration.y * 1.5f);
-
-                    if (Input.acceleration.sqrMagnitude >= sqrShakeDetectionThreshold
-                           && Time.unscaledTime >= timeSinceLastShake + minShakeInterval)
-                    {
-                        _rigidbody2D.AddForce(Input.acceleration * shakeForceScale, ForceMode2D.Impulse);
-                        timeSinceLastShake = Time.unscaledTime;
-                    }
+                    GravityLimiter();
                 }
             }
         }
         else
         {
-            // Push slow shapes to speed them back up
-            if (_rigidbody2D.velocity.x <= slowestV * normV && _rigidbody2D.velocity.x >= -slowestV * normV 
-                || _rigidbody2D.velocity.y <= slowestV * normV && _rigidbody2D.velocity.y >= -slowestV * normV)
-            {
-                float randomAngularVelocity = Random.Range(-pushAngV * normV, pushAngV * normV);
-                Vector2 randomVelocity = new Vector2(Random.Range(pushVMin * normV, pushVMax * normV), Random.Range(pushVMin * normV, pushVMax * normV));
+            PushSlowShapes();            
+        }
 
-                _rigidbody2D.velocity = randomVelocity;
-                _rigidbody2D.angularVelocity = randomAngularVelocity;
-                //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+        if (!EdgesOn)
+        {
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 4 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 4)
+            {
+                gameObject.transform.position = new Vector2(-gameObject.transform.position.x, gameObject.transform.position.y);
             }
+
+            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 4 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 4)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, -gameObject.transform.position.y);
+            }
+        }
+
+        if (gameObject.transform.position.x > (Screen.width/Camera.main.orthographicSize) || gameObject.transform.position.y > (Screen.height/Camera.main.orthographicSize)
+                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize))
+        {
+            TeleportSound();
+            gameObject.transform.position = Vector2.zero;
+        }
+
+    }
+    
+    // Shapes slow down and stop eventually. This keeps them always moving.
+    private void PushSlowShapes()
+    {
+        if (_rigidbody2D.velocity.x <= s_slowestV * _normV && _rigidbody2D.velocity.x >= -s_slowestV * _normV
+                || _rigidbody2D.velocity.y <= s_slowestV * _normV && _rigidbody2D.velocity.y >= -s_slowestV * _normV)
+        {
+            float randomAngularVelocity = Random.Range(-s_pushAngV * _normV, s_pushAngV * _normV);
+            Vector2 randomVelocity = new Vector2(Random.Range(s_pushVMin * _normV, s_pushVMax * _normV), Random.Range(s_pushVMin * _normV, s_pushVMax * _normV));
+
+            _rigidbody2D.velocity = randomVelocity;
+            _rigidbody2D.angularVelocity = randomAngularVelocity;
+            //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
         }
     }
 
-    // Tap pop shapes!
-    void OnMouseOver()
+    private Vector3 mOffset;
+    private float mZCoord;
+    public float mouseSpeed;
+    public float mouseXNorm;
+    public float mouseYNorm;
+    public Vector3 mouseStartPosition;
+    public Vector3 mouseEndPosition;
+
+    private void Pop()
+    {
+        IsPopped = true;
+        PopSound();
+        VoiceSound();
+        Instantiate(_popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+        SpawnPopText();
+        Destroy(this.gameObject);
+    }
+
+    // Shape pop
+    private void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            popped = true;
-            PopSound();
-            VoiceSound();
-            GameObject pop = Instantiate(popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-            SpawnPopText();
-            Destroy(this.gameObject);
+            Pop();
         }
     }
 
@@ -271,9 +322,9 @@ public class Polygon : MonoBehaviour
         _polyCollider2D.pathCount = _spriteRenderer.sprite.GetPhysicsShapeCount();
         for (int i = 0; i < _polyCollider2D.pathCount; i++)
         {
-            _spriteRenderer.sprite.GetPhysicsShape(i, points);
-            LineUtility.Simplify(points, tolerance, simplifiedPoints);
-            _polyCollider2D.SetPath(i, simplifiedPoints);
+            _spriteRenderer.sprite.GetPhysicsShape(i, _points);
+            LineUtility.Simplify(_points, tolerance, _simplifiedPoints);
+            _polyCollider2D.SetPath(i, _simplifiedPoints);
         }
     }
 
@@ -314,6 +365,41 @@ public class Polygon : MonoBehaviour
         return new Vector2(Mathf.Abs(vector.x), Mathf.Abs(vector.y));
     }
 
+    // Extension that limits the gravity
+    public void GravityLimiter()
+    {
+        if (Physics2D.gravity.x > s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(s_maxGravity, Physics2D.gravity.y);
+        }
+        else if (Physics2D.gravity.x < -s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(-s_maxGravity, Physics2D.gravity.y);
+        }
+        else if (Physics2D.gravity.y > s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(Physics2D.gravity.x, s_maxGravity);
+        }
+        else if (Physics2D.gravity.y < -s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(Physics2D.gravity.x, -s_maxGravity);
+        }
+        else
+        {
+            Physics2D.gravity = new Vector2(Input.acceleration.x * 1.5f, Input.acceleration.y * 1.5f);
+        }
+    }
+
+    // Extension that limits polygon velocity to maximum
+    public void PolygonVelocityLimiter()
+    {
+        if (_rigidbody2D.velocity.x > s_maxVx || _rigidbody2D.velocity.x < -s_maxVx)
+            _rigidbody2D.velocity = new Vector2(s_maxVx * Mathf.Sign(_rigidbody2D.velocity.x), _rigidbody2D.velocity.y);
+
+        if (_rigidbody2D.velocity.y > s_maxVy || _rigidbody2D.velocity.y < -s_maxVy)
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, s_maxVy * Mathf.Sign(_rigidbody2D.velocity.y));
+    }
+
     public void TeleportSound()
     {
         int x = Random.Range(0, _audio.teleports.Length);
@@ -328,18 +414,18 @@ public class Polygon : MonoBehaviour
 
     public void VoiceSound()
     {
-        if (voice == Spawner.Topics.Shapes)
+        if (_voice == Spawner.Topics.Shapes)
         {
-            _audioSource.PlayOneShot(_audio.voices_shapes[(int)shape]);
+            _audioSource.PlayOneShot(_audio.voices_shapes[(int)_shape]);
         }
-        else if (voice == Spawner.Topics.Colors)
+        else if (_voice == Spawner.Topics.Colors)
         {
-            _audioSource.PlayOneShot(_audio.voices_colors[(int)color]);
+            _audioSource.PlayOneShot(_audio.voices_colors[(int)Color]);
         }
-        else if (voice == Spawner.Topics.Numbers)
+        else if (_voice == Spawner.Topics.Numbers)
         {
             // Need to increment the polygon count if the pop text isn't on. Because it increments in pop text otherwise.
-            if (text != Spawner.Topics.Numbers)
+            if (_text != Spawner.Topics.Numbers)
                 _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().count++]);
             else
                 _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().count]);
@@ -352,30 +438,30 @@ public class Polygon : MonoBehaviour
 
     public void SpawnPopText()
     {
-        if (text == Spawner.Topics.Shapes)
+        if (_text == Spawner.Topics.Shapes)
         {
-            GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-            tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
+            GameObject tempTextObj = Instantiate(TextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
             tempTextObjTMP.fontSize = 40;
-            tempTextObjTMP.text = shape.ToString();
+            tempTextObjTMP.text = _shape.ToString();
             tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
-        else if (text == Spawner.Topics.Colors)
+        else if (_text == Spawner.Topics.Colors)
         {
-            GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-            tempTextObj.transform.localScale = new Vector3(shapeColorTextMapSize, shapeColorTextMapSize, 0);
+            GameObject tempTextObj = Instantiate(TextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
             tempTextObjTMP.fontSize = 40;
-            tempTextObjTMP.text = color.ToString();
+            tempTextObjTMP.text = Color.ToString();
             tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
-        else if (text == Spawner.Topics.Numbers)
+        else if (_text == Spawner.Topics.Numbers)
         {
-            GameObject tempTextObj = Instantiate(textObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
-            tempTextObj.transform.localScale = new Vector3(numberTextMapSize, numberTextMapSize, 0);
+            GameObject tempTextObj = Instantiate(TextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            tempTextObj.transform.localScale = new Vector3(_numberTextMapSize, _numberTextMapSize, 0);
             int newCount = ++GetComponentInParent<Spawner>().count;
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
             tempTextObjTMP.text = newCount.ToString();
