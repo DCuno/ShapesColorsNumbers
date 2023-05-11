@@ -6,7 +6,7 @@ public class ShapesOOBEdgesOff : MonoBehaviour
 {
     private void OnTriggerExit2D(Collider2D collision)
     {
-        GameObject obj = collision.gameObject;
+        /*GameObject obj = collision.gameObject;
         Polygon polygon = obj.GetComponent<Polygon>();
         if (polygon != null && polygon.solid && !polygon.edgesOn)
         {
@@ -16,6 +16,6 @@ public class ShapesOOBEdgesOff : MonoBehaviour
             obj.transform.position = new Vector3(randX, randY, 0);
             // random velocity and direction?
             // particle effect?
-        }
+        }*/
     }
 }
