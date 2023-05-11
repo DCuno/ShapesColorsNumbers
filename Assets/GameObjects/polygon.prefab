@@ -54,8 +54,6 @@ MonoBehaviour:
   edgesOn: 0
   shakeDetectionThreshold: 0
   minShakeInterval: 0
-  flingCoefficient: 4
-  _dragged: 0
   polygonSprites:
   - {fileID: 21300000, guid: c0c99ac45ee3968489beac279114099e, type: 3}
   - {fileID: 21300000, guid: 62d1422382400764eb0778335763b4c2, type: 3}
@@ -63,7 +61,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a7bdea6ab44230b41a11d0dd089b5db5, type: 3}
   - {fileID: 21300000, guid: c0530922c76ede0489b7a4a844359ecd, type: 3}
   - {fileID: 21300000, guid: ef039b5ec9e2b0c4c81fed4576a4ee22, type: 3}
-  color: 0
+  color: {r: 0, g: 0, b: 0, a: 0}
   solid: 0
   popped: 0
   ID: 0

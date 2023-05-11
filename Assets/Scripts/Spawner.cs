@@ -39,9 +39,6 @@ public class Spawner : MonoBehaviour
 
     public void SettingsSetup(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
     {
-        // Reset PolygonIDs
-        PlayerPrefs.SetInt("PolygonID", 0);
-
         StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, voice, text));
     }
 
