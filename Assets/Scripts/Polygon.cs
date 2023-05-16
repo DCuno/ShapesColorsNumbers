@@ -23,7 +23,7 @@ public class Polygon : MonoBehaviour
     private Spawner.Topics _voice;
     private Spawner.Topics _text;
     static private float s_gravityScale = 30f;
-    static private float s_gravityLerpTimer = 0.0f;
+    private float _gravityLerpTimer = 0.0f;
     static private float s_gravityLerpTimeTotal = 500.0f;
     private float _lerpPercent;
     static private float s_gravityStopMargin = 0.05f;
@@ -129,25 +129,10 @@ public class Polygon : MonoBehaviour
         }
 
         UpdatePolygonCollider2D();
-        this.gameObject.transform.localScale = new Vector3(_shapeMapSize, _shapeMapSize, 0);    
+        gameObject.transform.localScale = new Vector3(_shapeMapSize, _shapeMapSize, 0);    
         _spriteRenderer.color = unityColor;
 
-        // Initial x and y velocities. Randomize if the x velocity is negative or positive.
-        float randomX = Random.Range(s_initXVMin, s_initXVMax);
-        float randomY = Random.Range(-_initYV * _normV, -_initYV * _normV);
-        float randomAngularVel = Random.Range(-s_initAngV, s_initAngV);
-        int randomFlip = Random.Range(0, 2);
-
-        if (randomFlip == 0)
-        {
-            _rigidbody2D.velocity = new Vector2(randomX, randomY);
-            _rigidbody2D.angularVelocity = randomAngularVel;
-        }
-        else
-        {
-            _rigidbody2D.velocity = new Vector2(randomX * -1, randomY);
-            _rigidbody2D.angularVelocity = randomAngularVel;
-        }
+        SetInitialVelocities();
 
         CreateShadow();
     }
@@ -172,8 +157,8 @@ public class Polygon : MonoBehaviour
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
-        this.ID = PlayerPrefs.GetInt("PolygonID") + 1;
-        PlayerPrefs.SetInt("PolygonID", this.ID);
+        ID = PlayerPrefs.GetInt("PolygonID") + 1;
+        PlayerPrefs.SetInt("PolygonID", ID);
 
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
@@ -196,7 +181,7 @@ public class Polygon : MonoBehaviour
     {
         // Create an empty gameobject to be the shadow
         _shadowObj = new GameObject("Shadow");
-        _shadowObj.transform.parent = this.gameObject.transform;
+        _shadowObj.transform.parent = gameObject.transform;
 
         // Attach a sprite renderer component and set its color to black
         SpriteRenderer shadow_sr = _shadowObj.AddComponent<SpriteRenderer>();
@@ -207,14 +192,14 @@ public class Polygon : MonoBehaviour
 
         // For actual shadows
         _shadowObj.transform.localScale = new Vector3(1f, 1f, 1f);
-        _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x+0.2f, this.gameObject.transform.position.y+0.2f, this.gameObject.transform.position.z + 0.5f);
+        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x+0.2f, gameObject.transform.position.y+0.2f, gameObject.transform.position.z + 0.5f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        var dist = 0.5f;
-        _shadowObj.transform.position = new Vector3(this.gameObject.transform.position.x + dist, this.gameObject.transform.position.y + dist, this.gameObject.transform.position.z + 0.5f);
+        float dist = 0.5f;
+        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + dist, gameObject.transform.position.y + dist, gameObject.transform.position.z + 0.5f);
 
         PolygonVelocityLimiter();
 
@@ -231,13 +216,14 @@ public class Polygon : MonoBehaviour
                     && (Input.acceleration.y <= s_gravityStopMargin && Input.acceleration.y >= -s_gravityStopMargin))
                 {
                     Physics2D.gravity = new Vector2(0f, 0f);
-                    s_gravityLerpTimer += Time.deltaTime;
-                    if (s_gravityLerpTimer > s_gravityLerpTimeTotal)
+                    _gravityLerpTimer += Time.deltaTime;
+
+                    if (_gravityLerpTimer > s_gravityLerpTimeTotal)
                     {
-                        s_gravityLerpTimer = s_gravityLerpTimeTotal;
+                        _gravityLerpTimer = s_gravityLerpTimeTotal;
                     }
 
-                    _lerpPercent = s_gravityLerpTimer / s_gravityLerpTimeTotal;
+                    _lerpPercent = _gravityLerpTimer / s_gravityLerpTimeTotal;
                     _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, _lerpPercent);
                     _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, _lerpPercent);
                 }
@@ -254,6 +240,7 @@ public class Polygon : MonoBehaviour
 
         if (!EdgesOn)
         {
+            // Return shape to opposite side to loop around the screen.
             if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 4 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 4)
             {
                 gameObject.transform.position = new Vector2(-gameObject.transform.position.x, gameObject.transform.position.y);
@@ -265,13 +252,8 @@ public class Polygon : MonoBehaviour
             }
         }
 
-        if (gameObject.transform.position.x > (Screen.width/Camera.main.orthographicSize) || gameObject.transform.position.y > (Screen.height/Camera.main.orthographicSize)
-                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize))
-        {
-            TeleportSound();
-            gameObject.transform.position = Vector2.zero;
-        }
-
+        // Check if out of bounds.
+        OutOfBoundsRecall();
     }
     
     // Shapes slow down and stop eventually. This keeps them always moving.
@@ -286,6 +268,16 @@ public class Polygon : MonoBehaviour
             _rigidbody2D.velocity = randomVelocity;
             _rigidbody2D.angularVelocity = randomAngularVelocity;
             //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+        }
+    }
+
+    private void OutOfBoundsRecall()
+    {
+        if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize)
+                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize))
+        {
+            TeleportSound();
+            gameObject.transform.position = Vector2.zero;
         }
     }
 
@@ -314,6 +306,19 @@ public class Polygon : MonoBehaviour
         {
             Pop();
         }
+    }
+
+    // Initialize x and y velocities. Randomize if the x velocity is negative or positive.
+    private void SetInitialVelocities()
+    {
+        float randomX = Random.Range(s_initXVMin, s_initXVMax);
+        float randomY = Random.Range(-_initYV * _normV, -_initYV * _normV);
+        float randomAngularVel = Random.Range(-s_initAngV, s_initAngV);
+        int randomFlip = Random.Range(0, 2);
+
+        _rigidbody2D.velocity = randomFlip == 0 ? new Vector2(randomX, randomY) : new Vector2(randomX * -1, randomY);
+
+        _rigidbody2D.angularVelocity = randomAngularVel;
     }
 
     // Collider method
