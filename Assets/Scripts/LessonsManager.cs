@@ -97,7 +97,7 @@ public class LessonsManager : MonoBehaviour
 
             if (curChapter.Equals("Shapes"))
                 yield return null;
-        }
+        } 
 
         idx = 0;
         if (curChapter.Equals("All") || curChapter.Equals("Colors"))
