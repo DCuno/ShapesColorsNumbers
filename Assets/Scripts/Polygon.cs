@@ -68,86 +68,8 @@ public class Polygon : MonoBehaviour
     public bool IsPopped = false;
     [SerializeField] public int ID;
     private GameObject _shadowObj;
-  
-    public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
-    {
-        _normV = 1; // Change velocity relative to the size of the shapes. Default Size: 0.33f
+    static private float s_shadowDist = 0.5f;
 
-        // Maps s_smallestSizeSlider(Default: 1) through s_largestSizeSlider(Default: 10) to s_smallestRealSize(Default: 0.1f) through s_largestRealSize(Default: 0.7f)
-        _shapeMapSize = ((size - s_smallestSizeSlider) /(s_largestSizeSlider - s_smallestSizeSlider) * (s_largestRealSize - s_smallestRealSize)) + s_smallestRealSize;
-        _numberTextMapSize = ((size - s_smallestSizeSlider) /(s_largestSizeSlider - s_smallestSizeSlider) * (1.0f - 0.35f)) + 0.35f;
-        _shapeColorTextMapSize = ((size - s_smallestSizeSlider) /(s_largestSizeSlider - s_smallestSizeSlider) * (0.5f - 0.3f)) + 0.3f;
-
-        if (size >= 8)
-            _popMapSize = PopParticles[0];
-        else if (size >= 4)
-            _popMapSize = PopParticles[1];
-        else
-            _popMapSize = PopParticles[2];
-
-        _shape = shape;
-        Color = color;
-        _tiltOn = tilt;
-        EdgesOn = edges;
-        _voice = voice;
-        _text = text;
-
-        // Gravity mode on or off
-        if (_tiltOn)
-        {
-            // normal gravity at the start, then scale up for tilt controls in update()
-            _rigidbody2D.gravityScale = 1f;
-            _rigidbody2D.sharedMaterial = _gravityOnMaterial;
-            _initYV /= 100f;
-        }
-        else
-        {
-            _rigidbody2D.gravityScale = 0;
-            _rigidbody2D.sharedMaterial = _gravityOffMaterial;
-        }
-
-        switch(shape)
-        {
-            case Shape.Triangle:
-                _spriteRenderer.sprite = PolygonSprites[0];
-                break;
-            case Shape.Square:
-                _spriteRenderer.sprite = PolygonSprites[1];
-                break;
-            case Shape.Pentagon:
-                _spriteRenderer.sprite = PolygonSprites[2];
-                break;
-            case Shape.Hexagon:
-                _spriteRenderer.sprite = PolygonSprites[3];
-                break;
-            case Shape.Circle:
-                _spriteRenderer.sprite = PolygonSprites[4];
-                break;
-            case Shape.Star:
-                _spriteRenderer.sprite = PolygonSprites[5];
-                break;
-        }
-
-        UpdatePolygonCollider2D();
-        gameObject.transform.localScale = new Vector3(_shapeMapSize, _shapeMapSize, 0);    
-        _spriteRenderer.color = unityColor;
-
-        SetInitialVelocities();
-
-        CreateShadow();
-    }
-
-    private bool _simulating;
-    public bool SimulatingPhysics
-    {
-        get { return _simulating; }
-        set
-        {
-            _simulating = value;
-            _rigidbody2D.bodyType = value ?
-                    RigidbodyType2D.Dynamic : RigidbodyType2D.Static;
-        }
-    }
 
     private void Awake()
     {
@@ -163,13 +85,11 @@ public class Polygon : MonoBehaviour
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
 
-        // rigidbody2D Properties
-        _rigidbody2D.angularDrag = 0.5f;
-
         // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
         Physics2D.IgnoreLayerCollision(3, 3, true);
         Physics2D.IgnoreLayerCollision(3, 6, true);
-        Physics2D.IgnoreLayerCollision(6, 2, true); // Pop shapes through text colliders
+        // Pop shapes through text colliders
+        Physics2D.IgnoreLayerCollision(6, 2, true); 
         GameObject[] screenEdges = GameObject.FindGameObjectsWithTag("edge");
         foreach (GameObject screenEdge in screenEdges)
         {
@@ -177,29 +97,11 @@ public class Polygon : MonoBehaviour
         }
     }
 
-    public void CreateShadow()
-    {
-        // Create an empty gameobject to be the shadow
-        _shadowObj = new GameObject("Shadow");
-        _shadowObj.transform.parent = gameObject.transform;
-
-        // Attach a sprite renderer component and set its color to black
-        SpriteRenderer shadow_sr = _shadowObj.AddComponent<SpriteRenderer>();
-        shadow_sr.sprite = _spriteRenderer.sprite;
-        shadow_sr.color = UnityEngine.Color.black;
-        shadow_sr.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-        shadow_sr.sortingOrder = 0;
-
-        // For actual shadows
-        _shadowObj.transform.localScale = new Vector3(1f, 1f, 1f);
-        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x+0.2f, gameObject.transform.position.y+0.2f, gameObject.transform.position.z + 0.5f);
-    }
-
     // Update is called once per frame
     void Update()
     {
-        float dist = 0.5f;
-        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + dist, gameObject.transform.position.y + dist, gameObject.transform.position.z + 0.5f);
+        // Constantly update shadow position to follow the polygon
+        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, gameObject.transform.position.y + s_shadowDist, gameObject.transform.position.z + s_shadowDist);
 
         PolygonVelocityLimiter();
 
@@ -255,7 +157,106 @@ public class Polygon : MonoBehaviour
         // Check if out of bounds.
         OutOfBoundsRecall();
     }
-    
+
+    public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
+    {
+        // Change velocity relative to the size of the shapes. Default Size: 0.33f
+        _normV = 1;
+
+        // Maps slider position from smallest(Default: 1) largest(Default: 10) to real size from smallest(Default: 0.1f) to largest(Default: 0.7f)
+        _shapeMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_largestRealSize - s_smallestRealSize)) + s_smallestRealSize;
+        _numberTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (1.0f - 0.35f)) + 0.35f;
+        _shapeColorTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (0.5f - 0.3f)) + 0.3f;
+
+        if (size >= 8)
+            _popMapSize = PopParticles[0];
+        else if (size >= 4)
+            _popMapSize = PopParticles[1];
+        else
+            _popMapSize = PopParticles[2];
+
+        _shape = shape;
+        Color = color;
+        _tiltOn = tilt;
+        EdgesOn = edges;
+        _voice = voice;
+        _text = text;
+
+        // Gravity mode on or off
+        if (_tiltOn)
+        {
+            // normal gravity at the start, then scale up for tilt controls in update()
+            _rigidbody2D.gravityScale = 1f;
+            _rigidbody2D.sharedMaterial = _gravityOnMaterial;
+            _initYV /= 100f;
+        }
+        else
+        {
+            _rigidbody2D.gravityScale = 0;
+            _rigidbody2D.sharedMaterial = _gravityOffMaterial;
+        }
+
+        switch (shape)
+        {
+            case Shape.Triangle:
+                _spriteRenderer.sprite = PolygonSprites[0];
+                break;
+            case Shape.Square:
+                _spriteRenderer.sprite = PolygonSprites[1];
+                break;
+            case Shape.Pentagon:
+                _spriteRenderer.sprite = PolygonSprites[2];
+                break;
+            case Shape.Hexagon:
+                _spriteRenderer.sprite = PolygonSprites[3];
+                break;
+            case Shape.Circle:
+                _spriteRenderer.sprite = PolygonSprites[4];
+                break;
+            case Shape.Star:
+                _spriteRenderer.sprite = PolygonSprites[5];
+                break;
+        }
+
+        UpdatePolygonCollider2D();
+        gameObject.transform.localScale = new Vector3(_shapeMapSize, _shapeMapSize, 0);
+        _spriteRenderer.color = unityColor;
+
+        SetInitialVelocities();
+
+        CreateShadow();
+    }
+
+    private bool _simulating;
+    public bool SimulatingPhysics
+    {
+        get { return _simulating; }
+        set
+        {
+            _simulating = value;
+            _rigidbody2D.bodyType = value ?
+                    RigidbodyType2D.Dynamic : RigidbodyType2D.Static;
+        }
+    }
+
+    public void CreateShadow()
+    {
+        // Create an empty gameobject to be the shadow.
+        _shadowObj = new GameObject("Shadow");
+        _shadowObj.transform.parent = gameObject.transform;
+
+        // Attach a sprite renderer component and set its color to black.
+        SpriteRenderer _shadow_sr = _shadowObj.AddComponent<SpriteRenderer>();
+        _shadow_sr.sprite = _spriteRenderer.sprite;
+        _shadow_sr.color = UnityEngine.Color.black;
+        _shadow_sr.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+        _shadow_sr.sortingOrder = 0;
+
+        // For actual shadows
+        _shadowObj.transform.localScale = new Vector3(1f, 1f, 1f);
+        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + 0.2f, gameObject.transform.position.y + 0.2f, gameObject.transform.position.z + 0.5f);
+    }
+
     // Shapes slow down and stop eventually. This keeps them always moving.
     private void PushSlowShapes()
     {
@@ -281,14 +282,6 @@ public class Polygon : MonoBehaviour
         }
     }
 
-    private Vector3 mOffset;
-    private float mZCoord;
-    public float mouseSpeed;
-    public float mouseXNorm;
-    public float mouseYNorm;
-    public Vector3 mouseStartPosition;
-    public Vector3 mouseEndPosition;
-
     private void Pop()
     {
         IsPopped = true;
@@ -299,7 +292,7 @@ public class Polygon : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    // Shape pop
+    // Shape pop.
     private void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0))
@@ -321,7 +314,7 @@ public class Polygon : MonoBehaviour
         _rigidbody2D.angularVelocity = randomAngularVel;
     }
 
-    // Collider method
+    // Collider method.
     public void UpdatePolygonCollider2D(float tolerance = 0.05f)
     {
         _polyCollider2D.pathCount = _spriteRenderer.sprite.GetPhysicsShapeCount();
@@ -333,20 +326,39 @@ public class Polygon : MonoBehaviour
         }
     }
 
-    // Extension that converts an array of Vector2 to an array of Vector3
+    private void SetCollisionOff()
+    {
+        Physics2D.IgnoreLayerCollision(3, 3, true);
+        Physics2D.IgnoreLayerCollision(3, 6, true);
+        // Pop shapes through text colliders
+        Physics2D.IgnoreLayerCollision(6, 2, true);
+        GameObject[] screenEdges = GameObject.FindGameObjectsWithTag("edge");
+        foreach (GameObject screenEdge in screenEdges)
+        {
+            Physics2D.IgnoreCollision(_polyCollider2D, screenEdge.GetComponent<BoxCollider2D>(), true);
+        }
+    }
+
+    /// <summary>
+    /// Extension that converts an array of Vector2 to an array of Vector3
+    /// </summary>
     public static Vector3[] ToVector3(Vector2[] vectors)
     {
         return System.Array.ConvertAll<Vector2, Vector3>(vectors, v => v);
     }
 
-    // Extension that converts an array of Vector3 to an array of Vector2
+    /// <summary>
+    /// Extension that converts an array of Vector3 to an array of Vector2
+    /// </summary>
     public static Vector2[] ToVector2(Vector3[] vectors)
     {
         return System.Array.ConvertAll<Vector3, Vector2>(vectors, v => v);
     }
 
+    /// <summary>
     /// Extension that, given a collection of vectors, returns a centroid 
     /// (i.e., an average of all vectors) 
+    /// </summary>
     public static Vector2 Centroid(ICollection<Vector2> vectors)
     {
         int numSides = vectors.Count;
