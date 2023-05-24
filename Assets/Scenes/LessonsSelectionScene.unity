@@ -220,7 +220,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 977220193}
         m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
-        m_MethodName: FunModeButton
+        m_MethodName: NumbersButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1481,7 +1481,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 977220193}
         m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
-        m_MethodName: FunModeButton
+        m_MethodName: LessonsBackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1626,7 +1626,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 977220193}
         m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
-        m_MethodName: FunModeButton
+        m_MethodName: ColorsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1771,7 +1771,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 977220193}
         m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
-        m_MethodName: LessonsButton
+        m_MethodName: AllButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2214,7 +2214,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 977220193}
         m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
-        m_MethodName: FunModeButton
+        m_MethodName: ShapesButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

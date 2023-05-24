@@ -8,11 +8,11 @@ using UnityEngine.UI;
 
 public class OptionsManager : MonoBehaviour
 {
-    [SerializeField] public AudioMixer _mixer;
-    [SerializeField] public Slider _soundEffectsSlider;
-    [SerializeField] public Slider _musicSlider;
-    [SerializeField] public TextMeshProUGUI _musicSliderCounter;
-    [SerializeField] public TextMeshProUGUI _SFXSliderCounter;
+    [SerializeField] private AudioMixer _mixer;
+    [SerializeField] private Slider _soundEffectsSlider;
+    [SerializeField] private Slider _musicSlider;
+    [SerializeField] private TextMeshProUGUI _musicSliderCounter;
+    [SerializeField] private TextMeshProUGUI _SFXSliderCounter;
 
     public float Multiplier = 30f;
     [Range(0, 1)] public float DefaultSliderPercentage = 0.31f;
@@ -41,15 +41,15 @@ public class OptionsManager : MonoBehaviour
             _SFXSliderCounter = GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>();
         }
 
-        if (_mixer == null)
+        /*if (_mixer == null)
         {
             _mixer = GameObject.FindGameObjectWithTag("MusicSource").GetComponent<AudioSource>().outputAudioMixerGroup.audioMixer;
-        }
+        }*/
 
-        //LoadFromPrefs();
+        LoadFromPrefs();
 
-        curMusicSliderVal = _musicSlider.value;
-        curSFXSliderVal = _soundEffectsSlider.value;
+        /*curMusicSliderVal = _musicSlider.value;
+        curSFXSliderVal = _soundEffectsSlider.value;*/
 
         SoundEffectsSlider();
         MusicSlider();
@@ -59,14 +59,14 @@ public class OptionsManager : MonoBehaviour
     void Start()
     {
         /*_soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
-        _musicSlider = GameObject.FindGameObjectWithTag("MusicSlider").GetComponent<Slider>();*/
+        _musicSlider = GameObject.FindGameObjectWithTag("MusicSlider").GetComponent<Slider>();
 
-        /*
+
         _musicSlider.value = PlayerPrefs.GetFloat("Music", _musicSlider.value);
         _soundEffectsSlider.value = PlayerPrefs.GetFloat("SFX", _soundEffectsSlider.value);
         curMusicSliderVal = _musicSlider.value;
-        curSFXSliderVal = _soundEffectsSlider.value;
-        //*/
+        curSFXSliderVal = _soundEffectsSlider.value;*/
+        //
     }
 
     // Update is called once per frame
@@ -76,16 +76,16 @@ public class OptionsManager : MonoBehaviour
         {
             StartCoroutine(SetMixerFloat("Music", SliderToDecibelMusic(_musicSlider.value)));
             curMusicSliderVal = _musicSlider.value;
-            /*_mixer.SetFloat("Music", (float)_musicSlider.value);
-            PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);*/
+            _mixer.SetFloat("Music", (float)_musicSlider.value);
+            PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);
         }
 
         if (curSFXSliderVal != _soundEffectsSlider.value)
         {
             StartCoroutine(SetMixerFloat("SFX", SliderToDecibelSFX(_soundEffectsSlider.value)));
             curSFXSliderVal = _soundEffectsSlider.value;
-            /*_mixer.SetFloat("Music", (float)_musicSlider.value);
-            PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);*/
+            _mixer.SetFloat("SFX", (float)_soundEffectsSlider.value);
+            PlayerPrefs.SetFloat("SFX", (float)_soundEffectsSlider.value);
         }
     }
 
@@ -119,14 +119,14 @@ public class OptionsManager : MonoBehaviour
         _SFXSliderCounter.text = _soundEffectsSlider.value.ToString();
         //Slider _soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
         //GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>().text = _soundEffectsSlider.value.ToString();
-        //_mixer.SetFloat("SFX", (float)_soundEffectsSlider.value);
-        //PlayerPrefs.SetFloat("SFX", (float)_soundEffectsSlider.value);
+        _mixer.SetFloat("SFX", _soundEffectsSlider.value);
+        PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
     }
 
     public void MusicSlider()
     {
         _musicSliderCounter.text = _musicSlider.value.ToString();
-        //GameObject.FindGameObjectWithTag("MusicSliderCounter").GetComponent<TextMeshProUGUI>().text = _musicSlider.value.ToString();
+        GameObject.FindGameObjectWithTag("MusicSliderCounter").GetComponent<TextMeshProUGUI>().text = _musicSlider.value.ToString();
     }
 
     public IEnumerator SetMixerFloat(string name, float val)
@@ -151,7 +151,7 @@ public class OptionsManager : MonoBehaviour
     {
         switch (value)
         {
-/*            case 0:
+            /*case 0:
                 return -80f;
             case 1:
                 return -10f;
