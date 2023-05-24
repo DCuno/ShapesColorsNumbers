@@ -75,17 +75,17 @@ public class OptionsManager : MonoBehaviour
         if (curMusicSliderVal != _musicSlider.value)
         {
             StartCoroutine(SetMixerFloat("Music", SliderToDecibelMusic(_musicSlider.value)));
-            curMusicSliderVal = _musicSlider.value;
+            /*curMusicSliderVal = _musicSlider.value;
             _mixer.SetFloat("Music", (float)_musicSlider.value);
-            PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);
+            PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);*/
         }
 
         if (curSFXSliderVal != _soundEffectsSlider.value)
         {
             StartCoroutine(SetMixerFloat("SFX", SliderToDecibelSFX(_soundEffectsSlider.value)));
-            curSFXSliderVal = _soundEffectsSlider.value;
+            /*curSFXSliderVal = _soundEffectsSlider.value;
             _mixer.SetFloat("SFX", (float)_soundEffectsSlider.value);
-            PlayerPrefs.SetFloat("SFX", (float)_soundEffectsSlider.value);
+            PlayerPrefs.SetFloat("SFX", (float)_soundEffectsSlider.value);*/
         }
     }
 
@@ -151,30 +151,30 @@ public class OptionsManager : MonoBehaviour
     {
         switch (value)
         {
-            /*case 0:
-                return -80f;
-            case 1:
-                return -10f;
-            case 2:
-                return -9f;
-            case 3:
-                return -8f;
-            case 4:
-                return -7f;
-            case 5:
-                return -6f;
-            case 6:
-                return -5f;
-            case 7:
-                return -4f;
-            case 8:
-                return -3f;
-            case 9:
-                return -2f;
-            case 10:
-                return 0f;
-            default:
-                return -6f;*/
+            /*            case 0:
+                            return -80f;
+                        case 1:
+                            return -10f;
+                        case 2:
+                            return -9f;
+                        case 3:
+                            return -8f;
+                        case 4:
+                            return -7f;
+                        case 5:
+                            return -6f;
+                        case 6:
+                            return -5f;
+                        case 7:
+                            return -4f;
+                        case 8:
+                            return -3f;
+                        case 9:
+                            return -2f;
+                        case 10:
+                            return 0f;
+                        default:
+                            return -6f;*/
 
             case 0:
                 return -80f;
