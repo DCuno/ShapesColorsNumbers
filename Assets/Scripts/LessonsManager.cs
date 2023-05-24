@@ -70,64 +70,80 @@ public class LessonsManager : MonoBehaviour
     IEnumerator Lessons()
     {
         int idx = 0;
-        List<Polygon.Shape> _allShapes = new List<Polygon.Shape>{ Polygon.Shape.Triangle, Polygon.Shape.Square, Polygon.Shape.Pentagon, Polygon.Shape.Hexagon, Polygon.Shape.Circle, Polygon.Shape.Star };
+        List<Polygon.Shape> _allShapes = new List<Polygon.Shape> { Polygon.Shape.Triangle, Polygon.Shape.Square, Polygon.Shape.Pentagon, Polygon.Shape.Hexagon, Polygon.Shape.Circle, Polygon.Shape.Star };
         List<Spawner.Colors> _allColors = new List<Spawner.Colors> { Spawner.Colors.Red, Spawner.Colors.Orange, Spawner.Colors.Yellow, Spawner.Colors.Green, Spawner.Colors.Blue, Spawner.Colors.Purple };
+        string curChapter = PlayerPrefs.GetString("Chapter");
 
-        foreach (GameObject i in ShapesList)
+        if (curChapter.Equals("All") || curChapter.Equals("Shapes"))
         {
-            LessonsManager.VoiceSound(Spawner.Topics.Shapes, (Polygon.Shape)idx, (Spawner.Colors)0, 0);
-            i.gameObject.SetActive(true);
-            yield return new WaitForSeconds(3);
-            i.gameObject.SetActive(false);
+            foreach (GameObject i in ShapesList)
+            {
+                LessonsManager.VoiceSound(Spawner.Topics.Shapes, (Polygon.Shape)idx, (Spawner.Colors)0, 0);
+                i.gameObject.SetActive(true);
+                yield return new WaitForSeconds(3);
+                i.gameObject.SetActive(false);
 
-            spawner.GetComponent<Spawner>().SettingsSetup(new List<Polygon.Shape> { (Polygon.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 1, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
-            spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().SettingsSetup(new List<Polygon.Shape> { (Polygon.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 1, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
+                spawner.GetComponent<Spawner>().started = true;
 
-            yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
 
-            spawner.GetComponent<Spawner>().SettingsSetup(new List<Polygon.Shape> { (Polygon.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 7, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
-            spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().SettingsSetup(new List<Polygon.Shape> { (Polygon.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 7, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
+                spawner.GetComponent<Spawner>().started = true;
 
-            yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
-            idx++;
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                idx++;
+            }
+
+            if (curChapter.Equals("Shapes"))
+                yield return null;
         }
 
         idx = 0;
-        foreach (GameObject i in ColorsList)
+        if (curChapter.Equals("All") || curChapter.Equals("Colors"))
         {
-            LessonsManager.VoiceSound(Spawner.Topics.Colors, (Polygon.Shape)0, (Spawner.Colors)idx, 0);
-            i.gameObject.SetActive(true);
-            yield return new WaitForSeconds(3);
-            i.gameObject.SetActive(false);
+            foreach (GameObject i in ColorsList)
+            {
+                LessonsManager.VoiceSound(Spawner.Topics.Colors, (Polygon.Shape)0, (Spawner.Colors)idx, 0);
+                i.gameObject.SetActive(true);
+                yield return new WaitForSeconds(3);
+                i.gameObject.SetActive(false);
 
-            spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 1, true, false, Spawner.Topics.Colors, Spawner.Topics.Colors);
-            spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 1, true, false, Spawner.Topics.Colors, Spawner.Topics.Colors);
+                spawner.GetComponent<Spawner>().started = true;
 
-            yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
 
-            spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 7, true, false, Spawner.Topics.Colors, Spawner.Topics.Colors);
-            spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 7, true, false, Spawner.Topics.Colors, Spawner.Topics.Colors);
+                spawner.GetComponent<Spawner>().started = true;
 
-            yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
-            idx++;
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                idx++;
+            }
+
+            if (curChapter.Equals("Colors"))
+                yield return null;
         }
 
         idx = 0;
-        foreach (GameObject i in NumbersList)
+        if (curChapter.Equals("All") || curChapter.Equals("Numbers"))
         {
-            LessonsManager.VoiceSound(Spawner.Topics.Numbers, (Polygon.Shape)0, (Spawner.Colors)0, idx);
-            i.gameObject.SetActive(true);
-            yield return new WaitForSeconds(3);
-            i.gameObject.SetActive(false);
+            foreach (GameObject i in NumbersList)
+            {
+                LessonsManager.VoiceSound(Spawner.Topics.Numbers, (Polygon.Shape)0, (Spawner.Colors)0, idx);
+                i.gameObject.SetActive(true);
+                yield return new WaitForSeconds(3);
+                i.gameObject.SetActive(false);
 
-            spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, _allColors, 5, idx + 1, true, false, Spawner.Topics.Numbers, Spawner.Topics.Numbers);
-            spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, _allColors, 5, idx + 1, true, false, Spawner.Topics.Numbers, Spawner.Topics.Numbers);
+                spawner.GetComponent<Spawner>().started = true;
 
-            yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
-            idx++;
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                idx++;
+            }
         }
 
-        SceneManager.LoadScene(sceneName: "LessonsSelectionScene");
+        SceneManager.LoadScene(sceneName: "TitleScene");
         yield return null;
     }
 
