@@ -41,15 +41,15 @@ public class OptionsManager : MonoBehaviour
             _SFXSliderCounter = GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>();
         }
 
-        /*if (_mixer == null)
+        if (_mixer == null)
         {
             _mixer = GameObject.FindGameObjectWithTag("MusicSource").GetComponent<AudioSource>().outputAudioMixerGroup.audioMixer;
-        }*/
+        }
 
-        LoadFromPrefs();
+        //LoadFromPrefs();
 
-        /*curMusicSliderVal = _musicSlider.value;
-        curSFXSliderVal = _soundEffectsSlider.value;*/
+        curMusicSliderVal = _musicSlider.value;
+        curSFXSliderVal = _soundEffectsSlider.value;
 
         SoundEffectsSlider();
         MusicSlider();
@@ -218,17 +218,17 @@ public class OptionsManager : MonoBehaviour
             case 4:
                 return -1f;
             case 5:
-                return 0f;
+                return 6f;
             case 6:
-                return 1f;
+                return 8f;
             case 7:
-                return 2f;
+                return 10f;
             case 8:
-                return 3f;
+                return 12f;
             case 9:
-                return 4f;
+                return 14f;
             case 10:
-                return 5f;
+                return 16f;
             default:
                 return 6f;
         }
