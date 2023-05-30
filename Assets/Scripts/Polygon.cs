@@ -14,7 +14,9 @@ public class Polygon : MonoBehaviour
     private Audio _audio;
 
     // Effects
+    [Tooltip("Select 3 sizes of particle objects for when the shape is popped")]
     public GameObject[] PopParticles;
+    [Tooltip("Select a text object for when the shape is popped")]
     public GameObject TextObj;
 
     // Game Mode Variables
@@ -61,6 +63,7 @@ public class Polygon : MonoBehaviour
 
     // Polygon variables
     public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star }
+    [Tooltip("Select sprites the polygon can become")]
     public Sprite[] PolygonSprites;
     private Shape _shape;
     public Spawner.Colors Color;
@@ -85,16 +88,7 @@ public class Polygon : MonoBehaviour
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
 
-        // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
-        Physics2D.IgnoreLayerCollision(3, 3, true);
-        Physics2D.IgnoreLayerCollision(3, 6, true);
-        // Pop shapes through text colliders
-        Physics2D.IgnoreLayerCollision(6, 2, true); 
-        GameObject[] screenEdges = GameObject.FindGameObjectsWithTag("edge");
-        foreach (GameObject screenEdge in screenEdges)
-        {
-            Physics2D.IgnoreCollision(_polyCollider2D, screenEdge.GetComponent<BoxCollider2D>(), true);
-        }
+        SetCollisionOff();
     }
 
     // Update is called once per frame
@@ -153,7 +147,7 @@ public class Polygon : MonoBehaviour
                 gameObject.transform.position = new Vector2(gameObject.transform.position.x, -gameObject.transform.position.y);
             }
         }
-
+        
         // Check if out of bounds.
         OutOfBoundsRecall();
     }
@@ -326,6 +320,7 @@ public class Polygon : MonoBehaviour
         }
     }
 
+    // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
     private void SetCollisionOff()
     {
         Physics2D.IgnoreLayerCollision(3, 3, true);
@@ -443,9 +438,9 @@ public class Polygon : MonoBehaviour
         {
             // Need to increment the polygon count if the pop text isn't on. Because it increments in pop text otherwise.
             if (_text != Spawner.Topics.Numbers)
-                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().count++]);
+                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().Count++]);
             else
-                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().count]);
+                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().Count]);
         }
         else
         {
@@ -479,9 +474,9 @@ public class Polygon : MonoBehaviour
         {
             GameObject tempTextObj = Instantiate(TextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_numberTextMapSize, _numberTextMapSize, 0);
-            int newCount = ++GetComponentInParent<Spawner>().count;
+            int _newCount = ++GetComponentInParent<Spawner>().Count;
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
-            tempTextObjTMP.text = newCount.ToString();
+            tempTextObjTMP.text = _newCount.ToString();
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
         else // Off

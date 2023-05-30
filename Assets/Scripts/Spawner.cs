@@ -12,20 +12,20 @@ public class Spawner : MonoBehaviour
     private GameObject spawnedSettingsCanvas;
 
     private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
-    public List<GameObject> shapesList = new List<GameObject>();
-    public int count = 0;
+    private List<GameObject> shapesList = new List<GameObject>();
+    public int Count { get; set; } = 0;
     [Range(minIter, maxIter)]
-    public int iterations;
+    private int iterations;
     [Range(minSize, maxSize)]
-    public int sizeSlider; // when size is maxSize(Default: 10) on the spawner, shape size is 0.7f. when size is minSize(Default: 1), shape size is 0.1f.
+    private int sizeSlider; // when size is maxSize(Default: 10) on the spawner, shape size is 0.7f. when size is minSize(Default: 1), shape size is 0.1f.
     public GameObject shape;
 
     private float finishedCheck = 0f;
-    public bool finished = false;
-    public bool started = false;
-    public settingsStruct currentSettings;
+    private bool finished = false;
+    public bool Started { get; set; } = false;
+    private SpawnerSettings currentSettings;
 
-    public struct settingsStruct
+    public struct SpawnerSettings
     {
         public List<Polygon.Shape> shapes;
         public List<Colors> colors;
@@ -44,9 +44,9 @@ public class Spawner : MonoBehaviour
 
     IEnumerator Spawn(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
     {
-        currentSettings = new settingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
+        currentSettings = new SpawnerSettings() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
         shapesList.Clear();
-        count = 0;
+        Count = 0;
         finished = false;
         for (int i = 0; i < amount; i++)
         {
@@ -54,15 +54,11 @@ public class Spawner : MonoBehaviour
             {
                 yield return new WaitForSeconds(0.05f);
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-                Color tmpColor = RandomColorSelect(colors);
-                // shapesList[i].GetComponent<SpriteRenderer>().sortingOrder = (i * 2) + 1; // For outline
-                shapesList[i].GetComponent<SpriteRenderer>().sortingOrder = 1; // For shadow
-                shapesList[i].GetComponent<Polygon>().Creation(RandomShapeSelect(shapes), tmpColor, UnityColorToEnumColor(tmpColor), size, edges, tilt, voice, text);
-                // shapesList[i].transform.position = new Vector3(shapesList[i].transform.position.x, shapesList[i].transform.position.y, (float)(-1 - i));
+                Color _tmpColor = RandomColor(colors);
+                shapesList[i].GetComponent<Polygon>().Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, voice, text);
                 yield return new WaitForSeconds(0.08f);
             }
         }
-
     }
 
     // Updates in the editor
@@ -104,7 +100,7 @@ public class Spawner : MonoBehaviour
     }
 
     // Random Color selected from given list
-    public static Color RandomColorSelect(List<Colors> arr) =>
+    public static Color RandomColor(List<Colors> arr) =>
         arr[Random.Range(0, arr.Count)] switch
         {
             Colors.Red => new Color(0.784f, 0.216f, 0.216f), // Red
@@ -142,7 +138,7 @@ public class Spawner : MonoBehaviour
     }
 
     // Random Shape selected from given array
-    Polygon.Shape RandomShapeSelect(List<Polygon.Shape> arr)
+    Polygon.Shape RandomShape(List<Polygon.Shape> arr)
     {
         return arr[Random.Range(0, arr.Count)];
     }
@@ -168,7 +164,7 @@ public class Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (started)
+        if (Started)
         {
             finishedCheck += Time.deltaTime;
 
@@ -181,7 +177,7 @@ public class Spawner : MonoBehaviour
                     if (this.transform.childCount == 0)
                     {
                         finished = true;
-                        started = false;
+                        Started = false;
                         finishedCheck = 0f;
                         spawnedSettingsCanvas = Instantiate(settingsCanvas);
                         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
@@ -197,7 +193,7 @@ public class Spawner : MonoBehaviour
                     if (this.transform.childCount == 0)
                     {
                         finished = true;
-                        started = false;
+                        Started = false;
                         finishedCheck = 0f;
                     }
                 }

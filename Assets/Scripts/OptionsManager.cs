@@ -116,11 +116,11 @@ public class OptionsManager : MonoBehaviour
 
     public void SoundEffectsSlider()
     {
-        _SFXSliderCounter.text = _soundEffectsSlider.value.ToString();
         //Slider _soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
-        //GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>().text = _soundEffectsSlider.value.ToString();
-        _mixer.SetFloat("SFX", _soundEffectsSlider.value);
-        PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
+        //_mixer.SetFloat("SFX", _soundEffectsSlider.value);
+        //PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
+        _SFXSliderCounter.text = _soundEffectsSlider.value.ToString();
+        GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>().text = _soundEffectsSlider.value.ToString();
     }
 
     public void MusicSlider()
@@ -151,31 +151,6 @@ public class OptionsManager : MonoBehaviour
     {
         switch (value)
         {
-            /*            case 0:
-                            return -80f;
-                        case 1:
-                            return -10f;
-                        case 2:
-                            return -9f;
-                        case 3:
-                            return -8f;
-                        case 4:
-                            return -7f;
-                        case 5:
-                            return -6f;
-                        case 6:
-                            return -5f;
-                        case 7:
-                            return -4f;
-                        case 8:
-                            return -3f;
-                        case 9:
-                            return -2f;
-                        case 10:
-                            return 0f;
-                        default:
-                            return -6f;*/
-
             case 0:
                 return -80f;
             case 1:
