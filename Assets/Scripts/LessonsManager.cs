@@ -84,14 +84,14 @@ public class LessonsManager : MonoBehaviour
                 i.gameObject.SetActive(false);
 
                 spawner.GetComponent<Spawner>().SettingsSetup(new List<Polygon.Shape> { (Polygon.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 1, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
-                spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
 
                 spawner.GetComponent<Spawner>().SettingsSetup(new List<Polygon.Shape> { (Polygon.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 7, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
-                spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
                 idx++;
             }
 
@@ -110,14 +110,14 @@ public class LessonsManager : MonoBehaviour
                 i.gameObject.SetActive(false);
 
                 spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 1, true, false, Spawner.Topics.Colors, Spawner.Topics.Colors);
-                spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
 
                 spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 7, true, false, Spawner.Topics.Colors, Spawner.Topics.Colors);
-                spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
                 idx++;
             }
 
@@ -136,9 +136,9 @@ public class LessonsManager : MonoBehaviour
                 i.gameObject.SetActive(false);
 
                 spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, _allColors, 5, idx + 1, true, false, Spawner.Topics.Numbers, Spawner.Topics.Numbers);
-                spawner.GetComponent<Spawner>().started = true;
+                spawner.GetComponent<Spawner>().Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().started);
+                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
                 idx++;
             }
         }
