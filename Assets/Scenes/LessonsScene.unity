@@ -152,6 +152,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 182a203522dec7d498a778883baa8dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpawnerSettings:
+  - {fileID: 11400000, guid: 2c5dacdd16528d643a6e62deada276b0, type: 2}
+  - {fileID: 11400000, guid: c7c6a841ea4457d4aa1f1d77da65c6b1, type: 2}
+  - {fileID: 11400000, guid: ffd89315be5c1ef4b86df44df99ab394, type: 2}
+  - {fileID: 11400000, guid: 3fafd8abb2e11354980579ada56a926d, type: 2}
+  - {fileID: 11400000, guid: d815becdfb68dbf48b1fd3ccae0ccdfc, type: 2}
+  - {fileID: 11400000, guid: 67e9b77c82ca98346854020e9a4c1224, type: 2}
+  - {fileID: 11400000, guid: 81b56f90e92d34c41a5173edb443631a, type: 2}
+  - {fileID: 11400000, guid: ad78e258db5a3434f8e3dcb4daa79051, type: 2}
+  - {fileID: 11400000, guid: c20816dadea1d6f4ea6f777b6bcc1a1a, type: 2}
+  - {fileID: 11400000, guid: 35dfbb17a365a1d4fbbaec7319f662ac, type: 2}
+  - {fileID: 11400000, guid: 7d64c64fbbd15b54a8bf29367ac11f8f, type: 2}
+  - {fileID: 11400000, guid: 9a7eb74c4361cda499714650219942f9, type: 2}
 --- !u!4 &910769502
 Transform:
   m_ObjectHideFlags: 0
