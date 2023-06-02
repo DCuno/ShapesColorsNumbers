@@ -23,9 +23,11 @@ public class Spawner : MonoBehaviour
     private float finishedCheck = 0f;
     private bool finished = false;
     public bool Started { get; set; } = false;
-    private SpawnerSettings currentSettings;
+    [SerializeField]
+    private SpawnerSettings SpawnerSettings;
+    private SpawnerSettingsStruct currentSettings;
 
-    public struct SpawnerSettings
+    public struct SpawnerSettingsStruct
     {
         public List<Polygon.Shape> shapes;
         public List<Colors> colors;
@@ -42,9 +44,19 @@ public class Spawner : MonoBehaviour
         StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, voice, text));
     }
 
+    public void SettingsSetup(SpawnerSettings settings)
+    {
+        if (settings == null)
+            return;
+
+        SettingsSetup(settings.Shapes, settings.Colors, settings.Size, settings.Amount, 
+                        settings.Edges, settings.Tilt, settings.Voice, settings.Text);
+        Started = true;
+    }
+
     IEnumerator Spawn(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
     {
-        currentSettings = new SpawnerSettings() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
+        currentSettings = new SpawnerSettingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
         shapesList.Clear();
         Count = 0;
         finished = false;
@@ -93,7 +105,7 @@ public class Spawner : MonoBehaviour
             1 => new Color(0.0f, 0.831f, 0.0f), // Green
             2 => new Color(0f, 0.33f, 0.831f), // Blue
             3 => new Color(1.0f, 0.8f, 0.0f), // Yellow
-            4 => new Color(1.0f, 0.64f, 0.0f),// Orange
+            4 => new Color(1.0f, 0.5f, 0.0f),// Orange
             5 => new Color(0.5f, 0f, 0.5f),// Purple
             _ => Color.white,
         };
@@ -107,11 +119,14 @@ public class Spawner : MonoBehaviour
             Colors.Green => new Color(0.0f, 0.831f, 0.0f), // Green
             Colors.Blue => new Color(0f, 0.33f, 0.831f), // Blue
             Colors.Yellow => new Color(1.0f, 0.8f, 0.0f), // Yellow
-            Colors.Orange => new Color(1.0f, 0.4f, 0.0f), // Orange
+            Colors.Orange => new Color(1.0f, 0.5f, 0.0f), // Orange
             Colors.Purple => new Color(0.443f, 0.216f, 0.784f), // Purple
             Colors.White => Color.white,
             _ => Color.white,
         };
+
+    // Old Orange
+    // new Color(1.0f, 0.4f, 0.0f)
 
     // Random Shape returned out of all shapes
     Polygon.Shape RandomShape()
@@ -153,7 +168,7 @@ public class Spawner : MonoBehaviour
             return Colors.Blue;
         else if (color == new Color(1.0f, 0.8f, 0.0f))
             return Colors.Yellow;
-        else if (color == new Color(1.0f, 0.4f, 0.0f))
+        else if (color == new Color(1.0f, 0.5f, 0.0f))
             return Colors.Orange;
         else if (color == new Color(0.443f, 0.216f, 0.784f))
             return Colors.Purple;

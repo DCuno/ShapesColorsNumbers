@@ -24,7 +24,7 @@ public class FunModeButtonManager : MonoBehaviour
 
     }
 
-    public void FunModeButtonManagerConstructor(Spawner.SpawnerSettings SpawnerSettings)
+    public void FunModeButtonManagerConstructor(Spawner.SpawnerSettingsStruct SpawnerSettings)
     {
         shapes = SpawnerSettings.shapes;
         colors = SpawnerSettings.colors;
