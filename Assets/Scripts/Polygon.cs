@@ -77,7 +77,7 @@ public class Polygon : MonoBehaviour
     public bool IsPopped = false;
     [SerializeField] public int ID;
     private GameObject _shadowObj;
-    static private float s_shadowDist = 0.5f;
+    static private float s_shadowDist = 0.2f;
 
 
     private void Awake()
@@ -101,7 +101,9 @@ public class Polygon : MonoBehaviour
     void Update()
     {
         // Constantly update shadow position to follow the polygon
-        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, gameObject.transform.position.y + s_shadowDist, gameObject.transform.position.z + s_shadowDist);
+        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, 
+                                                    gameObject.transform.position.y + -s_shadowDist, 
+                                                    gameObject.transform.position.z + s_shadowDist);
 
         PolygonVelocityLimiter();
 
@@ -246,13 +248,15 @@ public class Polygon : MonoBehaviour
         // Attach a sprite renderer component and set its color to black.
         SpriteRenderer _shadow_sr = _shadowObj.AddComponent<SpriteRenderer>();
         _shadow_sr.sprite = _spriteRenderer.sprite;
-        _shadow_sr.color = UnityEngine.Color.black;
+        _shadow_sr.color = new UnityEngine.Color(0, 0, 0, 0.70f);
         _shadow_sr.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
         _shadow_sr.sortingOrder = 0;
 
         // For actual shadows
         _shadowObj.transform.localScale = new Vector3(1f, 1f, 1f);
-        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + 0.2f, gameObject.transform.position.y + 0.2f, gameObject.transform.position.z + 0.5f);
+        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, 
+                                                    gameObject.transform.position.y + -s_shadowDist, 
+                                                    gameObject.transform.position.z + s_shadowDist);
     }
 
     /// <summary>
