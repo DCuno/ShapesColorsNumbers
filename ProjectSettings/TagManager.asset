@@ -110,3 +110,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: New Layer
+    uniqueID: 831749217
+    locked: 0

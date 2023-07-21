@@ -24,16 +24,16 @@ public class FunModeButtonManager : MonoBehaviour
 
     }
 
-    public void FunModeButtonManagerConstructor(Spawner.settingsStruct settingsStruct)
+    public void FunModeButtonManagerConstructor(Spawner.SpawnerSettingsStruct SpawnerSettings)
     {
-        shapes = settingsStruct.shapes;
-        colors = settingsStruct.colors;
-        size = settingsStruct.size;
-        amount = settingsStruct.amount;
-        edges = settingsStruct.edges;
-        tilt = settingsStruct.tilt;
-        voice = settingsStruct.voice;
-        text = settingsStruct.text;
+        shapes = SpawnerSettings.shapes;
+        colors = SpawnerSettings.colors;
+        size = SpawnerSettings.size;
+        amount = SpawnerSettings.amount;
+        edges = SpawnerSettings.edges;
+        tilt = SpawnerSettings.tilt;
+        voice = SpawnerSettings.voice;
+        text = SpawnerSettings.text;
 
         Toggle[] tempToggles;
 
@@ -64,9 +64,6 @@ public class FunModeButtonManager : MonoBehaviour
                 i.isOn = false;
             }
         }
-
-        /*if (colors.Count == 0)
-            colors.Add(Spawner.Colors.White);*/
 
         GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>().value = size;
         GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>().value = amount;
@@ -207,7 +204,7 @@ public class FunModeButtonManager : MonoBehaviour
         }
 
         spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, voice, text);
-        spawner.GetComponent<Spawner>().started = true;
+        spawner.GetComponent<Spawner>().Started = true;
         Destroy(GameObject.FindGameObjectWithTag("SettingsCanvasScroll"));
     }
 

@@ -14,8 +14,12 @@ public class Polygon : MonoBehaviour
     private Audio _audio;
 
     // Effects
+    [Tooltip("Select 3 sizes of particle objects for when the shape is popped")]
     public GameObject[] PopParticles;
-    public GameObject TextObj;
+    [Tooltip("Select a number text object for when the shape is popped")]
+    public GameObject NumberTextObj;
+    [Tooltip("Select a word text object for when the shape is popped")]
+    public GameObject WordTextObj;
 
     // Game Mode Variables
     private bool _tiltOn;
@@ -44,8 +48,12 @@ public class Polygon : MonoBehaviour
     static private float s_maxGravity = 1.5f;
     static private float s_smallestSizeSlider = 1;
     static private float s_largestSizeSlider = 10;
-    static private float s_smallestRealSize = 0.1f;
-    static private float s_largestRealSize = 0.7f;
+    static private float s_shapeTextSmallestRealSize = 0.1f;
+    static private float s_shapeTextLargestRealSize = 0.7f;
+    static private float s_numberTextSmallestRealSize = 0.35f;
+    static private float s_numberTextLargestRealSize = 1.0f;
+    static private float s_colorTextSmallestRealSize = 0.3f;
+    static private float s_colorTextLargestRealSize = 0.5f;
     private float _normV;
     private float _shapeMapSize;
     private GameObject _popMapSize;
@@ -61,6 +69,7 @@ public class Polygon : MonoBehaviour
 
     // Polygon variables
     public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star }
+    [Tooltip("Select sprites the polygon can become")]
     public Sprite[] PolygonSprites;
     private Shape _shape;
     public Spawner.Colors Color;
@@ -68,14 +77,14 @@ public class Polygon : MonoBehaviour
     public bool IsPopped = false;
     [SerializeField] public int ID;
     private GameObject _shadowObj;
-    static private float s_shadowDist = 0.5f;
+    static private float s_shadowDist = 0.2f;
 
 
     private void Awake()
     {
         _polyCollider2D = GetComponent<PolygonCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _audioSource = FindObjectOfType<AudioSource>();
+        _audioSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -85,23 +94,16 @@ public class Polygon : MonoBehaviour
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
 
-        // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
-        Physics2D.IgnoreLayerCollision(3, 3, true);
-        Physics2D.IgnoreLayerCollision(3, 6, true);
-        // Pop shapes through text colliders
-        Physics2D.IgnoreLayerCollision(6, 2, true); 
-        GameObject[] screenEdges = GameObject.FindGameObjectsWithTag("edge");
-        foreach (GameObject screenEdge in screenEdges)
-        {
-            Physics2D.IgnoreCollision(_polyCollider2D, screenEdge.GetComponent<BoxCollider2D>(), true);
-        }
+        SetCollisionOff();
     }
 
     // Update is called once per frame
     void Update()
     {
         // Constantly update shadow position to follow the polygon
-        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, gameObject.transform.position.y + s_shadowDist, gameObject.transform.position.z + s_shadowDist);
+        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, 
+                                                    gameObject.transform.position.y + -s_shadowDist, 
+                                                    gameObject.transform.position.z + s_shadowDist);
 
         PolygonVelocityLimiter();
 
@@ -153,7 +155,7 @@ public class Polygon : MonoBehaviour
                 gameObject.transform.position = new Vector2(gameObject.transform.position.x, -gameObject.transform.position.y);
             }
         }
-
+        
         // Check if out of bounds.
         OutOfBoundsRecall();
     }
@@ -163,10 +165,8 @@ public class Polygon : MonoBehaviour
         // Change velocity relative to the size of the shapes. Default Size: 0.33f
         _normV = 1;
 
-        // Maps slider position from smallest(Default: 1) largest(Default: 10) to real size from smallest(Default: 0.1f) to largest(Default: 0.7f)
-        _shapeMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_largestRealSize - s_smallestRealSize)) + s_smallestRealSize;
-        _numberTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (1.0f - 0.35f)) + 0.35f;
-        _shapeColorTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (0.5f - 0.3f)) + 0.3f;
+        // Maps slider position to real size
+        MapTextSliders(size);
 
         if (size >= 8)
             _popMapSize = PopParticles[0];
@@ -248,13 +248,26 @@ public class Polygon : MonoBehaviour
         // Attach a sprite renderer component and set its color to black.
         SpriteRenderer _shadow_sr = _shadowObj.AddComponent<SpriteRenderer>();
         _shadow_sr.sprite = _spriteRenderer.sprite;
-        _shadow_sr.color = UnityEngine.Color.black;
+        _shadow_sr.color = new UnityEngine.Color(0, 0, 0, 0.70f);
         _shadow_sr.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
         _shadow_sr.sortingOrder = 0;
 
         // For actual shadows
         _shadowObj.transform.localScale = new Vector3(1f, 1f, 1f);
-        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + 0.2f, gameObject.transform.position.y + 0.2f, gameObject.transform.position.z + 0.5f);
+        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, 
+                                                    gameObject.transform.position.y + -s_shadowDist, 
+                                                    gameObject.transform.position.z + s_shadowDist);
+    }
+
+    /// <summary>
+    /// Maps the settings panel's size slider to what the real size of the text should be
+    /// </summary>
+    /// <param name="size">Size of polygon</param>
+    private void MapTextSliders(float size)
+    {
+        _shapeMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_shapeTextLargestRealSize - s_shapeTextSmallestRealSize)) + s_shapeTextSmallestRealSize;
+        _numberTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_numberTextLargestRealSize - s_numberTextSmallestRealSize)) + s_numberTextSmallestRealSize;
+        _shapeColorTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_colorTextLargestRealSize - s_colorTextSmallestRealSize)) + s_colorTextSmallestRealSize;
     }
 
     // Shapes slow down and stop eventually. This keeps them always moving.
@@ -326,6 +339,7 @@ public class Polygon : MonoBehaviour
         }
     }
 
+    // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
     private void SetCollisionOff()
     {
         Physics2D.IgnoreLayerCollision(3, 3, true);
@@ -443,9 +457,9 @@ public class Polygon : MonoBehaviour
         {
             // Need to increment the polygon count if the pop text isn't on. Because it increments in pop text otherwise.
             if (_text != Spawner.Topics.Numbers)
-                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().count++]);
+                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().Count++]);
             else
-                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().count]);
+                _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().Count]);
         }
         else
         {
@@ -457,31 +471,31 @@ public class Polygon : MonoBehaviour
     {
         if (_text == Spawner.Topics.Shapes)
         {
-            GameObject tempTextObj = Instantiate(TextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            GameObject tempTextObj = Instantiate(WordTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
-            tempTextObjTMP.fontSize = 40;
+            //tempTextObjTMP.fontSize = 40;
             tempTextObjTMP.text = _shape.ToString();
-            tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
+            //tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
         else if (_text == Spawner.Topics.Colors)
         {
-            GameObject tempTextObj = Instantiate(TextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            GameObject tempTextObj = Instantiate(WordTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
-            tempTextObjTMP.fontSize = 40;
+            //tempTextObjTMP.fontSize = 40;
             tempTextObjTMP.text = Color.ToString();
-            tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
+            //tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
         else if (_text == Spawner.Topics.Numbers)
         {
-            GameObject tempTextObj = Instantiate(TextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
+            GameObject tempTextObj = Instantiate(NumberTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_numberTextMapSize, _numberTextMapSize, 0);
-            int newCount = ++GetComponentInParent<Spawner>().count;
+            int _newCount = ++GetComponentInParent<Spawner>().Count;
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
-            tempTextObjTMP.text = newCount.ToString();
+            tempTextObjTMP.text = _newCount.ToString();
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
         else // Off

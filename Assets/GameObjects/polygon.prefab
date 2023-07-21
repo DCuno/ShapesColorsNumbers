@@ -50,7 +50,8 @@ MonoBehaviour:
   - {fileID: 2828688518706668433, guid: d6f7d48398d339e4fa88c84237fe5080, type: 3}
   - {fileID: 6811178578015051201, guid: 7b945e6a2b936454696d068879c4dbd4, type: 3}
   - {fileID: 7759873380678542989, guid: 25fa2b9211c4d79419f8c0576eef5281, type: 3}
-  TextObj: {fileID: 2002266564941493273, guid: 813593958ee44c14bbcaa1403886b066, type: 3}
+  NumberTextObj: {fileID: 2002266564941493273, guid: 813593958ee44c14bbcaa1403886b066, type: 3}
+  WordTextObj: {fileID: 2227421312996591478, guid: 68505873fd91cbd47b44430299258fe2, type: 3}
   EdgesOn: 0
   PolygonSprites:
   - {fileID: 21300000, guid: c0c99ac45ee3968489beac279114099e, type: 3}
@@ -63,11 +64,6 @@ MonoBehaviour:
   IsSolid: 0
   IsPopped: 0
   ID: 0
-  mouseSpeed: 0
-  mouseXNorm: 0
-  mouseYNorm: 0
-  mouseStartPosition: {x: 0, y: 0, z: 0}
-  mouseEndPosition: {x: 0, y: 0, z: 0}
 --- !u!212 &8438792106879919585
 SpriteRenderer:
   m_ObjectHideFlags: 0
