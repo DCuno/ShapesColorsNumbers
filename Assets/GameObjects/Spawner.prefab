@@ -44,10 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsCanvas: {fileID: 6311703857006921390, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
-  shapesList: []
-  count: 0
-  iterations: 10
-  sizeSlider: 5
   shape: {fileID: 2194859948556307527, guid: ea07d57bcd05a9d4c8581e9bddf62e91, type: 3}
-  finished: 0
-  started: 0
+  SpawnerSettings: {fileID: 0}
