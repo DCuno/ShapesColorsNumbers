@@ -35,6 +35,7 @@ public class Polygon : MonoBehaviour
     private PhysicsMaterial2D _gravityOffMaterial;
 
     // Physics
+    private Touch touch;
     private float _initYV = 10.0f;
     static private float s_initXVMin = 0.06f;
     static private float s_initXVMax = 2.0f;
@@ -106,6 +107,8 @@ public class Polygon : MonoBehaviour
                                                     gameObject.transform.position.z + s_shadowDist);
 
         PolygonVelocityLimiter();
+
+        CheckTouch();
 
         if (_tiltOn)
         {
@@ -295,6 +298,33 @@ public class Polygon : MonoBehaviour
         }
     }
 
+    private void CheckTouch()
+    {
+        if (Input.touchCount > 0)
+        {
+            // Loop through all active touches
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                Touch touch = Input.GetTouch(i);
+
+                if (touch.phase == TouchPhase.Began)
+                {
+                    // Convert touch position to world position
+                    Vector3 worldTouchPosition = Camera.main.ScreenToWorldPoint(touch.position);
+
+                    // Perform a raycast to detect if the object is touched
+                    RaycastHit2D hit = Physics2D.Raycast(worldTouchPosition, Vector2.zero);
+
+                    // Check if the object was hit by the raycast
+                    if (hit.collider != null && hit.collider.gameObject == gameObject)
+                    {
+                        Pop();
+                    }
+                }
+            }
+        }
+    }
+
     private void Pop()
     {
         IsPopped = true;
@@ -308,10 +338,7 @@ public class Polygon : MonoBehaviour
     // Shape pop.
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Pop();
-        }
+        // mouse button down 0, Pop();
     }
 
     // Initialize x and y velocities. Randomize if the x velocity is negative or positive.
