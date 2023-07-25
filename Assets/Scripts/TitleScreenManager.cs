@@ -52,18 +52,15 @@ public class TitleScreenManager : MonoBehaviour
     public void FunModeButton()
     {
         StartCoroutine(FunModeButtonConfettiWait());
-
-        SceneManager.LoadScene(sceneName: "FunModeGameScene2");
     }
 
     private IEnumerator FunModeButtonConfettiWait()
     {
-        while (!AnimScript.finishedAnim)
-        {
-            yield return null;
-        }
+        var async = SceneManager.LoadSceneAsync(sceneName: "FunModeGameScene2");
 
-        yield return new WaitForSeconds(5.0f);
+        async.allowSceneActivation = false;
+        yield return new WaitForSeconds(0.5f);
+        async.allowSceneActivation = true;
     }
 
     public void OptionsButton()

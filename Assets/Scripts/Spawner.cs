@@ -71,6 +71,8 @@ public class Spawner : MonoBehaviour
                 yield return new WaitForSeconds(0.08f);
             }
         }
+
+        yield break;
     }
 
     // Updates in the editor
