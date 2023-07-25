@@ -148,12 +148,12 @@ public class Polygon : MonoBehaviour
         if (!EdgesOn)
         {
             // Return shape to opposite side to loop around the screen.
-            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 4 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 4)
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 8 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 8)
             {
                 gameObject.transform.position = new Vector2(-gameObject.transform.position.x, gameObject.transform.position.y);
             }
 
-            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 4 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 4)
+            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 8 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 8)
             {
                 gameObject.transform.position = new Vector2(gameObject.transform.position.x, -gameObject.transform.position.y);
             }
@@ -290,8 +290,8 @@ public class Polygon : MonoBehaviour
 
     private void OutOfBoundsRecall()
     {
-        if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize)
-                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize))
+        if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 4 || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 4
+                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 4 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 4)
         {
             TeleportSound();
             gameObject.transform.position = Vector2.zero;
@@ -300,6 +300,12 @@ public class Polygon : MonoBehaviour
 
     private void CheckTouch()
     {
+        // Debug Pop
+        if (Input.GetKey(KeyCode.K))
+        {
+            Pop();
+        }
+
         if (Input.touchCount > 0)
         {
             // Loop through all active touches
@@ -335,11 +341,14 @@ public class Polygon : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    // Shape pop.
-    private void OnMouseOver()
+    // PC Testing. Turn off for Mobile.
+    /*private void OnMouseOver()
     {
-        // mouse button down 0, Pop();
-    }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Pop();
+        }
+    }*/
 
     // Initialize x and y velocities. Randomize if the x velocity is negative or positive.
     private void SetInitialVelocities()
