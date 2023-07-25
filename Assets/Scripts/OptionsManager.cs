@@ -145,6 +145,8 @@ public class OptionsManager : MonoBehaviour
             if (result && value != val)
                 result = false;
         }
+
+        yield break;
     }
 
     private float SliderToDecibelMusic(float value)
