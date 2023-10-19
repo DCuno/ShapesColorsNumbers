@@ -178,6 +178,25 @@ public class Spawner : MonoBehaviour
             return Colors.White;
     }
 
+    // Used in Polygon to color pop text
+    public static Color EnumColortoUnityColor(Spawner.Colors color)
+    {
+        if (color == Colors.Red)
+            return new Color(0.784f, 0.216f, 0.216f);
+        else if (color == Colors.Green)
+            return new Color(0.0f, 0.831f, 0.0f);
+        else if (color == Colors.Blue)
+            return new Color(0f, 0.33f, 0.831f);
+        else if (color == Colors.Yellow)
+            return new Color(1.0f, 0.8f, 0.0f);
+        else if (color == Colors.Orange)
+            return new Color(1.0f, 0.5f, 0.0f);
+        else if (color == Colors.Purple)
+            return new Color(0.443f, 0.216f, 0.784f);
+        else // White
+            return Color.white;
+    }
+
     // Update is called once per frame
     void Update()
     {
