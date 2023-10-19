@@ -55,6 +55,7 @@ public class Polygon : MonoBehaviour
     static private float s_numberTextLargestRealSize = 1.0f;
     static private float s_colorTextSmallestRealSize = 0.3f;
     static private float s_colorTextLargestRealSize = 0.5f;
+    static private int s_outOfBoundsRatio = 2;
     private float _normV;
     private float _shapeMapSize;
     private GameObject _popMapSize;
@@ -159,7 +160,6 @@ public class Polygon : MonoBehaviour
             }
         }
         
-        // Check if out of bounds.
         OutOfBoundsRecall();
     }
 
@@ -290,8 +290,8 @@ public class Polygon : MonoBehaviour
 
     private void OutOfBoundsRecall()
     {
-        if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 4 || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 4
-                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 4 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 4)
+        if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatio || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatio
+                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatio || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatio)
         {
             TeleportSound();
             gameObject.transform.position = Vector2.zero;
@@ -341,14 +341,18 @@ public class Polygon : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    // PC Testing. Turn off for Mobile.
-    /*private void OnMouseOver()
-    {
-        if (Input.GetMouseButtonDown(0))
+    // PC Testing. Not compiled for mobile compilation
+    #if UNITY_EDITOR
+
+        private void OnMouseOver()
         {
-            Pop();
+            if (Input.GetMouseButtonDown(0))
+            {
+                Pop();
+            }
         }
-    }*/
+
+    #endif
 
     // Initialize x and y velocities. Randomize if the x velocity is negative or positive.
     private void SetInitialVelocities()
@@ -522,6 +526,7 @@ public class Polygon : MonoBehaviour
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
             //tempTextObjTMP.fontSize = 40;
             tempTextObjTMP.text = Color.ToString();
+            tempTextObjTMP.color = Spawner.EnumColortoUnityColor(this.Color);
             //tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
