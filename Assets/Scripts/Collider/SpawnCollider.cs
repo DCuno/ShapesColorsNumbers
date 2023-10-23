@@ -14,11 +14,11 @@ public class SpawnCollider : MonoBehaviour
             {
                 Physics2D.IgnoreCollision(collision, edge.GetComponent<BoxCollider2D>(), false);
             }
-            collision.gameObject.GetComponent<Polygon>().IsSolid = true;
+            //collision.gameObject.GetComponent<Polygon>().IsSolid = true;
         }
         else if (polygon != null && !polygon.EdgesOn)
         {
-            collision.gameObject.GetComponent<Polygon>().IsSolid = true;
+            //collision.gameObject.GetComponent<Polygon>().IsSolid = true;
         }
     }
 }
