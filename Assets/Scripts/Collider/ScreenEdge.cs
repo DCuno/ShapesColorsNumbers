@@ -7,7 +7,7 @@ using TMPro;
 
 public class ScreenEdge : MonoBehaviour
 {
-    public float colThickness = 2f;
+    public float colThickness = 4f;
     public float zPosition = 0f;
     private Vector2 screenSize;
     public PhysicsMaterial2D physicsMaterial;
