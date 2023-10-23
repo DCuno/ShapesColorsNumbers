@@ -55,7 +55,8 @@ public class Polygon : MonoBehaviour
     static private float s_numberTextLargestRealSize = 1.0f;
     static private float s_colorTextSmallestRealSize = 0.3f;
     static private float s_colorTextLargestRealSize = 0.5f;
-    static private int s_outOfBoundsRatio = 2;
+    static private int s_outOfBoundsRatioEdgesOn = 2;
+    static private int s_outOfBoundsRatioEdgesOff = 1;
     private float _normV;
     private float _shapeMapSize;
     private GameObject _popMapSize;
@@ -294,11 +295,23 @@ public class Polygon : MonoBehaviour
 
     private void OutOfBoundsRecall()
     {
-        if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatio || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatio
-                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatio || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatio)
+        if(EdgesOn)
         {
-            TeleportSound();
-            gameObject.transform.position = Vector2.zero;
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn
+                    || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn)
+            {
+                TeleportSound();
+                gameObject.transform.position = Vector2.zero;
+            }
+        }
+        else
+        {
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOff || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOff
+                    || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOff || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOff)
+            {
+                TeleportSound();
+                gameObject.transform.position = Vector2.zero;
+            }
         }
     }
 
@@ -491,7 +504,7 @@ public class Polygon : MonoBehaviour
         }
         else
         {
-            // Who goes there?!
+            Debug.LogWarning("Spawner Settings Failed to Set Voice Topic");
         }
     }
 
