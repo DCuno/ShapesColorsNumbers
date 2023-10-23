@@ -161,7 +161,10 @@ public class Polygon : MonoBehaviour
         }
 
         if (Physics2D.GetIgnoreLayerCollision(3, 3) == false)
+        {
             IsSolid = true;
+            _polyCollider2D.isTrigger = false;
+        }
 
         OutOfBoundsRecall();
     }
@@ -379,7 +382,7 @@ public class Polygon : MonoBehaviour
     // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
     private void SetCollisionOff()
     {
-        _polyCollider2D.isTrigger = false;
+        //_polyCollider2D.isTrigger = false;
         Physics2D.IgnoreLayerCollision(3, 3, true);
         Physics2D.IgnoreLayerCollision(3, 6, true);
         // Pop shapes through text colliders
