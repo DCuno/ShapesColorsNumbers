@@ -36,9 +36,9 @@ public class Polygon : MonoBehaviour
 
     // Physics
     private Touch touch;
-    private float _initYV = 10.0f;
+    private float _initYV = 15.0f;
     static private float s_initXVMin = 0.06f;
-    static private float s_initXVMax = 2.0f;
+    static private float s_initXVMax = 4.0f;
     static private float s_initAngV = 300.0f;
     static private float s_pushVMin = 5.0f;
     static private float s_pushVMax = 8.0f;
@@ -95,8 +95,6 @@ public class Polygon : MonoBehaviour
 
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
-
-        SetCollisionOff();
     }
 
     // Update is called once per frame
@@ -160,9 +158,9 @@ public class Polygon : MonoBehaviour
             }
         }
 
-        if (Physics2D.GetIgnoreLayerCollision(3, 3) == false)
+        if (IsSolid)
         {
-            IsSolid = true;
+            gameObject.layer = LayerMask.NameToLayer("shapes");
             _polyCollider2D.isTrigger = false;
         }
 
@@ -376,21 +374,6 @@ public class Polygon : MonoBehaviour
             _spriteRenderer.sprite.GetPhysicsShape(i, _points);
             LineUtility.Simplify(_points, tolerance, _simplifiedPoints);
             _polyCollider2D.SetPath(i, _simplifiedPoints);
-        }
-    }
-
-    // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
-    private void SetCollisionOff()
-    {
-        //_polyCollider2D.isTrigger = false;
-        Physics2D.IgnoreLayerCollision(3, 3, true);
-        Physics2D.IgnoreLayerCollision(3, 6, true);
-        // Pop shapes through text colliders
-        Physics2D.IgnoreLayerCollision(6, 2, true);
-        GameObject[] screenEdges = GameObject.FindGameObjectsWithTag("edge");
-        foreach (GameObject screenEdge in screenEdges)
-        {
-            Physics2D.IgnoreCollision(_polyCollider2D, screenEdge.GetComponent<BoxCollider2D>(), true);
         }
     }
 

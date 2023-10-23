@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8438792106879919585}
   - component: {fileID: 2687659905114791088}
   - component: {fileID: 8597563042415760307}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: polygon
   m_TagString: shape
   m_Icon: {fileID: 0}

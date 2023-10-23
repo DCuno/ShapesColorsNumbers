@@ -60,6 +60,7 @@ public class Spawner : MonoBehaviour
         shapesList.Clear();
         Count = 0;
         finished = false;
+        float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
         {
             if (!finished)
@@ -68,11 +69,16 @@ public class Spawner : MonoBehaviour
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
                 Color _tmpColor = RandomColor(colors);
                 shapesList[i].GetComponent<Polygon>().Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, voice, text);
-                yield return new WaitForSeconds(0.08f);
+                yield return new WaitForSeconds(spawnSpeed);
             }
         }
 
         yield break;
+    }
+
+    private float SpawnAmountRatio(float amount)
+    {
+        return (float) (0.08d - ((((0.08d - 0.01d) / (100d - 1d)) * (double)(amount - 1f))));
     }
 
     // Updates in the editor

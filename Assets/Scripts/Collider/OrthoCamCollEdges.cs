@@ -50,6 +50,9 @@ public class OrthoCamCollEdges : MonoBehaviour
         edgePoints[3] = bottomRight;
         edgePoints[4] = bottomLeft;
 
+        foreach (Vector2 v in edgePoints)
+            print("new edge point: " + v);
+        
         edge.points = edgePoints;
     }
 
