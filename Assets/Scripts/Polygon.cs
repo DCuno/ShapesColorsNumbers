@@ -159,7 +159,10 @@ public class Polygon : MonoBehaviour
                 gameObject.transform.position = new Vector2(gameObject.transform.position.x, -gameObject.transform.position.y);
             }
         }
-        
+
+        if (Physics2D.GetIgnoreLayerCollision(3, 3) == false)
+            IsSolid = true;
+
         OutOfBoundsRecall();
     }
 
@@ -300,12 +303,6 @@ public class Polygon : MonoBehaviour
 
     private void CheckTouch()
     {
-        // Debug Pop
-        if (Input.GetKey(KeyCode.K))
-        {
-            Pop();
-        }
-
         if (Input.touchCount > 0)
         {
             // Loop through all active touches
@@ -382,6 +379,7 @@ public class Polygon : MonoBehaviour
     // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
     private void SetCollisionOff()
     {
+        _polyCollider2D.isTrigger = false;
         Physics2D.IgnoreLayerCollision(3, 3, true);
         Physics2D.IgnoreLayerCollision(3, 6, true);
         // Pop shapes through text colliders
@@ -465,10 +463,14 @@ public class Polygon : MonoBehaviour
     public void PolygonVelocityLimiter()
     {
         if (_rigidbody2D.velocity.x > s_maxVx || _rigidbody2D.velocity.x < -s_maxVx)
+        {
             _rigidbody2D.velocity = new Vector2(s_maxVx * Mathf.Sign(_rigidbody2D.velocity.x), _rigidbody2D.velocity.y);
+        }
 
         if (_rigidbody2D.velocity.y > s_maxVy || _rigidbody2D.velocity.y < -s_maxVy)
+        { 
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, s_maxVy * Mathf.Sign(_rigidbody2D.velocity.y));
+        }
     }
 
     public void TeleportSound()

@@ -15,7 +15,6 @@ public class ScreenEdgeChild : MonoBehaviour
     private bool lerping = false;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
         // NOT IMPLEMENTATED COMPLETELY. Should shift text to not be out of bounds.
         // Only for Text objects, that's why the if statement earlier returns if it's a polygon.
         if (collision.gameObject.GetComponent<TextMeshPro>() != null)
