@@ -507,7 +507,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1341760403877023907, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
       propertyPath: m_Offset.y
-      value: 19.8
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3217960136911633236, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
       propertyPath: m_Pivot.x
