@@ -43,7 +43,7 @@ public class Polygon : MonoBehaviour
     static private float s_pushVMin = 5.0f;
     static private float s_pushVMax = 8.0f;
     static private float s_pushAngV = 300.0f;
-    static private float s_slowestV = 0.05f;
+    static private float s_slowestV = 0.65f;
     static private float s_maxVx = 20.0f;
     static private float s_maxVy = 20.0f;
     static private float s_maxGravity = 1.5f;
@@ -99,7 +99,7 @@ public class Polygon : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         // Constantly update shadow position to follow the polygon
         _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, 
@@ -148,14 +148,14 @@ public class Polygon : MonoBehaviour
         if (!EdgesOn)
         {
             // Return shape to opposite side to loop around the screen.
-            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 8 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 8)
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 1 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 1)
             {
-                gameObject.transform.position = new Vector2(-gameObject.transform.position.x, gameObject.transform.position.y);
+                gameObject.transform.position = new Vector2(-1 * gameObject.transform.position.x, gameObject.transform.position.y);
             }
 
-            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 8 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 8)
+            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 1 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 1)
             {
-                gameObject.transform.position = new Vector2(gameObject.transform.position.x, -gameObject.transform.position.y);
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, -1 * gameObject.transform.position.y);
             }
         }
 
@@ -165,7 +165,8 @@ public class Polygon : MonoBehaviour
             _polyCollider2D.isTrigger = false;
         }
 
-        OutOfBoundsRecall();
+        if (IsSolid)
+            OutOfBoundsRecall();
     }
 
     public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
@@ -282,14 +283,14 @@ public class Polygon : MonoBehaviour
     private void PushSlowShapes()
     {
         if (_rigidbody2D.velocity.x <= s_slowestV * _normV && _rigidbody2D.velocity.x >= -s_slowestV * _normV
-                || _rigidbody2D.velocity.y <= s_slowestV * _normV && _rigidbody2D.velocity.y >= -s_slowestV * _normV)
+                && _rigidbody2D.velocity.y <= s_slowestV * _normV && _rigidbody2D.velocity.y >= -s_slowestV * _normV)
         {
             float randomAngularVelocity = Random.Range(-s_pushAngV * _normV, s_pushAngV * _normV);
             Vector2 randomVelocity = new Vector2(Random.Range(s_pushVMin * _normV, s_pushVMax * _normV), Random.Range(s_pushVMin * _normV, s_pushVMax * _normV));
 
             _rigidbody2D.velocity = randomVelocity;
             _rigidbody2D.angularVelocity = randomAngularVelocity;
-            //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+            Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
         }
     }
 
