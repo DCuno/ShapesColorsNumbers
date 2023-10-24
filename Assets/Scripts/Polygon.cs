@@ -57,6 +57,7 @@ public class Polygon : MonoBehaviour
     static private float s_colorTextLargestRealSize = 0.5f;
     static private int s_outOfBoundsRatioEdgesOn = 2;
     static private int s_outOfBoundsRatioEdgesOff = 1;
+    private bool _outOfBoundsFlag = false;
     private float _normV;
     private float _shapeMapSize;
     private GameObject _popMapSize;
@@ -99,7 +100,7 @@ public class Polygon : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         // Constantly update shadow position to follow the polygon
         _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, 
@@ -159,10 +160,11 @@ public class Polygon : MonoBehaviour
             }
         }
 
-        if (IsSolid)
+        if (IsSolid && !_outOfBoundsFlag)
         {
             gameObject.layer = LayerMask.NameToLayer("shapes");
             _polyCollider2D.isTrigger = false;
+            _outOfBoundsFlag = true;
         }
 
         if (IsSolid)
