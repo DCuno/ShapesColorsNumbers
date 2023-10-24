@@ -290,7 +290,7 @@ public class Polygon : MonoBehaviour
 
             _rigidbody2D.velocity = randomVelocity;
             _rigidbody2D.angularVelocity = randomAngularVelocity;
-            Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
+            //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
         }
     }
 
@@ -505,7 +505,7 @@ public class Polygon : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Spawner Settings Failed to Set Voice Topic");
+            // Voice Option Off
         }
     }
 
