@@ -36,7 +36,7 @@ public class Polygon : MonoBehaviour
 
     // Physics
     private Touch touch;
-    private float _initYV = 10.0f;
+    private float _initYV = 15.0f;
     static private float s_initXVMin = 0.06f;
     static private float s_initXVMax = 3.0f;
     static private float s_initAngV = 300.0f;
@@ -63,6 +63,7 @@ public class Polygon : MonoBehaviour
     private GameObject _popMapSize;
     private float _numberTextMapSize;
     private float _shapeColorTextMapSize;
+    private Vector2 _screenSize;
 
     // Collider updater variables
     private List<Vector2> _points = new List<Vector2>();
@@ -82,6 +83,7 @@ public class Polygon : MonoBehaviour
     [SerializeField] public int ID;
     private GameObject _shadowObj;
     static private float s_shadowDist = 0.2f;
+    static private Vector2 s_maxWidthVector;
 
 
     private void Awake()
@@ -115,7 +117,7 @@ public class Polygon : MonoBehaviour
         {
             _gravityWaitTimer += Time.deltaTime;
 
-            if (_gravityWaitTimer >= 3.0f)
+            if (_gravityWaitTimer >= 5.0f)
             {
                 _rigidbody2D.gravityScale = s_gravityScale;
 
@@ -166,6 +168,9 @@ public class Polygon : MonoBehaviour
             _polyCollider2D.isTrigger = false;
             _outOfBoundsFlag = true;
         }
+
+        if (!IsSolid)
+            InBoundsSolid();
 
         if (IsSolid)
             OutOfBoundsRecall();
@@ -233,6 +238,12 @@ public class Polygon : MonoBehaviour
         gameObject.transform.localScale = new Vector3(_shapeMapSize, _shapeMapSize, 0);
         _spriteRenderer.color = unityColor;
 
+        // Getting 'radius' of shape for turning it solid when entering the screen
+        s_maxWidthVector = gameObject.GetComponent<SpriteRenderer>().bounds.extents;
+
+        _screenSize.x = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0))) * 0.5f;
+        _screenSize.y = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height))) * 0.5f;
+
         SetInitialVelocities();
 
         CreateShadow();
@@ -295,6 +306,19 @@ public class Polygon : MonoBehaviour
             //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
         }
     }
+
+    private void InBoundsSolid()
+    {
+        float shapeWidth = gameObject.transform.position.x + s_maxWidthVector.x;
+        float shapeHeight = gameObject.transform.position.y + s_maxWidthVector.y;
+
+        if (shapeWidth < _screenSize.x && shapeWidth > -_screenSize.x 
+            && shapeHeight < _screenSize.y && shapeHeight > -_screenSize.y)
+        {
+            IsSolid = true;
+        }
+    }
+
 
     private void OutOfBoundsRecall()
     {
