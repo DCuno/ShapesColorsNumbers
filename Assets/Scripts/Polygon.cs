@@ -36,7 +36,7 @@ public class Polygon : MonoBehaviour
 
     // Physics
     private Touch touch;
-    private float _initYV = 15.0f;
+    private float _initYV = 10.0f;
     static private float s_initXVMin = 0.06f;
     static private float s_initXVMax = 3.0f;
     static private float s_initAngV = 300.0f;
