@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8438792106879919585}
   - component: {fileID: 2687659905114791088}
   - component: {fileID: 8597563042415760307}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: polygon
   m_TagString: shape
   m_Icon: {fileID: 0}
@@ -146,14 +146,14 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 10.8, y: 10.8}
+    oldSize: {x: 2.7, y: 2.7}
     newSize: {x: 10.8, y: 10.8}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

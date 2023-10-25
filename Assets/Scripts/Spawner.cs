@@ -60,6 +60,7 @@ public class Spawner : MonoBehaviour
         shapesList.Clear();
         Count = 0;
         finished = false;
+        //float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
         {
             if (!finished)
@@ -73,6 +74,11 @@ public class Spawner : MonoBehaviour
         }
 
         yield break;
+    }
+
+    private float SpawnAmountRatio(float amount)
+    {
+        return (float) (0.08d - ((((0.08d - 0.01d) / (100d - 1d)) * (double)(amount - 1f))));
     }
 
     // Updates in the editor

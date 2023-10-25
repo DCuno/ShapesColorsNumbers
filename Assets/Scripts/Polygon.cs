@@ -36,16 +36,16 @@ public class Polygon : MonoBehaviour
 
     // Physics
     private Touch touch;
-    private float _initYV = 10.0f;
+    private float _initYV = 15.0f;
     static private float s_initXVMin = 0.06f;
-    static private float s_initXVMax = 2.0f;
+    static private float s_initXVMax = 3.0f;
     static private float s_initAngV = 300.0f;
-    static private float s_pushVMin = 5.0f;
-    static private float s_pushVMax = 8.0f;
+    static private float s_pushVMin = 3.0f;
+    static private float s_pushVMax = 6.0f;
     static private float s_pushAngV = 300.0f;
-    static private float s_slowestV = 0.05f;
-    static private float s_maxVx = 20.0f;
-    static private float s_maxVy = 20.0f;
+    static private float s_slowestV = 0.35f;
+    static private float s_maxVx = 15.0f;
+    static private float s_maxVy = 15.0f;
     static private float s_maxGravity = 1.5f;
     static private float s_smallestSizeSlider = 1;
     static private float s_largestSizeSlider = 10;
@@ -55,12 +55,15 @@ public class Polygon : MonoBehaviour
     static private float s_numberTextLargestRealSize = 1.0f;
     static private float s_colorTextSmallestRealSize = 0.3f;
     static private float s_colorTextLargestRealSize = 0.5f;
-    static private int s_outOfBoundsRatio = 2;
+    static private int s_outOfBoundsRatioEdgesOn = 2;
+    static private int s_outOfBoundsRatioEdgesOff = 1;
+    private bool _outOfBoundsFlag = false;
     private float _normV;
     private float _shapeMapSize;
     private GameObject _popMapSize;
     private float _numberTextMapSize;
     private float _shapeColorTextMapSize;
+    private Vector2 _screenSize;
 
     // Collider updater variables
     private List<Vector2> _points = new List<Vector2>();
@@ -80,6 +83,7 @@ public class Polygon : MonoBehaviour
     [SerializeField] public int ID;
     private GameObject _shadowObj;
     static private float s_shadowDist = 0.2f;
+    static private Vector2 s_maxWidthVector;
 
 
     private void Awake()
@@ -95,8 +99,6 @@ public class Polygon : MonoBehaviour
 
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
-
-        SetCollisionOff();
     }
 
     // Update is called once per frame
@@ -115,7 +117,7 @@ public class Polygon : MonoBehaviour
         {
             _gravityWaitTimer += Time.deltaTime;
 
-            if (_gravityWaitTimer >= 3.0f)
+            if (_gravityWaitTimer >= 5.0f)
             {
                 _rigidbody2D.gravityScale = s_gravityScale;
 
@@ -149,18 +151,29 @@ public class Polygon : MonoBehaviour
         if (!EdgesOn)
         {
             // Return shape to opposite side to loop around the screen.
-            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 8 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 8)
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 1 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 1)
             {
-                gameObject.transform.position = new Vector2(-gameObject.transform.position.x, gameObject.transform.position.y);
+                gameObject.transform.position = new Vector2(-1 * gameObject.transform.position.x, gameObject.transform.position.y);
             }
 
-            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 8 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 8)
+            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 1 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 1)
             {
-                gameObject.transform.position = new Vector2(gameObject.transform.position.x, -gameObject.transform.position.y);
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, -1 * gameObject.transform.position.y);
             }
         }
-        
-        OutOfBoundsRecall();
+
+        if (IsSolid && !_outOfBoundsFlag)
+        {
+            gameObject.layer = LayerMask.NameToLayer("shapes");
+            _polyCollider2D.isTrigger = false;
+            _outOfBoundsFlag = true;
+        }
+
+        if (!IsSolid)
+            InBoundsSolid();
+
+        if (IsSolid)
+            OutOfBoundsRecall();
     }
 
     public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
@@ -225,6 +238,12 @@ public class Polygon : MonoBehaviour
         gameObject.transform.localScale = new Vector3(_shapeMapSize, _shapeMapSize, 0);
         _spriteRenderer.color = unityColor;
 
+        // Getting 'radius' of shape for turning it solid when entering the screen
+        s_maxWidthVector = gameObject.GetComponent<SpriteRenderer>().bounds.extents;
+
+        _screenSize.x = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0))) * 0.5f;
+        _screenSize.y = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height))) * 0.5f;
+
         SetInitialVelocities();
 
         CreateShadow();
@@ -277,7 +296,7 @@ public class Polygon : MonoBehaviour
     private void PushSlowShapes()
     {
         if (_rigidbody2D.velocity.x <= s_slowestV * _normV && _rigidbody2D.velocity.x >= -s_slowestV * _normV
-                || _rigidbody2D.velocity.y <= s_slowestV * _normV && _rigidbody2D.velocity.y >= -s_slowestV * _normV)
+                && _rigidbody2D.velocity.y <= s_slowestV * _normV && _rigidbody2D.velocity.y >= -s_slowestV * _normV)
         {
             float randomAngularVelocity = Random.Range(-s_pushAngV * _normV, s_pushAngV * _normV);
             Vector2 randomVelocity = new Vector2(Random.Range(s_pushVMin * _normV, s_pushVMax * _normV), Random.Range(s_pushVMin * _normV, s_pushVMax * _normV));
@@ -288,24 +307,43 @@ public class Polygon : MonoBehaviour
         }
     }
 
+    private void InBoundsSolid()
+    {
+        float shapeWidth = gameObject.transform.position.x + s_maxWidthVector.x;
+        float shapeHeight = gameObject.transform.position.y + s_maxWidthVector.y;
+
+        if (shapeWidth < _screenSize.x && shapeWidth > -_screenSize.x 
+            && shapeHeight < _screenSize.y && shapeHeight > -_screenSize.y)
+        {
+            IsSolid = true;
+        }
+    }
+
+
     private void OutOfBoundsRecall()
     {
-        if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatio || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatio
-                || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatio || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatio)
+        if(EdgesOn)
         {
-            TeleportSound();
-            gameObject.transform.position = Vector2.zero;
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn
+                    || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn)
+            {
+                TeleportSound();
+                gameObject.transform.position = Vector2.zero;
+            }
+        }
+        else
+        {
+            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOff || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOff
+                    || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOff || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOff)
+            {
+                TeleportSound();
+                gameObject.transform.position = Vector2.zero;
+            }
         }
     }
 
     private void CheckTouch()
     {
-        // Debug Pop
-        if (Input.GetKey(KeyCode.K))
-        {
-            Pop();
-        }
-
         if (Input.touchCount > 0)
         {
             // Loop through all active touches
@@ -376,20 +414,6 @@ public class Polygon : MonoBehaviour
             _spriteRenderer.sprite.GetPhysicsShape(i, _points);
             LineUtility.Simplify(_points, tolerance, _simplifiedPoints);
             _polyCollider2D.SetPath(i, _simplifiedPoints);
-        }
-    }
-
-    // Ignoring collisions between other shapes and the edge of the screen until entering the ShapesCollideON collider. Also ignore text colliders layer 6.
-    private void SetCollisionOff()
-    {
-        Physics2D.IgnoreLayerCollision(3, 3, true);
-        Physics2D.IgnoreLayerCollision(3, 6, true);
-        // Pop shapes through text colliders
-        Physics2D.IgnoreLayerCollision(6, 2, true);
-        GameObject[] screenEdges = GameObject.FindGameObjectsWithTag("edge");
-        foreach (GameObject screenEdge in screenEdges)
-        {
-            Physics2D.IgnoreCollision(_polyCollider2D, screenEdge.GetComponent<BoxCollider2D>(), true);
         }
     }
 
@@ -465,10 +489,14 @@ public class Polygon : MonoBehaviour
     public void PolygonVelocityLimiter()
     {
         if (_rigidbody2D.velocity.x > s_maxVx || _rigidbody2D.velocity.x < -s_maxVx)
+        {
             _rigidbody2D.velocity = new Vector2(s_maxVx * Mathf.Sign(_rigidbody2D.velocity.x), _rigidbody2D.velocity.y);
+        }
 
         if (_rigidbody2D.velocity.y > s_maxVy || _rigidbody2D.velocity.y < -s_maxVy)
+        { 
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, s_maxVy * Mathf.Sign(_rigidbody2D.velocity.y));
+        }
     }
 
     public void TeleportSound()
@@ -503,7 +531,7 @@ public class Polygon : MonoBehaviour
         }
         else
         {
-            // Who goes there?!
+            // Voice Option Off
         }
     }
 
