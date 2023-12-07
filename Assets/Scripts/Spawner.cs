@@ -7,6 +7,7 @@ public class Spawner : MonoBehaviour
 {
     public enum Colors { Red, Orange, Yellow, Green, Blue, Purple, White };
     public enum Topics { Shapes, Colors, Numbers, Off };
+    public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star };
 
     public GameObject settingsCanvas;
     private GameObject spawnedSettingsCanvas;
@@ -29,7 +30,7 @@ public class Spawner : MonoBehaviour
 
     public struct SpawnerSettingsStruct
     {
-        public List<Polygon.Shape> shapes;
+        public List<Shape> shapes;
         public List<Colors> colors;
         public float size;
         public float amount;
@@ -39,7 +40,7 @@ public class Spawner : MonoBehaviour
         public Spawner.Topics text;
     }
 
-    public void SettingsSetup(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
+    public void SettingsSetup(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
     {
         StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, voice, text));
     }
@@ -54,7 +55,7 @@ public class Spawner : MonoBehaviour
         Started = true;
     }
 
-    IEnumerator Spawn(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
+    IEnumerator Spawn(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
     {
         currentSettings = new SpawnerSettingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
         shapesList.Clear();
@@ -137,31 +138,31 @@ public class Spawner : MonoBehaviour
     // new Color(1.0f, 0.4f, 0.0f)
 
     // Random Shape returned out of all shapes
-    Polygon.Shape RandomShape()
+    Shape RandomShape()
     {
         int i = Random.Range(0, 6);
 
         switch (i)
         {
             case 0:
-                return Polygon.Shape.Triangle;
+                return Shape.Triangle;
             case 1:
-                return Polygon.Shape.Square;
+                return Shape.Square;
             case 2:
-                return Polygon.Shape.Pentagon;
+                return Shape.Pentagon;
             case 3:
-                return Polygon.Shape.Hexagon;
+                return Shape.Hexagon;
             case 4:
-                return Polygon.Shape.Circle;
+                return Shape.Circle;
             case 5:
-                return Polygon.Shape.Star;
+                return Shape.Star;
             default:
-                return Polygon.Shape.Circle;
+                return Shape.Circle;
         }
     }
 
     // Random Shape selected from given array
-    Polygon.Shape RandomShape(List<Polygon.Shape> arr)
+    Shape RandomShape(List<Shape> arr)
     {
         return arr[Random.Range(0, arr.Count)];
     }

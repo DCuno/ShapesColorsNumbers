@@ -9,7 +9,7 @@ public class FunModeButtonManager : MonoBehaviour
 {
     GameObject spawner;
     GameObject settingsPanel;
-    List<Polygon.Shape> shapes;
+    List<Spawner.Shape> shapes;
     List<Spawner.Colors> colors;
     float size;
     float amount;
@@ -18,10 +18,18 @@ public class FunModeButtonManager : MonoBehaviour
     Spawner.Topics voice;
     Spawner.Topics text;
     bool changingVoiceTextToggles = false;
+    GameObject ScrollArrowUp;
+    GameObject ScrollArrowDown;
+    ScrollRect SettingsCanvasScrollRect;
 
     private void Awake()
     {
+        ScrollArrowUp = GameObject.FindGameObjectWithTag("ScrollArrowUp");
+        ScrollArrowDown = GameObject.FindGameObjectWithTag("ScrollArrowDown");
+        SettingsCanvasScrollRect = GameObject.FindGameObjectWithTag("SettingsCanvasScroll").GetComponentInChildren<ScrollRect>();
 
+        // Default is scroll arrow down is showing
+        ScrollArrowUp.SetActive(false);
     }
 
     public void FunModeButtonManagerConstructor(Spawner.SpawnerSettingsStruct SpawnerSettings)
@@ -40,7 +48,7 @@ public class FunModeButtonManager : MonoBehaviour
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            System.Enum.TryParse(i.name, out Polygon.Shape result);
+            System.Enum.TryParse(i.name, out Spawner.Shape result);
             if (shapes.Contains(result))
             {
                 i.isOn = true;
@@ -144,19 +152,19 @@ public class FunModeButtonManager : MonoBehaviour
         spawner = GameObject.FindGameObjectWithTag("spawner");
         settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
 
-        shapes = new List<Polygon.Shape>();
+        shapes = new List<Spawner.Shape>();
 
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             if (i.isOn)
-                if (System.Enum.TryParse(i.name, out Polygon.Shape result))
+                if (System.Enum.TryParse(i.name, out Spawner.Shape result))
                     shapes.Add(result);
 
         }
 
         if (shapes.Count == 0)
-            shapes.Add(Polygon.Shape.Circle);
+            shapes.Add(Spawner.Shape.Circle);
 
         colors = new List<Spawner.Colors>();
 
@@ -220,7 +228,7 @@ public class FunModeButtonManager : MonoBehaviour
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            System.Enum.TryParse(i.name, out Polygon.Shape result);
+            System.Enum.TryParse(i.name, out Spawner.Shape result);
             if (Random.Range(0, 2) == 0)
             {
                 i.isOn = true;
@@ -428,5 +436,34 @@ public class FunModeButtonManager : MonoBehaviour
 
             changingVoiceTextToggles = false;
         }
+    }
+
+    public void ScrollArrow(Vector2 position)
+    {
+        if (position.y >= 0.7f && ScrollArrowUp.activeSelf)
+        {
+            ScrollArrowUp.SetActive(false);
+            ScrollArrowDown.SetActive(true);
+        }
+        
+        if (position.y < 0.3f && !ScrollArrowUp.activeSelf)
+        {
+            ScrollArrowUp.SetActive(true);
+            ScrollArrowDown.SetActive(false);
+        }
+    }
+
+    // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
+    public void ScrollArrowUpButton()
+    {
+        SettingsCanvasScrollRect.verticalNormalizedPosition = 0f;
+        SettingsCanvasScrollRect.velocity = new Vector2(0, -3000f);
+    }
+    
+    // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
+    public void ScrollArrowDownButton()
+    {
+        SettingsCanvasScrollRect.verticalNormalizedPosition = 1f;
+        SettingsCanvasScrollRect.velocity = new Vector2(0, 3000f);
     }
 }

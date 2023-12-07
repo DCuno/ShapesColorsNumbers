@@ -73,6 +73,10 @@ TagManager:
   - MusicSliderCounter
   - SFXSource
   - MusicSource
+  - LessonsButton
+  - SandboxButton
+  - ScrollArrowUp
+  - ScrollArrowDown
   layers:
   - Default
   - TransparentFX
