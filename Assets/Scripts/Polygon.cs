@@ -38,14 +38,14 @@ public class Polygon : MonoBehaviour
     private Touch touch;
     private float _initYV = 15.0f;
     static private float s_initXVMin = 0.06f;
-    static private float s_initXVMax = 3.0f;
+    static private float s_initXVMax = 2.0f;
     static private float s_initAngV = 300.0f;
-    static private float s_pushVMin = 3.0f;
+    static private float s_pushVMin = 2.0f;
     static private float s_pushVMax = 6.0f;
     static private float s_pushAngV = 300.0f;
     static private float s_slowestV = 0.35f;
-    static private float s_maxVx = 15.0f;
-    static private float s_maxVy = 15.0f;
+    static private float s_maxVx = 10.0f;
+    static private float s_maxVy = 10.0f;
     static private float s_maxGravity = 1.5f;
     static private float s_smallestSizeSlider = 1;
     static private float s_largestSizeSlider = 10;
@@ -73,10 +73,9 @@ public class Polygon : MonoBehaviour
     private float _gravityWaitTimer = 0f;
 
     // Polygon variables
-    public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star }
     [Tooltip("Select sprites the polygon can become")]
     public Sprite[] PolygonSprites;
-    private Shape _shape;
+    public Spawner.Shape Shape;
     public Spawner.Colors Color;
     public bool IsSolid = false;
     public bool IsPopped = false;
@@ -176,7 +175,7 @@ public class Polygon : MonoBehaviour
             OutOfBoundsRecall();
     }
 
-    public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
+    public void Creation(Spawner.Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
     {
         // Change velocity relative to the size of the shapes. Default Size: 0.33f
         _normV = 1;
@@ -191,7 +190,7 @@ public class Polygon : MonoBehaviour
         else
             _popMapSize = PopParticles[2];
 
-        _shape = shape;
+        this.Shape = shape;
         Color = color;
         _tiltOn = tilt;
         EdgesOn = edges;
@@ -214,22 +213,22 @@ public class Polygon : MonoBehaviour
 
         switch (shape)
         {
-            case Shape.Triangle:
+            case Spawner.Shape.Triangle:
                 _spriteRenderer.sprite = PolygonSprites[0];
                 break;
-            case Shape.Square:
+            case Spawner.Shape.Square:
                 _spriteRenderer.sprite = PolygonSprites[1];
                 break;
-            case Shape.Pentagon:
+            case Spawner.Shape.Pentagon:
                 _spriteRenderer.sprite = PolygonSprites[2];
                 break;
-            case Shape.Hexagon:
+            case Spawner.Shape.Hexagon:
                 _spriteRenderer.sprite = PolygonSprites[3];
                 break;
-            case Shape.Circle:
+            case Spawner.Shape.Circle:
                 _spriteRenderer.sprite = PolygonSprites[4];
                 break;
-            case Shape.Star:
+            case Spawner.Shape.Star:
                 _spriteRenderer.sprite = PolygonSprites[5];
                 break;
         }
@@ -389,11 +388,19 @@ public class Polygon : MonoBehaviour
                 Pop();
             }
         }
+        
+        private void DebugPop()
+        {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                Pop();
+            }
+        }
 
     #endif
 
-    // Initialize x and y velocities. Randomize if the x velocity is negative or positive.
-    private void SetInitialVelocities()
+// Initialize x and y velocities. Randomize if the x velocity is negative or positive.
+private void SetInitialVelocities()
     {
         float randomX = Random.Range(s_initXVMin, s_initXVMax);
         float randomY = Random.Range(-_initYV * _normV, -_initYV * _normV);
@@ -515,7 +522,7 @@ public class Polygon : MonoBehaviour
     {
         if (_voice == Spawner.Topics.Shapes)
         {
-            _audioSource.PlayOneShot(_audio.voices_shapes[(int)_shape]);
+            _audioSource.PlayOneShot(_audio.voices_shapes[(int)Shape]);
         }
         else if (_voice == Spawner.Topics.Colors)
         {
@@ -543,7 +550,7 @@ public class Polygon : MonoBehaviour
             tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
             //tempTextObjTMP.fontSize = 40;
-            tempTextObjTMP.text = _shape.ToString();
+            tempTextObjTMP.text = Shape.ToString();
             //tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
