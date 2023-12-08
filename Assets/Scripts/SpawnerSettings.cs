@@ -13,6 +13,7 @@ public class SpawnerSettings : ScriptableObject
     public int Amount;
     public bool Edges;
     public bool Tilt;
-    public Spawner.Topics Voice;
-    public Spawner.Topics Text;
+    public Spawner.Topics Topic;
+    public bool Voice;
+    public bool Text;
 }

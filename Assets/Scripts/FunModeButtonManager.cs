@@ -15,8 +15,9 @@ public class FunModeButtonManager : MonoBehaviour
     float amount;
     bool edges;
     bool tilt;
-    Spawner.Topics voice;
-    Spawner.Topics text;
+    Spawner.Topics topic;
+    bool voice;
+    bool text;
     bool changingVoiceTextToggles = false;
     GameObject ScrollArrowUp;
     GameObject ScrollArrowDown;
@@ -40,6 +41,7 @@ public class FunModeButtonManager : MonoBehaviour
         amount = SpawnerSettings.amount;
         edges = SpawnerSettings.edges;
         tilt = SpawnerSettings.tilt;
+        topic = SpawnerSettings.topic;
         voice = SpawnerSettings.voice;
         text = SpawnerSettings.text;
 
@@ -75,10 +77,10 @@ public class FunModeButtonManager : MonoBehaviour
 
         GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>().value = size;
         GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>().value = amount;
-        GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn = edges;
+        //GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn = edges;
         GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn = tilt;
 
-        tempToggles = GameObject.FindGameObjectWithTag("EdgesPanelGroup").GetComponentsInChildren<Toggle>();
+        /*tempToggles = GameObject.FindGameObjectWithTag("EdgesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             if (i.name.Equals("On"))
@@ -95,7 +97,7 @@ public class FunModeButtonManager : MonoBehaviour
                 else
                     i.isOn = true;
             }
-        }
+        }*/
 
         tempToggles = GameObject.FindGameObjectWithTag("TiltPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
@@ -116,11 +118,11 @@ public class FunModeButtonManager : MonoBehaviour
             }
         }
 
-        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             System.Enum.TryParse(i.name, out Spawner.Topics result);
-            if (voice.Equals(result))
+            if (topic.Equals(result))
             {
                 i.isOn = true;
             }
@@ -130,17 +132,41 @@ public class FunModeButtonManager : MonoBehaviour
             }
         }
 
+        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            if (i.name.Equals("On"))
+            {
+                if (voice)
+                    i.isOn = true;
+                else
+                    i.isOn = false;
+            }
+            else if (i.name.Equals("Off"))
+            {
+                if (voice)
+                    i.isOn = false;
+                else
+                    i.isOn = true;
+            }
+        }
+
         tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            System.Enum.TryParse(i.name, out Spawner.Topics result);
-            if (text.Equals(result))
+            if (i.name.Equals("On"))
             {
-                i.isOn = true;
+                if (text)
+                    i.isOn = true;
+                else
+                    i.isOn = false;
             }
-            else
+            else if (i.name.Equals("Off"))
             {
-                i.isOn = false;
+                if (text)
+                    i.isOn = false;
+                else
+                    i.isOn = true;
             }
         }
     }
@@ -182,36 +208,26 @@ public class FunModeButtonManager : MonoBehaviour
 
         size = GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>().value;
         amount = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>().value;
-        edges = GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn;
+        //edges = GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn;
+        edges = true;
         tilt = GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn;
 
-        voice = Spawner.Topics.Off;
 
-        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             if (i.isOn)
                 if (System.Enum.TryParse(i.name, out Spawner.Topics result))
                 {
-                    voice = result;
+                    topic = result;
                     break;
                 }
         }
 
-        text = Spawner.Topics.Off;
+        voice = GameObject.FindGameObjectWithTag("VoiceOnToggle").GetComponent<Toggle>().isOn;
+        text = GameObject.FindGameObjectWithTag("TextOnToggle").GetComponent<Toggle>().isOn;
 
-        tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
-        foreach (Toggle i in tempToggles)
-        {
-            if (i.isOn)
-                if (System.Enum.TryParse(i.name, out Spawner.Topics result))
-                {
-                    text = result;
-                    break;
-                }
-        }
-
-        spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, voice, text);
+        spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, topic, voice, text);
         spawner.GetComponent<Spawner>().Started = true;
         Destroy(GameObject.FindGameObjectWithTag("SettingsCanvasScroll"));
     }

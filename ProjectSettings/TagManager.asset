@@ -77,6 +77,9 @@ TagManager:
   - SandboxButton
   - ScrollArrowUp
   - ScrollArrowDown
+  - VoiceOnToggle
+  - TextOnToggle
+  - TopicsPanelGroup
   layers:
   - Default
   - TransparentFX
