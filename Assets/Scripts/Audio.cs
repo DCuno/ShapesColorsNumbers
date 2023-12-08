@@ -12,7 +12,7 @@ public class Audio : MonoBehaviour
     public AudioClip[] voices_numbers = new AudioClip[100];
     public AudioClip[] music = new AudioClip[1];
 
-    private Audio[] instance = new Audio[2];
+    private static Audio[] instance = new Audio[2];
     private AudioSource _musicSource;
     private AudioSource _sfxSource;
 
