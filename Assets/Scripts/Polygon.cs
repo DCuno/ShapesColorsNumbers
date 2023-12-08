@@ -10,6 +10,7 @@ public class Polygon : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private PolygonCollider2D _polyCollider2D;
     private SpriteRenderer _spriteRenderer;
+    private Spawner _spawner;
     private AudioSource _audioSource;
     private Audio _audio;
 
@@ -50,13 +51,13 @@ public class Polygon : MonoBehaviour
     static private float s_maxGravity = 1.5f;
     static private float s_smallestSizeSlider = 1;
     static private float s_largestSizeSlider = 10;
-    static private float s_shapeTextSmallestRealSize = 0.1f;
-    static private float s_shapeTextLargestRealSize = 0.7f;
+    static private float s_shapeTextSmallestRealSize = 0.15f;//0.1f;
+    static private float s_shapeTextLargestRealSize = 0.9f;//0.7f;
     static private float s_numberTextSmallestRealSize = 0.35f;
     static private float s_numberTextLargestRealSize = 1.0f;
     static private float s_colorTextSmallestRealSize = 0.3f;
     static private float s_colorTextLargestRealSize = 0.5f;
-    static private int s_outOfBoundsRatioEdgesOn = 2;
+    static private int s_outOfBoundsRatioEdgesOn = 1;
     static private int s_outOfBoundsRatioEdgesOff = 1;
     private bool _outOfBoundsFlag = false;
     private float _normV;
@@ -79,6 +80,7 @@ public class Polygon : MonoBehaviour
     public Spawner.Shape Shape;
     public Spawner.Colors Color;
     public bool IsSolid = false;
+    public bool IsInSpawner = true;
     public bool IsPopped = false;
     [SerializeField] public int ID;
     private GameObject _shadowObj;
@@ -90,6 +92,7 @@ public class Polygon : MonoBehaviour
     {
         _polyCollider2D = GetComponent<PolygonCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _spawner = GameObject.FindGameObjectWithTag("spawner").GetComponent<Spawner>();
         _audioSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -115,9 +118,9 @@ public class Polygon : MonoBehaviour
 
         if (_tiltOn)
         {
-            _gravityWaitTimer += Time.deltaTime;
+            //_gravityWaitTimer += Time.deltaTime;
 
-            if (_gravityWaitTimer >= 5.0f)
+            if (_spawner.DoneSpawning)
             {
                 _rigidbody2D.gravityScale = s_gravityScale;
 
@@ -169,11 +172,17 @@ public class Polygon : MonoBehaviour
             _outOfBoundsFlag = true;
         }
 
-        if (!IsSolid)
+        if (!IsSolid && !IsInSpawner)
             InBoundsSolid();
 
-        if (IsSolid)
+        if (IsSolid || !IsInSpawner)
             OutOfBoundsRecall();
+
+        // DEBUG POPPER
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Pop();
+        }
     }
 
     public void Creation(Spawner.Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
@@ -390,15 +399,6 @@ public class Polygon : MonoBehaviour
                 Pop();
             }
         }
-        
-        private void DebugPop()
-        {
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                Pop();
-            }
-        }
-
     #endif
 
 // Initialize x and y velocities. Randomize if the x velocity is negative or positive.
