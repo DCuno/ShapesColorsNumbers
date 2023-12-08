@@ -36,13 +36,14 @@ public class Spawner : MonoBehaviour
         public float amount;
         public bool edges;
         public bool tilt;
-        public Spawner.Topics voice;
-        public Spawner.Topics text;
+        public Spawner.Topics topic;
+        public bool voice;
+        public bool text;
     }
 
-    public void SettingsSetup(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
+    public void SettingsSetup(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
     {
-        StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, voice, text));
+        StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, topic, voice, text));
     }
 
     public void SettingsSetup(SpawnerSettings settings)
@@ -51,13 +52,13 @@ public class Spawner : MonoBehaviour
             return;
 
         SettingsSetup(settings.Shapes, settings.Colors, settings.Size, settings.Amount, 
-                        settings.Edges, settings.Tilt, settings.Voice, settings.Text);
+                        settings.Edges, settings.Tilt, settings.Topic, settings.Voice, settings.Text);
         Started = true;
     }
 
-    IEnumerator Spawn(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
+    IEnumerator Spawn(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics topic, bool voice, bool text)
     {
-        currentSettings = new SpawnerSettingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
+        currentSettings = new SpawnerSettingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, topic = topic, voice = voice, text = text };
         shapesList.Clear();
         Count = 0;
         finished = false;
@@ -69,7 +70,7 @@ public class Spawner : MonoBehaviour
                 yield return new WaitForSeconds(0.05f);
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
                 Color _tmpColor = RandomColor(colors);
-                shapesList[i].GetComponent<Polygon>().Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, voice, text);
+                shapesList[i].GetComponent<Polygon>().Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, topic, voice, text);
                 yield return new WaitForSeconds(0.08f);
             }
         }

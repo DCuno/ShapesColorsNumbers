@@ -24,8 +24,9 @@ public class Polygon : MonoBehaviour
     // Game Mode Variables
     private bool _tiltOn;
     public bool EdgesOn;
-    private Spawner.Topics _voice;
-    private Spawner.Topics _text;
+    private Spawner.Topics _topic;
+    private bool _voice;
+    private bool _text;
     static private float s_gravityScale = 30f;
     private float _gravityLerpTimer = 0.0f;
     static private float s_gravityLerpTimeTotal = 500.0f;
@@ -175,7 +176,7 @@ public class Polygon : MonoBehaviour
             OutOfBoundsRecall();
     }
 
-    public void Creation(Spawner.Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
+    public void Creation(Spawner.Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
     {
         // Change velocity relative to the size of the shapes. Default Size: 0.33f
         _normV = 1;
@@ -194,6 +195,7 @@ public class Polygon : MonoBehaviour
         Color = color;
         _tiltOn = tilt;
         EdgesOn = edges;
+        _topic = topic;
         _voice = voice;
         _text = text;
 
@@ -520,18 +522,18 @@ private void SetInitialVelocities()
 
     public void VoiceSound()
     {
-        if (_voice == Spawner.Topics.Shapes)
+        if (_topic == Spawner.Topics.Shapes && _voice)
         {
             _audioSource.PlayOneShot(_audio.voices_shapes[(int)Shape]);
         }
-        else if (_voice == Spawner.Topics.Colors)
+        else if (_topic == Spawner.Topics.Colors && _voice)
         {
             _audioSource.PlayOneShot(_audio.voices_colors[(int)Color]);
         }
-        else if (_voice == Spawner.Topics.Numbers)
+        else if (_topic == Spawner.Topics.Numbers && _voice)
         {
             // Need to increment the polygon count if the pop text isn't on. Because it increments in pop text otherwise.
-            if (_text != Spawner.Topics.Numbers)
+            if (!_text)
                 _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().Count++]);
             else
                 _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().Count]);
@@ -544,7 +546,7 @@ private void SetInitialVelocities()
 
     public void SpawnPopText()
     {
-        if (_text == Spawner.Topics.Shapes)
+        if (_topic == Spawner.Topics.Shapes && _text)
         {
             GameObject tempTextObj = Instantiate(WordTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
@@ -554,7 +556,7 @@ private void SetInitialVelocities()
             //tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
-        else if (_text == Spawner.Topics.Colors)
+        else if (_topic == Spawner.Topics.Colors && _text)
         {
             GameObject tempTextObj = Instantiate(WordTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
@@ -565,7 +567,7 @@ private void SetInitialVelocities()
             //tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
-        else if (_text == Spawner.Topics.Numbers)
+        else if (_topic == Spawner.Topics.Numbers && _text)
         {
             GameObject tempTextObj = Instantiate(NumberTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_numberTextMapSize, _numberTextMapSize, 0);
