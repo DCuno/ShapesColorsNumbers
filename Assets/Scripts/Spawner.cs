@@ -15,6 +15,7 @@ public class Spawner : MonoBehaviour
     private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
     private List<GameObject> shapesList = new List<GameObject>();
     public int Count { get; set; } = 0;
+    public bool DoneSpawning = false;
     [Range(minIter, maxIter)]
     private int iterations;
     [Range(minSize, maxSize)]
@@ -61,6 +62,7 @@ public class Spawner : MonoBehaviour
         currentSettings = new SpawnerSettingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, topic = topic, voice = voice, text = text };
         shapesList.Clear();
         Count = 0;
+        DoneSpawning = false;
         finished = false;
         //float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
@@ -74,6 +76,8 @@ public class Spawner : MonoBehaviour
                 yield return new WaitForSeconds(0.08f);
             }
         }
+
+        DoneSpawning = true;
 
         yield break;
     }

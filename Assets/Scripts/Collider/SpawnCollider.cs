@@ -6,6 +6,10 @@ public class SpawnCollider : MonoBehaviour
 {
     private void OnTriggerExit2D(Collider2D collision)
     {
+        Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+
+        if (polygon != null)
+            polygon.IsInSpawner = false;
         /*Polygon polygon = collision.gameObject.GetComponent<Polygon>();
         if (polygon != null && polygon.EdgesOn)
         {

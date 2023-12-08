@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8443039609364072392}
   - component: {fileID: 1348478145}
-  - component: {fileID: 333989581588302511}
+  - component: {fileID: 1449039896}
   m_Layer: 0
   m_Name: SFX Source
   m_TagString: SFXSource
@@ -128,7 +128,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &333989581588302511
+--- !u!114 &1449039896
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

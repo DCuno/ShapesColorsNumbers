@@ -473,13 +473,13 @@ public class FunModeButtonManager : MonoBehaviour
     public void ScrollArrowUpButton()
     {
         SettingsCanvasScrollRect.verticalNormalizedPosition = 0f;
-        SettingsCanvasScrollRect.velocity = new Vector2(0, -3000f);
+        SettingsCanvasScrollRect.velocity = new Vector2(0, -2500f);
     }
     
     // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
     public void ScrollArrowDownButton()
     {
         SettingsCanvasScrollRect.verticalNormalizedPosition = 1f;
-        SettingsCanvasScrollRect.velocity = new Vector2(0, 3000f);
+        SettingsCanvasScrollRect.velocity = new Vector2(0, 2500f);
     }
 }

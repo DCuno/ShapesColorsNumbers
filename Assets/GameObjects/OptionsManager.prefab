@@ -44,3 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mixer: {fileID: 24100000, guid: 1cc973fe64e8b4c4d91c1790a33b3fc8, type: 2}
+  _soundEffectsSlider: {fileID: 0}
+  _musicSlider: {fileID: 0}
+  _musicSliderCounter: {fileID: 0}
+  _SFXSliderCounter: {fileID: 0}
+  Multiplier: 30
+  DefaultSliderPercentage: 0.31
