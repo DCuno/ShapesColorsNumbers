@@ -13,6 +13,7 @@ public class Polygon : MonoBehaviour
     private Spawner _spawner;
     private AudioSource _audioSource;
     private Audio _audio;
+    private Camera _camera;
 
     // Effects
     [Tooltip("Select 3 sizes of particle objects for when the shape is popped")]
@@ -57,15 +58,13 @@ public class Polygon : MonoBehaviour
     static private float s_numberTextLargestRealSize = 1.0f;
     static private float s_colorTextSmallestRealSize = 0.3f;
     static private float s_colorTextLargestRealSize = 0.5f;
-    static private int s_outOfBoundsRatioEdgesOn = 1;
-    static private int s_outOfBoundsRatioEdgesOff = 1;
-    private bool _outOfBoundsFlag = false;
     private float _normV;
     private float _shapeMapSize;
     private GameObject _popMapSize;
     private float _numberTextMapSize;
     private float _shapeColorTextMapSize;
-    private Vector2 _screenSize;
+    private Vector2 _screenBottomLeft;
+    private Vector2 _screenTopRight;
 
     // Collider updater variables
     private List<Vector2> _points = new List<Vector2>();
@@ -79,14 +78,21 @@ public class Polygon : MonoBehaviour
     public Sprite[] PolygonSprites;
     public Spawner.Shape Shape;
     public Spawner.Colors Color;
-    public bool IsSolid = false;
+    public bool IsInPlayArea = false;
     public bool IsInSpawner = true;
     public bool IsPopped = false;
     [SerializeField] public int ID;
     private GameObject _shadowObj;
     static private float s_shadowDist = 0.2f;
-    static private Vector2 s_maxWidthVector;
+    private Vector2 _maxWidthVector;
+    private Vector2 _centerVector;
+    private float _shapeWidth;
+    private float _shapeHeight;
 
+    /*private void OnDrawGizmos()
+    {
+        Gizmos.DrawIcon(new Vector2(gameObject.transform.position.x + s_maxWidthVector.x, gameObject.transform.position.y + s_maxWidthVector.y), "circle.png");
+    }*/
 
     private void Awake()
     {
@@ -96,12 +102,16 @@ public class Polygon : MonoBehaviour
         _audioSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _camera = Camera.main;
 
         ID = PlayerPrefs.GetInt("PolygonID") + 1;
         PlayerPrefs.SetInt("PolygonID", ID);
 
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
+
+        _screenBottomLeft = _camera.ScreenToWorldPoint(new Vector3(0, 0, _camera.nearClipPlane));
+        _screenTopRight = _camera.ScreenToWorldPoint(new Vector3(_camera.pixelWidth, _camera.pixelHeight, _camera.nearClipPlane));
     }
 
     // Update is called once per frame
@@ -128,7 +138,7 @@ public class Polygon : MonoBehaviour
                 if ((Input.acceleration.x <= s_gravityStopMargin && Input.acceleration.x >= -s_gravityStopMargin) 
                     && (Input.acceleration.y <= s_gravityStopMargin && Input.acceleration.y >= -s_gravityStopMargin))
                 {
-                    Physics2D.gravity = new Vector2(0f, 0f);
+                    //Physics2D.gravity = new Vector2(0f, 0f);
                     _gravityLerpTimer += Time.deltaTime;
 
                     if (_gravityLerpTimer > s_gravityLerpTimeTotal)
@@ -142,7 +152,7 @@ public class Polygon : MonoBehaviour
                 }
                 else
                 {
-                    GravityLimiter();
+                    //GravityLimiter();
                 }
             }
         }
@@ -151,32 +161,17 @@ public class Polygon : MonoBehaviour
             PushSlowShapes();            
         }
 
-        if (!EdgesOn)
+        if (IsInPlayArea && !IsInSpawner)
         {
-            // Return shape to opposite side to loop around the screen.
-            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 1 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 1)
-            {
-                gameObject.transform.position = new Vector2(-1 * gameObject.transform.position.x, gameObject.transform.position.y);
-            }
+            if (!EdgesOn)
+                Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("shapes"), LayerMask.NameToLayer("Edge"), true);
 
-            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 1 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 1)
-            {
-                gameObject.transform.position = new Vector2(gameObject.transform.position.x, -1 * gameObject.transform.position.y);
-            }
-        }
-
-        if (IsSolid && !_outOfBoundsFlag)
-        {
             gameObject.layer = LayerMask.NameToLayer("shapes");
             _polyCollider2D.isTrigger = false;
-            _outOfBoundsFlag = true;
         }
 
-        if (!IsSolid && !IsInSpawner)
+        if (!IsInPlayArea && !IsInSpawner)
             InBoundsSolid();
-
-        if (IsSolid || !IsInSpawner)
-            OutOfBoundsRecall();
 
         // DEBUG POPPER
         if (Input.GetKeyDown(KeyCode.K))
@@ -184,6 +179,13 @@ public class Polygon : MonoBehaviour
             Pop();
         }
     }
+
+    public void FixedUpdate()
+    {
+        if (IsInPlayArea || !IsInSpawner)
+            OutOfBoundsRecall();
+    }
+
 
     public void Creation(Spawner.Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
     {
@@ -214,7 +216,7 @@ public class Polygon : MonoBehaviour
             // normal gravity at the start, then scale up for tilt controls in update()
             _rigidbody2D.gravityScale = 1f;
             _rigidbody2D.sharedMaterial = _gravityOnMaterial;
-            _initYV /= 100f;
+            //_initYV /= 100f;
         }
         else
         {
@@ -249,10 +251,8 @@ public class Polygon : MonoBehaviour
         _spriteRenderer.color = unityColor;
 
         // Getting 'radius' of shape for turning it solid when entering the screen
-        s_maxWidthVector = gameObject.GetComponent<SpriteRenderer>().bounds.extents;
-
-        _screenSize.x = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0))) * 0.5f;
-        _screenSize.y = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height))) * 0.5f;
+        _maxWidthVector = gameObject.GetComponent<SpriteRenderer>().bounds.extents;
+        _centerVector = gameObject.GetComponent<SpriteRenderer>().bounds.center;
 
         SetInitialVelocities();
 
@@ -297,6 +297,7 @@ public class Polygon : MonoBehaviour
     /// <param name="size">Size of polygon</param>
     private void MapTextSliders(float size)
     {
+        // _shapeMapSize influences size of shape relative to the base image size
         _shapeMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_shapeTextLargestRealSize - s_shapeTextSmallestRealSize)) + s_shapeTextSmallestRealSize;
         _numberTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_numberTextLargestRealSize - s_numberTextSmallestRealSize)) + s_numberTextSmallestRealSize;
         _shapeColorTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_colorTextLargestRealSize - s_colorTextSmallestRealSize)) + s_colorTextSmallestRealSize;
@@ -319,20 +320,55 @@ public class Polygon : MonoBehaviour
 
     private void InBoundsSolid()
     {
-        float shapeWidth = gameObject.transform.position.x + s_maxWidthVector.x;
-        float shapeHeight = gameObject.transform.position.y + s_maxWidthVector.y;
+        float curX = gameObject.transform.position.x + _shapeWidth;
+        float curY = gameObject.transform.position.y + _shapeHeight;
 
-        if (shapeWidth < _screenSize.x && shapeWidth > -_screenSize.x 
-            && shapeHeight < _screenSize.y && shapeHeight > -_screenSize.y)
+        if (curX < _screenTopRight.x && curX > _screenBottomLeft.x
+            && curY < _screenTopRight.y && curY > _screenBottomLeft.y)
         {
-            IsSolid = true;
+            IsInPlayArea = true;
         }
     }
 
 
     private void OutOfBoundsRecall()
     {
-        if(EdgesOn)
+        float curX = gameObject.transform.position.x + _shapeWidth;
+        float curY = gameObject.transform.position.y + _shapeHeight;
+
+        if (EdgesOn)
+        {
+            if (curX > _screenTopRight.x || curX < _screenBottomLeft.x
+                || curY > _screenTopRight.y || curY < _screenBottomLeft.y)
+            {
+                TeleportSound();
+                gameObject.transform.position = Vector2.zero;
+            }
+        }
+        else
+        {
+            if (curX > _screenTopRight.x)
+            {
+                gameObject.transform.position = new Vector2(_screenBottomLeft.x, gameObject.transform.position.y);
+            }
+
+            if (curX < _screenBottomLeft.x)
+            {
+                gameObject.transform.position = new Vector2(_screenTopRight.x, gameObject.transform.position.y);
+            }
+            
+            if (curY > _screenTopRight.y)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, _screenBottomLeft.y);
+            }
+            
+            if (curY < _screenBottomLeft.y)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, _screenTopRight.y);
+            }
+        }
+
+        /*if (EdgesOn)
         {
             if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn
                     || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn)
@@ -349,7 +385,7 @@ public class Polygon : MonoBehaviour
                 TeleportSound();
                 gameObject.transform.position = Vector2.zero;
             }
-        }
+        }*/
     }
 
     private void CheckTouch()
