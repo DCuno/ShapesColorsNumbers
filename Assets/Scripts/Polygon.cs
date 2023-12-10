@@ -426,7 +426,7 @@ public class Polygon : MonoBehaviour
     }
 
     // PC Testing. Not compiled for mobile compilation
-    #if UNITY_EDITOR
+    //#if UNITY_EDITOR
 
         private void OnMouseOver()
         {
@@ -435,10 +435,11 @@ public class Polygon : MonoBehaviour
                 Pop();
             }
         }
-    #endif
 
-// Initialize x and y velocities. Randomize if the x velocity is negative or positive.
-private void SetInitialVelocities()
+    //#endif
+
+    // Initialize x and y velocities. Randomize if the x velocity is negative or positive.
+    private void SetInitialVelocities()
     {
         float randomX = Random.Range(s_initXVMin, s_initXVMax);
         float randomY = Random.Range(-_initYV * _normV, -_initYV * _normV);

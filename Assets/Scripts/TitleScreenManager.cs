@@ -18,6 +18,14 @@ public class TitleScreenManager : MonoBehaviour
         _sfx = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
     public void LessonsButton()
     {
         _sfx.PopSound();
