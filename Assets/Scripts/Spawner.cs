@@ -21,6 +21,7 @@ public class Spawner : MonoBehaviour
     [Range(minSize, maxSize)]
     private int sizeSlider; // when size is maxSize(Default: 10) on the spawner, shape size is 0.7f. when size is minSize(Default: 1), shape size is 0.1f.
     public GameObject shape;
+    private bool _tilt;
 
     private float finishedCheck = 0f;
     private bool finished = false;
@@ -41,6 +42,31 @@ public class Spawner : MonoBehaviour
         public bool voice;
         public bool text;
     }
+
+    /*public void OnDrawGizmos()
+    {
+        Camera cam = Camera.main;
+        //Vector2's for the corners of the screen
+        Vector2 bottomLeft = cam.ScreenToWorldPoint(new Vector3(0, 0, cam.nearClipPlane));
+        Vector2 topRight = cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, cam.pixelHeight, cam.nearClipPlane));
+        Vector2 topLeft = new Vector2(bottomLeft.x, topRight.y);
+        Vector2 bottomRight = new Vector2(topRight.x, bottomLeft.y);
+        Vector2 _screenSize;
+        _screenSize.x = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0))) * 0.5f;
+        _screenSize.y = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height))) * 0.5f;
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(topLeft, topRight);
+        Gizmos.DrawLine(topLeft, bottomLeft);
+        Gizmos.DrawLine(bottomLeft, bottomRight);
+        Gizmos.DrawLine(bottomRight, topRight);
+        //Gizmos.DrawIcon(new Vector2(topRight.x+10, 0), "circle.png", true);
+        //Gizmos.DrawIcon(new Vector2(-topRight.x-10, 0), "circle.png", true);
+        //Gizmos.DrawIcon(new Vector2(topRight.x, 0), "circle.png", true);
+        //Gizmos.DrawIcon(new Vector2(0, topRight.y), "circle.png", true);
+        Gizmos.DrawIcon(new Vector2(_screenSize.x, 0), "circle.png", true);
+        Gizmos.DrawIcon(new Vector2(0, _screenSize.y), "circle.png", true);
+    }*/
 
     public void SettingsSetup(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
     {
@@ -64,6 +90,7 @@ public class Spawner : MonoBehaviour
         Count = 0;
         DoneSpawning = false;
         finished = false;
+        _tilt = tilt;
         //float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
         {
@@ -79,7 +106,47 @@ public class Spawner : MonoBehaviour
 
         DoneSpawning = true;
 
+        if (!_tilt)
+        {
+            Physics2D.gravity = new Vector2(1f, 1f);
+        }
+
         yield break;
+    }
+
+    public void GravityLimiter()
+    {
+        float s_maxGravity = 1.5f;
+
+        if (Physics2D.gravity.x > s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(s_maxGravity, Physics2D.gravity.y);
+        }
+        else if (Physics2D.gravity.x < -s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(-s_maxGravity, Physics2D.gravity.y);
+        }
+        else if (Physics2D.gravity.y > s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(Physics2D.gravity.x, s_maxGravity);
+        }
+        else if (Physics2D.gravity.y < -s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(Physics2D.gravity.x, -s_maxGravity);
+        }
+        else
+        {
+            Physics2D.gravity = new Vector2(Input.acceleration.x * 1.5f, Input.acceleration.y * 1.5f);
+        }
+    }
+
+    public void FixedUpdate()
+    {
+        if (DoneSpawning && _tilt)
+            Physics2D.gravity = new Vector2(0f, 0f);
+
+        if (_tilt)
+            GravityLimiter();
     }
 
     private float SpawnAmountRatio(float amount)

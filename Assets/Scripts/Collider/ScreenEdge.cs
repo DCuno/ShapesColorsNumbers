@@ -51,6 +51,7 @@ public class ScreenEdge : MonoBehaviour
             }
 
             valPair.Value.gameObject.tag = "edge";
+            valPair.Value.gameObject.layer = LayerMask.NameToLayer("Edge");
 
             if (valPair.Key == "LeftTrigger" || valPair.Key == "RightTrigger" || valPair.Key == "TopTrigger" || valPair.Key == "BottomTrigger")
             {
