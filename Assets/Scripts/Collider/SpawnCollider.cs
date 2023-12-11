@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class SpawnCollider : MonoBehaviour
 {
-    private void OnTriggerExit2D(Collider2D collision)
+    /*private void OnTriggerExit2D(Collider2D collision)
     {
-        /*Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+        Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+
+        if (polygon != null)
+            polygon.IsInSpawner = false;
+        *//*Polygon polygon = collision.gameObject.GetComponent<Polygon>();
         if (polygon != null && polygon.EdgesOn)
         {
             *//*GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
@@ -15,13 +19,13 @@ public class SpawnCollider : MonoBehaviour
                 Physics2D.IgnoreCollision(collision, edge.GetComponent<BoxCollider2D>(), false);
             }*//*
 
-            polygon.IsSolid = true;
-            //collision.gameObject.GetComponent<Polygon>().IsSolid = true;
+            polygon.IsInPlayArea = true;
+            //collision.gameObject.GetComponent<Polygon>().IsInPlayArea = true;
         }
         else if (polygon != null && !polygon.EdgesOn)
         {
-            polygon.IsSolid = true;
-            //collision.gameObject.GetComponent<Polygon>().IsSolid = true;
-        }*/
-    }
+            polygon.IsInPlayArea = true;
+            //collision.gameObject.GetComponent<Polygon>().IsInPlayArea = true;
+        }*//*
+    }*/
 }

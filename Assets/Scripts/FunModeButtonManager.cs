@@ -9,19 +9,28 @@ public class FunModeButtonManager : MonoBehaviour
 {
     GameObject spawner;
     GameObject settingsPanel;
-    List<Polygon.Shape> shapes;
+    List<Spawner.Shape> shapes;
     List<Spawner.Colors> colors;
     float size;
     float amount;
     bool edges;
     bool tilt;
-    Spawner.Topics voice;
-    Spawner.Topics text;
+    Spawner.Topics topic;
+    bool voice;
+    bool text;
     bool changingVoiceTextToggles = false;
+    GameObject ScrollArrowUp;
+    GameObject ScrollArrowDown;
+    ScrollRect SettingsCanvasScrollRect;
 
     private void Awake()
     {
+        ScrollArrowUp = GameObject.FindGameObjectWithTag("ScrollArrowUp");
+        ScrollArrowDown = GameObject.FindGameObjectWithTag("ScrollArrowDown");
+        SettingsCanvasScrollRect = GameObject.FindGameObjectWithTag("SettingsCanvasScroll").GetComponentInChildren<ScrollRect>();
 
+        // Default is scroll arrow down is showing
+        ScrollArrowUp.SetActive(false);
     }
 
     public void FunModeButtonManagerConstructor(Spawner.SpawnerSettingsStruct SpawnerSettings)
@@ -32,6 +41,7 @@ public class FunModeButtonManager : MonoBehaviour
         amount = SpawnerSettings.amount;
         edges = SpawnerSettings.edges;
         tilt = SpawnerSettings.tilt;
+        topic = SpawnerSettings.topic;
         voice = SpawnerSettings.voice;
         text = SpawnerSettings.text;
 
@@ -40,7 +50,7 @@ public class FunModeButtonManager : MonoBehaviour
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            System.Enum.TryParse(i.name, out Polygon.Shape result);
+            System.Enum.TryParse(i.name, out Spawner.Shape result);
             if (shapes.Contains(result))
             {
                 i.isOn = true;
@@ -67,10 +77,11 @@ public class FunModeButtonManager : MonoBehaviour
 
         GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>().value = size;
         GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>().value = amount;
-        GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn = edges;
+        // Edgeless feature turned off... probably forever.
+        //GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn = edges;
         GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn = tilt;
 
-        tempToggles = GameObject.FindGameObjectWithTag("EdgesPanelGroup").GetComponentsInChildren<Toggle>();
+        /*tempToggles = GameObject.FindGameObjectWithTag("EdgesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             if (i.name.Equals("On"))
@@ -87,7 +98,7 @@ public class FunModeButtonManager : MonoBehaviour
                 else
                     i.isOn = true;
             }
-        }
+        }*/
 
         tempToggles = GameObject.FindGameObjectWithTag("TiltPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
@@ -108,11 +119,11 @@ public class FunModeButtonManager : MonoBehaviour
             }
         }
 
-        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             System.Enum.TryParse(i.name, out Spawner.Topics result);
-            if (voice.Equals(result))
+            if (topic.Equals(result))
             {
                 i.isOn = true;
             }
@@ -122,17 +133,41 @@ public class FunModeButtonManager : MonoBehaviour
             }
         }
 
+        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        foreach (Toggle i in tempToggles)
+        {
+            if (i.name.Equals("On"))
+            {
+                if (voice)
+                    i.isOn = true;
+                else
+                    i.isOn = false;
+            }
+            else if (i.name.Equals("Off"))
+            {
+                if (voice)
+                    i.isOn = false;
+                else
+                    i.isOn = true;
+            }
+        }
+
         tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            System.Enum.TryParse(i.name, out Spawner.Topics result);
-            if (text.Equals(result))
+            if (i.name.Equals("On"))
             {
-                i.isOn = true;
+                if (text)
+                    i.isOn = true;
+                else
+                    i.isOn = false;
             }
-            else
+            else if (i.name.Equals("Off"))
             {
-                i.isOn = false;
+                if (text)
+                    i.isOn = false;
+                else
+                    i.isOn = true;
             }
         }
     }
@@ -144,19 +179,19 @@ public class FunModeButtonManager : MonoBehaviour
         spawner = GameObject.FindGameObjectWithTag("spawner");
         settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
 
-        shapes = new List<Polygon.Shape>();
+        shapes = new List<Spawner.Shape>();
 
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             if (i.isOn)
-                if (System.Enum.TryParse(i.name, out Polygon.Shape result))
+                if (System.Enum.TryParse(i.name, out Spawner.Shape result))
                     shapes.Add(result);
 
         }
 
         if (shapes.Count == 0)
-            shapes.Add(Polygon.Shape.Circle);
+            shapes.Add(Spawner.Shape.Circle);
 
         colors = new List<Spawner.Colors>();
 
@@ -174,36 +209,27 @@ public class FunModeButtonManager : MonoBehaviour
 
         size = GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>().value;
         amount = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>().value;
-        edges = GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn;
+        // Edgeless feature turned off... probably forever.
+        //edges = GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn;
+        edges = true;
         tilt = GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn;
 
-        voice = Spawner.Topics.Off;
 
-        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             if (i.isOn)
                 if (System.Enum.TryParse(i.name, out Spawner.Topics result))
                 {
-                    voice = result;
+                    topic = result;
                     break;
                 }
         }
 
-        text = Spawner.Topics.Off;
+        voice = GameObject.FindGameObjectWithTag("VoiceOnToggle").GetComponent<Toggle>().isOn;
+        text = GameObject.FindGameObjectWithTag("TextOnToggle").GetComponent<Toggle>().isOn;
 
-        tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
-        foreach (Toggle i in tempToggles)
-        {
-            if (i.isOn)
-                if (System.Enum.TryParse(i.name, out Spawner.Topics result))
-                {
-                    text = result;
-                    break;
-                }
-        }
-
-        spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, voice, text);
+        spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, topic, voice, text);
         spawner.GetComponent<Spawner>().Started = true;
         Destroy(GameObject.FindGameObjectWithTag("SettingsCanvasScroll"));
     }
@@ -220,7 +246,7 @@ public class FunModeButtonManager : MonoBehaviour
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            System.Enum.TryParse(i.name, out Polygon.Shape result);
+            System.Enum.TryParse(i.name, out Spawner.Shape result);
             if (Random.Range(0, 2) == 0)
             {
                 i.isOn = true;
@@ -299,10 +325,10 @@ public class FunModeButtonManager : MonoBehaviour
 
         if (sizeSlider.value >= 9)
         {
-            if (amountSlider.value > 4)
-                amountSlider.value = 4;
+            if (amountSlider.value > 6)
+                amountSlider.value = 6;
             
-            amountSlider.maxValue = 4;
+            amountSlider.maxValue = 6;
         }
         else if (sizeSlider.value >= 7)
         {
@@ -428,5 +454,34 @@ public class FunModeButtonManager : MonoBehaviour
 
             changingVoiceTextToggles = false;
         }
+    }
+
+    public void ScrollArrow(Vector2 position)
+    {
+        if (position.y >= 0.7f && ScrollArrowUp.activeSelf)
+        {
+            ScrollArrowUp.SetActive(false);
+            ScrollArrowDown.SetActive(true);
+        }
+        
+        if (position.y < 0.3f && !ScrollArrowUp.activeSelf)
+        {
+            ScrollArrowUp.SetActive(true);
+            ScrollArrowDown.SetActive(false);
+        }
+    }
+
+    // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
+    public void ScrollArrowUpButton()
+    {
+        SettingsCanvasScrollRect.verticalNormalizedPosition = 0f;
+        SettingsCanvasScrollRect.velocity = new Vector2(0, -2500f);
+    }
+    
+    // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
+    public void ScrollArrowDownButton()
+    {
+        SettingsCanvasScrollRect.verticalNormalizedPosition = 1f;
+        SettingsCanvasScrollRect.velocity = new Vector2(0, 2500f);
     }
 }

@@ -7,6 +7,7 @@ public class Spawner : MonoBehaviour
 {
     public enum Colors { Red, Orange, Yellow, Green, Blue, Purple, White };
     public enum Topics { Shapes, Colors, Numbers, Off };
+    public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star };
 
     public GameObject settingsCanvas;
     private GameObject spawnedSettingsCanvas;
@@ -14,11 +15,13 @@ public class Spawner : MonoBehaviour
     private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
     private List<GameObject> shapesList = new List<GameObject>();
     public int Count { get; set; } = 0;
+    public bool DoneSpawning = false;
     [Range(minIter, maxIter)]
     private int iterations;
     [Range(minSize, maxSize)]
     private int sizeSlider; // when size is maxSize(Default: 10) on the spawner, shape size is 0.7f. when size is minSize(Default: 1), shape size is 0.1f.
     public GameObject shape;
+    private bool _tilt;
 
     private float finishedCheck = 0f;
     private bool finished = false;
@@ -29,19 +32,45 @@ public class Spawner : MonoBehaviour
 
     public struct SpawnerSettingsStruct
     {
-        public List<Polygon.Shape> shapes;
+        public List<Shape> shapes;
         public List<Colors> colors;
         public float size;
         public float amount;
         public bool edges;
         public bool tilt;
-        public Spawner.Topics voice;
-        public Spawner.Topics text;
+        public Spawner.Topics topic;
+        public bool voice;
+        public bool text;
     }
 
-    public void SettingsSetup(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
+    /*public void OnDrawGizmos()
     {
-        StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, voice, text));
+        Camera cam = Camera.main;
+        //Vector2's for the corners of the screen
+        Vector2 bottomLeft = cam.ScreenToWorldPoint(new Vector3(0, 0, cam.nearClipPlane));
+        Vector2 topRight = cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, cam.pixelHeight, cam.nearClipPlane));
+        Vector2 topLeft = new Vector2(bottomLeft.x, topRight.y);
+        Vector2 bottomRight = new Vector2(topRight.x, bottomLeft.y);
+        Vector2 _screenSize;
+        _screenSize.x = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0))) * 0.5f;
+        _screenSize.y = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height))) * 0.5f;
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(topLeft, topRight);
+        Gizmos.DrawLine(topLeft, bottomLeft);
+        Gizmos.DrawLine(bottomLeft, bottomRight);
+        Gizmos.DrawLine(bottomRight, topRight);
+        //Gizmos.DrawIcon(new Vector2(topRight.x+10, 0), "circle.png", true);
+        //Gizmos.DrawIcon(new Vector2(-topRight.x-10, 0), "circle.png", true);
+        //Gizmos.DrawIcon(new Vector2(topRight.x, 0), "circle.png", true);
+        //Gizmos.DrawIcon(new Vector2(0, topRight.y), "circle.png", true);
+        Gizmos.DrawIcon(new Vector2(_screenSize.x, 0), "circle.png", true);
+        Gizmos.DrawIcon(new Vector2(0, _screenSize.y), "circle.png", true);
+    }*/
+
+    public void SettingsSetup(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
+    {
+        StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, topic, voice, text));
     }
 
     public void SettingsSetup(SpawnerSettings settings)
@@ -50,16 +79,23 @@ public class Spawner : MonoBehaviour
             return;
 
         SettingsSetup(settings.Shapes, settings.Colors, settings.Size, settings.Amount, 
-                        settings.Edges, settings.Tilt, settings.Voice, settings.Text);
+                        settings.Edges, settings.Tilt, settings.Topic, settings.Voice, settings.Text);
         Started = true;
     }
 
-    IEnumerator Spawn(List<Polygon.Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics voice, Topics text)
+    IEnumerator Spawn(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Topics topic, bool voice, bool text)
     {
-        currentSettings = new SpawnerSettingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, voice = voice, text = text };
+        currentSettings = new SpawnerSettingsStruct() { shapes = shapes, colors = colors, size = size, amount = amount, edges = edges, tilt = tilt, topic = topic, voice = voice, text = text };
         shapesList.Clear();
         Count = 0;
+        DoneSpawning = false;
         finished = false;
+        _tilt = tilt;
+        Polygon curPolygon;
+
+        // Initialize normal gravity in case tilt mode was used on a previous game
+        Physics2D.gravity = new Vector2(0.0f, -9.8f);
+
         //float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
         {
@@ -68,12 +104,53 @@ public class Spawner : MonoBehaviour
                 yield return new WaitForSeconds(0.05f);
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
                 Color _tmpColor = RandomColor(colors);
-                shapesList[i].GetComponent<Polygon>().Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, voice, text);
-                yield return new WaitForSeconds(0.08f);
+                curPolygon = shapesList[i].GetComponent<Polygon>();
+                curPolygon.Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, topic, voice, text);
+                //yield return new WaitForSeconds(0.08f);
+                
+                while (curPolygon != null && !curPolygon.IsInPlayArea)
+                {
+                    yield return null;
+                }
             }
         }
 
+        yield return new WaitForSeconds(0.5f);
+
+        DoneSpawning = true;
+
+        if (_tilt)
+        {
+            Physics2D.gravity = new Vector2(0f, 0f);
+        }
+
         yield break;
+    }
+
+    public void GravityLimiter()
+    {
+        float s_maxGravity = 1.5f;
+
+        if (Physics2D.gravity.x > s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(s_maxGravity, Physics2D.gravity.y);
+        }
+        else if (Physics2D.gravity.x < -s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(-s_maxGravity, Physics2D.gravity.y);
+        }
+        else if (Physics2D.gravity.y > s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(Physics2D.gravity.x, s_maxGravity);
+        }
+        else if (Physics2D.gravity.y < -s_maxGravity)
+        {
+            Physics2D.gravity = new Vector2(Physics2D.gravity.x, -s_maxGravity);
+        }
+        else
+        {
+            Physics2D.gravity = new Vector2(Input.acceleration.x * 1.5f, Input.acceleration.y * 1.5f);
+        }
     }
 
     private float SpawnAmountRatio(float amount)
@@ -84,8 +161,8 @@ public class Spawner : MonoBehaviour
     // Updates in the editor
     private void OnValidate()
     {
-        if (sizeSlider >= 9 && iterations > 4)
-            iterations = 4;
+        if (sizeSlider >= 9 && iterations > 6)
+            iterations = 6;
         else if (sizeSlider >= 7 && iterations > 8)
             iterations = 8;
         else if (sizeSlider >= 6 && iterations > 10)
@@ -137,31 +214,31 @@ public class Spawner : MonoBehaviour
     // new Color(1.0f, 0.4f, 0.0f)
 
     // Random Shape returned out of all shapes
-    Polygon.Shape RandomShape()
+    Shape RandomShape()
     {
         int i = Random.Range(0, 6);
 
         switch (i)
         {
             case 0:
-                return Polygon.Shape.Triangle;
+                return Shape.Triangle;
             case 1:
-                return Polygon.Shape.Square;
+                return Shape.Square;
             case 2:
-                return Polygon.Shape.Pentagon;
+                return Shape.Pentagon;
             case 3:
-                return Polygon.Shape.Hexagon;
+                return Shape.Hexagon;
             case 4:
-                return Polygon.Shape.Circle;
+                return Shape.Circle;
             case 5:
-                return Polygon.Shape.Star;
+                return Shape.Star;
             default:
-                return Polygon.Shape.Circle;
+                return Shape.Circle;
         }
     }
 
     // Random Shape selected from given array
-    Polygon.Shape RandomShape(List<Polygon.Shape> arr)
+    Shape RandomShape(List<Shape> arr)
     {
         return arr[Random.Range(0, arr.Count)];
     }
@@ -212,8 +289,7 @@ public class Spawner : MonoBehaviour
 
             if (SceneManager.GetActiveScene().name == "FunModeGameScene2")
             {
-                // After 1 second of game running time, start checking if all the shapes are gone.
-                if (finishedCheck >= 1.0f)
+                if (DoneSpawning)
                 {
                     // Shapes have been popped, pull down menu.
                     if (this.transform.childCount == 0)
@@ -228,8 +304,7 @@ public class Spawner : MonoBehaviour
             }
             else if (SceneManager.GetActiveScene().name == "LessonsScene")
             {
-                // After 1 second of game running time, start checking if all the shapes are gone.
-                if (finishedCheck >= 1.0f)
+                if (DoneSpawning)
                 {
                     // Shapes have been popped, pull down menu.
                     if (this.transform.childCount == 0)
@@ -252,6 +327,8 @@ public class Spawner : MonoBehaviour
             }
         }
 
+        if (_tilt && DoneSpawning)
+            GravityLimiter();
     }
 
     private void DeleteAllChildren()

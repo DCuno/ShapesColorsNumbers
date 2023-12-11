@@ -51,10 +51,28 @@ public class ScreenEdge : MonoBehaviour
             }
 
             valPair.Value.gameObject.tag = "edge";
+            valPair.Value.gameObject.layer = LayerMask.NameToLayer("Edge");
+
+            ScreenEdgeChild tempChild;
 
             if (valPair.Key == "LeftTrigger" || valPair.Key == "RightTrigger" || valPair.Key == "TopTrigger" || valPair.Key == "BottomTrigger")
             {
-                valPair.Value.gameObject.AddComponent<ScreenEdgeChild>();
+                tempChild = valPair.Value.gameObject.AddComponent<ScreenEdgeChild>();
+                switch (valPair.Key)
+                {
+                    case "LeftTrigger":
+                        tempChild.Dir = TextLerper.LerpDirection.Left;
+                        break;
+                    case "RightTrigger":
+                        tempChild.Dir = TextLerper.LerpDirection.Right;
+                        break;
+                    case "TopTrigger":
+                        tempChild.Dir = TextLerper.LerpDirection.Top;
+                        break;
+                    case "BottomTrigger":
+                        tempChild.Dir = TextLerper.LerpDirection.Bottom;
+                        break;
+                }
                 valPair.Value.gameObject.GetComponent<BoxCollider2D>().isTrigger = true;
             }
         }

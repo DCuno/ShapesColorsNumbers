@@ -73,6 +73,13 @@ TagManager:
   - MusicSliderCounter
   - SFXSource
   - MusicSource
+  - LessonsButton
+  - SandboxButton
+  - ScrollArrowUp
+  - ScrollArrowDown
+  - VoiceOnToggle
+  - TextOnToggle
+  - TopicsPanelGroup
   layers:
   - Default
   - TransparentFX

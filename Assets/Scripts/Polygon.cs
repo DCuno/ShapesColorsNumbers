@@ -10,8 +10,10 @@ public class Polygon : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private PolygonCollider2D _polyCollider2D;
     private SpriteRenderer _spriteRenderer;
+    private Spawner _spawner;
     private AudioSource _audioSource;
     private Audio _audio;
+    private Camera _camera;
 
     // Effects
     [Tooltip("Select 3 sizes of particle objects for when the shape is popped")]
@@ -24,81 +26,185 @@ public class Polygon : MonoBehaviour
     // Game Mode Variables
     private bool _tiltOn;
     public bool EdgesOn;
-    private Spawner.Topics _voice;
-    private Spawner.Topics _text;
+    private Spawner.Topics _topic;
+    private bool _voice;
+    private bool _text;
     static private float s_gravityScale = 30f;
-    private float _gravityLerpTimer = 0.0f;
-    static private float s_gravityLerpTimeTotal = 500.0f;
-    private float _lerpPercent;
     static private float s_gravityStopMargin = 0.05f;
     private PhysicsMaterial2D _gravityOnMaterial;
     private PhysicsMaterial2D _gravityOffMaterial;
 
     // Physics
     private Touch touch;
-    private float _initYV = 15.0f;
+    private float _initYV = 8.0f;
     static private float s_initXVMin = 0.06f;
-    static private float s_initXVMax = 3.0f;
+    static private float s_initXVMax = 2.0f;
     static private float s_initAngV = 300.0f;
-    static private float s_pushVMin = 3.0f;
+    static private float s_pushVMin = 2.0f;
     static private float s_pushVMax = 6.0f;
     static private float s_pushAngV = 300.0f;
     static private float s_slowestV = 0.35f;
-    static private float s_maxVx = 15.0f;
-    static private float s_maxVy = 15.0f;
+    static private float s_maxVx = 10.0f;
+    static private float s_maxVy = 10.0f;
     static private float s_maxGravity = 1.5f;
     static private float s_smallestSizeSlider = 1;
     static private float s_largestSizeSlider = 10;
-    static private float s_shapeTextSmallestRealSize = 0.1f;
-    static private float s_shapeTextLargestRealSize = 0.7f;
+    static private float s_shapeTextSmallestRealSize = 0.175f;//0.1f;
+    static private float s_shapeTextLargestRealSize = 0.85f;//0.7f;
     static private float s_numberTextSmallestRealSize = 0.35f;
     static private float s_numberTextLargestRealSize = 1.0f;
     static private float s_colorTextSmallestRealSize = 0.3f;
     static private float s_colorTextLargestRealSize = 0.5f;
-    static private int s_outOfBoundsRatioEdgesOn = 2;
-    static private int s_outOfBoundsRatioEdgesOff = 1;
-    private bool _outOfBoundsFlag = false;
     private float _normV;
     private float _shapeMapSize;
     private GameObject _popMapSize;
     private float _numberTextMapSize;
     private float _shapeColorTextMapSize;
-    private Vector2 _screenSize;
+    private Vector2 _screenBottomLeft;
+    private Vector2 _screenTopRight;
 
     // Collider updater variables
     private List<Vector2> _points = new List<Vector2>();
     private List<Vector2> _simplifiedPoints = new List<Vector2>();
 
     // Update timer
-    private float _gravityWaitTimer = 0f;
+    private float _velocityLerpTimer = 0f;
+    static private float s_velocityLerpTimeTotal = 3f;
+    private float _velocityLerpPercent;
+    private float _gravityLerpTimer = 0.0f;
+    static private float s_gravityLerpTimeTotal = 500.0f;
+    private float _gravityLerpPercent;
 
     // Polygon variables
-    public enum Shape { Triangle, Square, Pentagon, Hexagon, Circle, Star }
     [Tooltip("Select sprites the polygon can become")]
     public Sprite[] PolygonSprites;
-    private Shape _shape;
+    public Spawner.Shape Shape;
     public Spawner.Colors Color;
-    public bool IsSolid = false;
+    private const int LARGE = 8;
+    private const int MEDIUM = 4;
+    public bool IsInPlayArea = false;
+    public bool IsInSpawner = true;
     public bool IsPopped = false;
-    [SerializeField] public int ID;
+    //[SerializeField] public int ID;
     private GameObject _shadowObj;
     static private float s_shadowDist = 0.2f;
-    static private Vector2 s_maxWidthVector;
+    private Vector2 _maxWidthVector;
+    private Vector2 _centerVector;
+    private float _shapeWidth;
+    private float _shapeHeight;
 
+    /*private void OnDrawGizmos()
+    {
+        //Bounds objBounds = _spriteRenderer.bounds;
+        //Vector2 bottomLeft = new Vector2(objBounds.center.x - objBounds.extents.x, objBounds.center.y - objBounds.extents.y); // Left and Bottom
+        //Vector2 topRight = new Vector2(objBounds.center.x + objBounds.extents.x, objBounds.center.y + objBounds.extents.y); // Right and Top
+        Gizmos.matrix = Matrix4x4.identity;
+
+
+        // Get the SpriteRenderer component attached to the GameObject
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Get the edges of the rotated sprite box
+        Vector2[] edges = GetRotatedSpriteEdges();
+
+        // Display the edges information
+        *//*Debug.Log("Left Edge: " + edges[0].x);
+        Debug.Log("Right Edge: " + edges[1].x);
+        Debug.Log("Bottom Edge: " + edges[0].y);
+        Debug.Log("Top Edge: " + edges[1].y);*//*
+
+        Gizmos.DrawIcon(new Vector2(edges[0].x, edges[0].y), "circle.png");
+        Gizmos.DrawIcon(new Vector2(edges[1].x, edges[1].y), "circle.png");
+        Gizmos.DrawIcon(new Vector2(edges[0].x, edges[1].y), "circle.png");
+        Gizmos.DrawIcon(new Vector2(edges[1].x, edges[0].y), "circle.png");
+        Debug.Log(Shape + " " + _spriteRenderer.sprite.vertices.Length);
+    }*/
+
+    Vector2[] GetRotatedSpriteEdges()
+    {
+        Vector2[] edges = new Vector2[2];
+
+        if (_spriteRenderer == null)
+        {
+            Debug.LogError("SpriteRenderer not found!");
+            return edges;
+        }
+
+        // Get the sprite's vertices in local space
+        Vector2[] vertices = _spriteRenderer.sprite.vertices;
+
+        // Find the min and max points after rotation
+        Matrix4x4 localToWorldMatrix = _spriteRenderer.transform.localToWorldMatrix;
+        Vector3 min = localToWorldMatrix.MultiplyPoint(vertices[0]);
+        Vector3 max = localToWorldMatrix.MultiplyPoint(vertices[0]);
+
+        // Iterate through vertices to find min and max after rotation
+        for (int i = 1; i < vertices.Length; i++)
+        {
+            Vector3 vertexWorldPos = localToWorldMatrix.MultiplyPoint(vertices[i]);
+            min = Vector3.Min(min, vertexWorldPos);
+            max = Vector3.Max(max, vertexWorldPos);
+        }
+
+        // Set the edges based on the rotated min and max points
+        edges[0] = new Vector2(min.x, min.y); // Left and Bottom
+        edges[1] = new Vector2(max.x, max.y); // Right and Top
+
+        return edges;
+    }
+
+    private bool EnterPlayArea()
+    {
+        Vector2[] boundsVec = GetRotatedSpriteEdges();
+        Vector2 bottomLeft = boundsVec[0];
+        Vector2 topRight = boundsVec[1];
+
+        if ((bottomLeft.x < _screenTopRight.x && bottomLeft.x > _screenBottomLeft.x)
+            && (topRight.x < _screenTopRight.x && topRight.x > _screenBottomLeft.x)
+            && (bottomLeft.y < _screenTopRight.y && bottomLeft.y > _screenBottomLeft.y)
+            && (topRight.y < _screenTopRight.y && topRight.y > _screenBottomLeft.y))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool ExitPlayArea()
+    {
+        Vector2[] boundsVec = GetRotatedSpriteEdges();
+        Vector2 bottomLeft = boundsVec[0];
+        Vector2 topRight = boundsVec[1];
+
+        if ((bottomLeft.x > _screenTopRight.x && bottomLeft.x < _screenBottomLeft.x)
+            || (topRight.x > _screenTopRight.x && topRight.x < _screenBottomLeft.x)
+            || (bottomLeft.y > _screenTopRight.y && bottomLeft.y < _screenBottomLeft.y)
+            || (topRight.y > _screenTopRight.y && topRight.y < _screenBottomLeft.y))
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     private void Awake()
     {
         _polyCollider2D = GetComponent<PolygonCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _spawner = GameObject.FindGameObjectWithTag("spawner").GetComponent<Spawner>();
         _audioSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _camera = Camera.main;
 
-        ID = PlayerPrefs.GetInt("PolygonID") + 1;
-        PlayerPrefs.SetInt("PolygonID", ID);
+        /*ID = PlayerPrefs.GetInt("PolygonID") + 1;
+        PlayerPrefs.SetInt("PolygonID", ID);*/
 
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
+
+        _screenBottomLeft = _camera.ScreenToWorldPoint(new Vector3(0, 0, _camera.nearClipPlane));
+        _screenTopRight = _camera.ScreenToWorldPoint(new Vector3(_camera.pixelWidth, _camera.pixelHeight, _camera.nearClipPlane));
     }
 
     // Update is called once per frame
@@ -115,9 +221,9 @@ public class Polygon : MonoBehaviour
 
         if (_tiltOn)
         {
-            _gravityWaitTimer += Time.deltaTime;
+            //_gravityWaitTimer += Time.deltaTime;
 
-            if (_gravityWaitTimer >= 5.0f)
+            if (_spawner.DoneSpawning)
             {
                 _rigidbody2D.gravityScale = s_gravityScale;
 
@@ -125,7 +231,6 @@ public class Polygon : MonoBehaviour
                 if ((Input.acceleration.x <= s_gravityStopMargin && Input.acceleration.x >= -s_gravityStopMargin) 
                     && (Input.acceleration.y <= s_gravityStopMargin && Input.acceleration.y >= -s_gravityStopMargin))
                 {
-                    Physics2D.gravity = new Vector2(0f, 0f);
                     _gravityLerpTimer += Time.deltaTime;
 
                     if (_gravityLerpTimer > s_gravityLerpTimeTotal)
@@ -133,13 +238,13 @@ public class Polygon : MonoBehaviour
                         _gravityLerpTimer = s_gravityLerpTimeTotal;
                     }
 
-                    _lerpPercent = _gravityLerpTimer / s_gravityLerpTimeTotal;
-                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, _lerpPercent);
-                    _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, _lerpPercent);
+                    _gravityLerpPercent = _gravityLerpTimer / s_gravityLerpTimeTotal;
+                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, _gravityLerpPercent);
+                    _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, _gravityLerpPercent);
                 }
                 else
                 {
-                    GravityLimiter();
+                    //GravityLimiter();
                 }
             }
         }
@@ -148,35 +253,27 @@ public class Polygon : MonoBehaviour
             PushSlowShapes();            
         }
 
-        if (!EdgesOn)
+        if (!IsInPlayArea && EnterPlayArea())
         {
-            // Return shape to opposite side to loop around the screen.
-            if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / 1 || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / 1)
-            {
-                gameObject.transform.position = new Vector2(-1 * gameObject.transform.position.x, gameObject.transform.position.y);
-            }
+            /*if (!EdgesOn)
+                Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("shapes"), LayerMask.NameToLayer("Edge"), true);*/
 
-            if (gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / 1 || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / 1)
-            {
-                gameObject.transform.position = new Vector2(gameObject.transform.position.x, -1 * gameObject.transform.position.y);
-            }
-        }
-
-        if (IsSolid && !_outOfBoundsFlag)
-        {
+            IsInPlayArea = true;
             gameObject.layer = LayerMask.NameToLayer("shapes");
             _polyCollider2D.isTrigger = false;
-            _outOfBoundsFlag = true;
         }
 
-        if (!IsSolid)
-            InBoundsSolid();
-
-        if (IsSolid)
+        if (IsInPlayArea)
             OutOfBoundsRecall();
+
+        // DEBUG POPPER
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Pop();
+        }
     }
 
-    public void Creation(Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics voice, Spawner.Topics text)
+    public void Creation(Spawner.Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
     {
         // Change velocity relative to the size of the shapes. Default Size: 0.33f
         _normV = 1;
@@ -184,17 +281,18 @@ public class Polygon : MonoBehaviour
         // Maps slider position to real size
         MapTextSliders(size);
 
-        if (size >= 8)
+        if (size >= LARGE)
             _popMapSize = PopParticles[0];
-        else if (size >= 4)
+        else if (size >= MEDIUM)
             _popMapSize = PopParticles[1];
         else
             _popMapSize = PopParticles[2];
 
-        _shape = shape;
+        this.Shape = shape;
         Color = color;
         _tiltOn = tilt;
         EdgesOn = edges;
+        _topic = topic;
         _voice = voice;
         _text = text;
 
@@ -204,7 +302,7 @@ public class Polygon : MonoBehaviour
             // normal gravity at the start, then scale up for tilt controls in update()
             _rigidbody2D.gravityScale = 1f;
             _rigidbody2D.sharedMaterial = _gravityOnMaterial;
-            _initYV /= 100f;
+            //_initYV /= 100f;
         }
         else
         {
@@ -212,25 +310,62 @@ public class Polygon : MonoBehaviour
             _rigidbody2D.sharedMaterial = _gravityOffMaterial;
         }
 
+        if (size >= LARGE)
+            _popMapSize = PopParticles[0];
+        else if (size >= 4)
+            _popMapSize = PopParticles[1];
+        else
+            _popMapSize = PopParticles[2];
+
         switch (shape)
         {
-            case Shape.Triangle:
-                _spriteRenderer.sprite = PolygonSprites[0];
+            case Spawner.Shape.Triangle:
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[0];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[1];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[2];
                 break;
-            case Shape.Square:
-                _spriteRenderer.sprite = PolygonSprites[1];
+            case Spawner.Shape.Square:
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[3];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[4];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[5];
                 break;
-            case Shape.Pentagon:
-                _spriteRenderer.sprite = PolygonSprites[2];
+            case Spawner.Shape.Pentagon:
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[6];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[7];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[8];
                 break;
-            case Shape.Hexagon:
-                _spriteRenderer.sprite = PolygonSprites[3];
+            case Spawner.Shape.Hexagon:
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[9];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[10];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[11];
                 break;
-            case Shape.Circle:
-                _spriteRenderer.sprite = PolygonSprites[4];
+            case Spawner.Shape.Circle:
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[12];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[13];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[14];
                 break;
-            case Shape.Star:
-                _spriteRenderer.sprite = PolygonSprites[5];
+            case Spawner.Shape.Star:
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[15];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[16];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[17];
                 break;
         }
 
@@ -239,10 +374,8 @@ public class Polygon : MonoBehaviour
         _spriteRenderer.color = unityColor;
 
         // Getting 'radius' of shape for turning it solid when entering the screen
-        s_maxWidthVector = gameObject.GetComponent<SpriteRenderer>().bounds.extents;
-
-        _screenSize.x = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0))) * 0.5f;
-        _screenSize.y = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)), Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height))) * 0.5f;
+        _maxWidthVector = gameObject.GetComponent<SpriteRenderer>().bounds.extents;
+        _centerVector = gameObject.GetComponent<SpriteRenderer>().bounds.center;
 
         SetInitialVelocities();
 
@@ -287,6 +420,7 @@ public class Polygon : MonoBehaviour
     /// <param name="size">Size of polygon</param>
     private void MapTextSliders(float size)
     {
+        // _shapeMapSize influences size of shape relative to the base image size
         _shapeMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_shapeTextLargestRealSize - s_shapeTextSmallestRealSize)) + s_shapeTextSmallestRealSize;
         _numberTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_numberTextLargestRealSize - s_numberTextSmallestRealSize)) + s_numberTextSmallestRealSize;
         _shapeColorTextMapSize = ((size - s_smallestSizeSlider) / (s_largestSizeSlider - s_smallestSizeSlider) * (s_colorTextLargestRealSize - s_colorTextSmallestRealSize)) + s_colorTextSmallestRealSize;
@@ -301,28 +435,49 @@ public class Polygon : MonoBehaviour
             float randomAngularVelocity = Random.Range(-s_pushAngV * _normV, s_pushAngV * _normV);
             Vector2 randomVelocity = new Vector2(Random.Range(s_pushVMin * _normV, s_pushVMax * _normV), Random.Range(s_pushVMin * _normV, s_pushVMax * _normV));
 
-            _rigidbody2D.velocity = randomVelocity;
-            _rigidbody2D.angularVelocity = randomAngularVelocity;
+            _rigidbody2D.AddForce(randomVelocity,ForceMode2D.Impulse);
+            //_rigidbody2D.angularVelocity = randomAngularVelocity;
             //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
         }
     }
 
-    private void InBoundsSolid()
-    {
-        float shapeWidth = gameObject.transform.position.x + s_maxWidthVector.x;
-        float shapeHeight = gameObject.transform.position.y + s_maxWidthVector.y;
-
-        if (shapeWidth < _screenSize.x && shapeWidth > -_screenSize.x 
-            && shapeHeight < _screenSize.y && shapeHeight > -_screenSize.y)
-        {
-            IsSolid = true;
-        }
-    }
-
-
     private void OutOfBoundsRecall()
     {
-        if(EdgesOn)
+        if (EdgesOn)
+        {
+            if (ExitPlayArea())
+            {
+                TeleportSound();
+                gameObject.transform.position = Vector2.zero;
+            }
+        }
+        else
+        {
+            float curX = gameObject.transform.position.x + _shapeWidth;
+            float curY = gameObject.transform.position.y + _shapeHeight;
+
+            if (curX > _screenTopRight.x)
+            {
+                gameObject.transform.position = new Vector2(_screenBottomLeft.x, gameObject.transform.position.y);
+            }
+
+            if (curX < _screenBottomLeft.x)
+            {
+                gameObject.transform.position = new Vector2(_screenTopRight.x, gameObject.transform.position.y);
+            }
+            
+            if (curY > _screenTopRight.y)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, _screenBottomLeft.y);
+            }
+            
+            if (curY < _screenBottomLeft.y)
+            {
+                gameObject.transform.position = new Vector2(gameObject.transform.position.x, _screenTopRight.y);
+            }
+        }
+
+        /*if (EdgesOn)
         {
             if (gameObject.transform.position.x > (Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn || gameObject.transform.position.y > (Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn
                     || gameObject.transform.position.x < -(Screen.width / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn || gameObject.transform.position.y < -(Screen.height / Camera.main.orthographicSize) / s_outOfBoundsRatioEdgesOn)
@@ -339,7 +494,7 @@ public class Polygon : MonoBehaviour
                 TeleportSound();
                 gameObject.transform.position = Vector2.zero;
             }
-        }
+        }*/
     }
 
     private void CheckTouch()
@@ -380,7 +535,7 @@ public class Polygon : MonoBehaviour
     }
 
     // PC Testing. Not compiled for mobile compilation
-    #if UNITY_EDITOR
+    //#if UNITY_EDITOR
 
         private void OnMouseOver()
         {
@@ -390,7 +545,7 @@ public class Polygon : MonoBehaviour
             }
         }
 
-    #endif
+    //#endif
 
     // Initialize x and y velocities. Randomize if the x velocity is negative or positive.
     private void SetInitialVelocities()
@@ -494,7 +649,7 @@ public class Polygon : MonoBehaviour
         }
 
         if (_rigidbody2D.velocity.y > s_maxVy || _rigidbody2D.velocity.y < -s_maxVy)
-        { 
+        {
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, s_maxVy * Mathf.Sign(_rigidbody2D.velocity.y));
         }
     }
@@ -513,18 +668,18 @@ public class Polygon : MonoBehaviour
 
     public void VoiceSound()
     {
-        if (_voice == Spawner.Topics.Shapes)
+        if (_topic == Spawner.Topics.Shapes && _voice)
         {
-            _audioSource.PlayOneShot(_audio.voices_shapes[(int)_shape]);
+            _audioSource.PlayOneShot(_audio.voices_shapes[(int)Shape]);
         }
-        else if (_voice == Spawner.Topics.Colors)
+        else if (_topic == Spawner.Topics.Colors && _voice)
         {
             _audioSource.PlayOneShot(_audio.voices_colors[(int)Color]);
         }
-        else if (_voice == Spawner.Topics.Numbers)
+        else if (_topic == Spawner.Topics.Numbers && _voice)
         {
             // Need to increment the polygon count if the pop text isn't on. Because it increments in pop text otherwise.
-            if (_text != Spawner.Topics.Numbers)
+            if (!_text)
                 _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().Count++]);
             else
                 _audioSource.PlayOneShot(_audio.voices_numbers[GetComponentInParent<Spawner>().Count]);
@@ -537,17 +692,17 @@ public class Polygon : MonoBehaviour
 
     public void SpawnPopText()
     {
-        if (_text == Spawner.Topics.Shapes)
+        if (_topic == Spawner.Topics.Shapes && _text)
         {
             GameObject tempTextObj = Instantiate(WordTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
             TextMeshPro tempTextObjTMP = tempTextObj.GetComponent<TextMeshPro>();
             //tempTextObjTMP.fontSize = 40;
-            tempTextObjTMP.text = _shape.ToString();
+            tempTextObjTMP.text = Shape.ToString();
             //tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
-        else if (_text == Spawner.Topics.Colors)
+        else if (_topic == Spawner.Topics.Colors && _text)
         {
             GameObject tempTextObj = Instantiate(WordTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_shapeColorTextMapSize, _shapeColorTextMapSize, 0);
@@ -558,7 +713,7 @@ public class Polygon : MonoBehaviour
             //tempTextObjTMP.font = Resources.Load<TMP_FontAsset>("Font/Vanillaextract-Unshaded SDF");
             tempTextObj.GetComponent<BoxCollider2D>().size = new Vector2(tempTextObjTMP.preferredWidth, 4);
         }
-        else if (_text == Spawner.Topics.Numbers)
+        else if (_topic == Spawner.Topics.Numbers && _text)
         {
             GameObject tempTextObj = Instantiate(NumberTextObj, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
             tempTextObj.transform.localScale = new Vector3(_numberTextMapSize, _numberTextMapSize, 0);

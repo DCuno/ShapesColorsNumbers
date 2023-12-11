@@ -6,56 +6,76 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreenManager : MonoBehaviour
 {
-    [SerializeField] public AudioMixer _mixer;
+    [SerializeField] private AudioMixer _mixer;
+    private Audio _sfx;
 
     void Start()
     {
         // Setup Volumes from Player Prefs
-        _mixer.SetFloat("Music", PlayerPrefs.GetFloat("MusicVol", -6f));
-        _mixer.SetFloat("SFX", PlayerPrefs.GetFloat("SFXVol", 0f));
+        _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+        _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+
+        _sfx = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     public void LessonsButton()
     {
+        _sfx.PopSound();
         SceneManager.LoadScene(sceneName: "LessonsSelectionScene");
     }
 
     public void AllButton()
     {
+        _sfx.PopSound();
         PlayerPrefs.SetString("Chapter", "All");
         SceneManager.LoadScene(sceneName: "LessonsScene");
     }
 
     public void ShapesButton()
     {
+        _sfx.PopSound();
         PlayerPrefs.SetString("Chapter", "Shapes");
         SceneManager.LoadScene(sceneName: "LessonsScene");
     }
 
     public void ColorsButton()
     {
+        _sfx.PopSound();
         PlayerPrefs.SetString("Chapter", "Colors");
         SceneManager.LoadScene(sceneName: "LessonsScene");
     }
 
     public void NumbersButton()
     {
+        _sfx.PopSound();
         PlayerPrefs.SetString("Chapter", "Numbers");
         SceneManager.LoadScene(sceneName: "LessonsScene");
     }
 
     public void LessonsBackButton()
     {
+        _sfx.PopSound();
         SceneManager.LoadScene(sceneName: "TitleScene");
     }
 
     public void FunModeButton()
     {
-        StartCoroutine(FunModeButtonConfettiWait());
+        _sfx.PopSound();
+        //StartCoroutine(FunModeButtonConfettiWait());
+        SceneManager.LoadScene(sceneName: "FunModeGameScene2");
     }
 
     private IEnumerator FunModeButtonConfettiWait()
     {
+        _sfx.PopSound();
         var async = SceneManager.LoadSceneAsync(sceneName: "FunModeGameScene2");
 
         async.allowSceneActivation = false;
@@ -65,6 +85,7 @@ public class TitleScreenManager : MonoBehaviour
 
     public void OptionsButton()
     {
+        _sfx.PopSound();
         SceneManager.LoadScene(sceneName: "OptionsScene");
     }
 }

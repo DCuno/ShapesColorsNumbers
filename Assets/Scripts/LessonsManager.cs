@@ -8,7 +8,7 @@ public class LessonsManager : MonoBehaviour
     List<GameObject> ShapesList;
     List<GameObject> ColorsList;
     List<GameObject> NumbersList;
-    GameObject spawner;
+    Spawner _spawner;
     public List<SpawnerSettings> SpawnerSettings;
     private int spawnerSettingsIndex;
     private static AudioSource _SFXSource;
@@ -26,7 +26,7 @@ public class LessonsManager : MonoBehaviour
         ShapesList = new List<GameObject>(6);
         ColorsList = new List<GameObject>(6);
         NumbersList = new List<GameObject>(10);
-        spawner = GameObject.FindGameObjectWithTag("spawner");
+        _spawner = GameObject.FindGameObjectWithTag("spawner").GetComponent<Spawner>();
 
         _SFXSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
         _SFXAudio = _SFXSource.GetComponent<Audio>();
@@ -76,7 +76,7 @@ public class LessonsManager : MonoBehaviour
 
     IEnumerator Lessons()
     {
-        List<Polygon.Shape> _allShapes = new List<Polygon.Shape> { Polygon.Shape.Triangle, Polygon.Shape.Square, Polygon.Shape.Pentagon, Polygon.Shape.Hexagon, Polygon.Shape.Circle, Polygon.Shape.Star };
+        List<Spawner.Shape> _allShapes = new List<Spawner.Shape> { Spawner.Shape.Triangle, Spawner.Shape.Square, Spawner.Shape.Pentagon, Spawner.Shape.Hexagon, Spawner.Shape.Circle, Spawner.Shape.Star };
         List<Spawner.Colors> _allColors = new List<Spawner.Colors> { Spawner.Colors.Red, Spawner.Colors.Orange, Spawner.Colors.Yellow, Spawner.Colors.Green, Spawner.Colors.Blue, Spawner.Colors.Purple };
         string curChapter = PlayerPrefs.GetString("Chapter");
 
@@ -86,22 +86,27 @@ public class LessonsManager : MonoBehaviour
         {
             foreach (GameObject i in ShapesList)
             {
-                LessonsManager.VoiceSound(Spawner.Topics.Shapes, (Polygon.Shape)idx, (Spawner.Colors)0, 0);
+                LessonsManager.VoiceSound(Spawner.Topics.Shapes, (Spawner.Shape)idx, (Spawner.Colors)0, 0);
                 i.gameObject.SetActive(true);
                 yield return new WaitForSeconds(3);
                 i.gameObject.SetActive(false);
 
-                //spawner.GetComponent<Spawner>().SettingsSetup(new List<Polygon.Shape> { (Polygon.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 1, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
+                //spawner.GetComponent<Spawner>().SettingsSetup(new List<Spawner.Shape> { (Spawner.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 1, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
+                _spawner.Started = true;
+                _spawner.SettingsSetup(new List<Spawner.Shape> { (Spawner.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 1, true, false, Spawner.Topics.Shapes, true, true);
+                spawnerSettingsIndex++;
+                //_spawner.SettingsSetup(SpawnerSettings[spawnerSettingsIndex++]);
+
+                yield return new WaitWhile(() => _spawner.Started);
+
+                _spawner.Started = true;
+                _spawner.SettingsSetup(new List<Spawner.Shape> { (Spawner.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 7, true, false, Spawner.Topics.Shapes, true, true);
+                spawnerSettingsIndex++;
+                //spawner.GetComponent<Spawner>().SettingsSetup(new List<Spawner.Shape> { (Spawner.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 7, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
                 //spawner.GetComponent<Spawner>().Started = true;
-                spawner.GetComponent<Spawner>().SettingsSetup(SpawnerSettings[spawnerSettingsIndex++]);
+                //_spawner.SettingsSetup(SpawnerSettings[spawnerSettingsIndex++]);
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
-
-                //spawner.GetComponent<Spawner>().SettingsSetup(new List<Polygon.Shape> { (Polygon.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 7, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
-                //spawner.GetComponent<Spawner>().Started = true;
-                spawner.GetComponent<Spawner>().SettingsSetup(SpawnerSettings[spawnerSettingsIndex++]);
-
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
 
                 idx++;
             }
@@ -116,20 +121,20 @@ public class LessonsManager : MonoBehaviour
         {
             foreach (GameObject i in ColorsList)
             {
-                LessonsManager.VoiceSound(Spawner.Topics.Colors, (Polygon.Shape)0, (Spawner.Colors)idx, 0);
+                LessonsManager.VoiceSound(Spawner.Topics.Colors, (Spawner.Shape)0, (Spawner.Colors)idx, 0);
                 i.gameObject.SetActive(true);
                 yield return new WaitForSeconds(3);
                 i.gameObject.SetActive(false);
 
-                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 1, true, false, Spawner.Topics.Colors, Spawner.Topics.Colors);
-                spawner.GetComponent<Spawner>().Started = true;
+                _spawner.SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 1, true, false, Spawner.Topics.Colors, true, true);
+                _spawner.Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
 
-                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 7, true, false, Spawner.Topics.Colors, Spawner.Topics.Colors);
-                spawner.GetComponent<Spawner>().Started = true;
+                _spawner.SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 7, true, false, Spawner.Topics.Colors, true, true);
+                _spawner.Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
                 idx++;
             }
 
@@ -142,15 +147,15 @@ public class LessonsManager : MonoBehaviour
         {
             foreach (GameObject i in NumbersList)
             {
-                LessonsManager.VoiceSound(Spawner.Topics.Numbers, (Polygon.Shape)0, (Spawner.Colors)0, idx);
+                LessonsManager.VoiceSound(Spawner.Topics.Numbers, (Spawner.Shape)0, (Spawner.Colors)0, idx);
                 i.gameObject.SetActive(true);
                 yield return new WaitForSeconds(3);
                 i.gameObject.SetActive(false);
 
-                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, _allColors, 5, idx + 1, true, false, Spawner.Topics.Numbers, Spawner.Topics.Numbers);
-                spawner.GetComponent<Spawner>().Started = true;
+                _spawner.SettingsSetup(_allShapes, _allColors, 5, idx + 1, true, false, Spawner.Topics.Numbers, true, true);
+                _spawner.Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
                 idx++;
             }
         }
@@ -188,19 +193,19 @@ public class LessonsManager : MonoBehaviour
 
     }
 
-    private static void VoiceSound(Spawner.Topics _voice, Polygon.Shape _shape, Spawner.Colors _color, int _number)
+    private static void VoiceSound(Spawner.Topics voice, Spawner.Shape shape, Spawner.Colors color, int number)
     {
-        if (_voice == Spawner.Topics.Shapes)
+        if (voice == Spawner.Topics.Shapes)
         {
-            _SFXSource.PlayOneShot(_SFXAudio.voices_shapes[(int)_shape]);
+            _SFXSource.PlayOneShot(_SFXAudio.voices_shapes[(int)shape]);
         }
-        else if (_voice == Spawner.Topics.Colors)
+        else if (voice == Spawner.Topics.Colors)
         {
-            _SFXSource.PlayOneShot(_SFXAudio.voices_colors[(int)_color]);
+            _SFXSource.PlayOneShot(_SFXAudio.voices_colors[(int)color]);
         }
-        else if (_voice == Spawner.Topics.Numbers)
+        else if (voice == Spawner.Topics.Numbers)
         {
-            _SFXSource.PlayOneShot(_SFXAudio.voices_numbers[_number]);
+            _SFXSource.PlayOneShot(_SFXAudio.voices_numbers[number]);
         }
         else
         {
