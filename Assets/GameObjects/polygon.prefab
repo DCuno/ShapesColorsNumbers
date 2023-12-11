@@ -54,18 +54,29 @@ MonoBehaviour:
   WordTextObj: {fileID: 2227421312996591478, guid: 68505873fd91cbd47b44430299258fe2, type: 3}
   EdgesOn: 0
   PolygonSprites:
-  - {fileID: 21300000, guid: c0c99ac45ee3968489beac279114099e, type: 3}
-  - {fileID: 21300000, guid: 62d1422382400764eb0778335763b4c2, type: 3}
-  - {fileID: 21300000, guid: b376f64cb28da944795375d590d2bf2c, type: 3}
-  - {fileID: 21300000, guid: a7bdea6ab44230b41a11d0dd089b5db5, type: 3}
-  - {fileID: 21300000, guid: c0530922c76ede0489b7a4a844359ecd, type: 3}
-  - {fileID: 21300000, guid: ef039b5ec9e2b0c4c81fed4576a4ee22, type: 3}
+  - {fileID: 21300000, guid: 4c585d208c35ecf4fa1047ccf3fd9542, type: 3}
+  - {fileID: 21300000, guid: 3912e79f4008f32418eb09a3a34a8873, type: 3}
+  - {fileID: 21300000, guid: af7a95c0573bd734dbcd2ef0ce108283, type: 3}
+  - {fileID: 21300000, guid: 33af52bac38f6f04dbb616c7661eff63, type: 3}
+  - {fileID: 21300000, guid: 33f83ec7062e7944fa769ca6bd6dffc1, type: 3}
+  - {fileID: 21300000, guid: 96e6116d5b73a3f4296933b85abcc675, type: 3}
+  - {fileID: 21300000, guid: 62e29d33d0e1c4b4bb7840654847cc0d, type: 3}
+  - {fileID: 21300000, guid: fdb6f26ed3dc03d468f0875f9b6e6d94, type: 3}
+  - {fileID: 21300000, guid: a92d2018265921c45abc103a7fa99cd9, type: 3}
+  - {fileID: 21300000, guid: c25b2045ee360f3498ac0ed3d7960b76, type: 3}
+  - {fileID: 21300000, guid: 48d2f34f0dcbe014ba3c2f520c60c89f, type: 3}
+  - {fileID: 21300000, guid: 1bddce168129ce243b87ee41f109d681, type: 3}
+  - {fileID: 21300000, guid: 6255aac98f92dbb4e8e535b9a2d5d8fd, type: 3}
+  - {fileID: 21300000, guid: 7736b48af9f715c43968c1a897a9c47b, type: 3}
+  - {fileID: 21300000, guid: 8520365534e5c1c438873f8c2ed7a030, type: 3}
+  - {fileID: 21300000, guid: 298e74a786fb769489eef56b3e3376ce, type: 3}
+  - {fileID: 21300000, guid: 6e437b1ba05d34e41af937778c26f30e, type: 3}
+  - {fileID: 21300000, guid: 92b00643658c3e34e9b7b6e54ce64028, type: 3}
   Shape: 0
   Color: 0
   IsInPlayArea: 0
   IsInSpawner: 1
   IsPopped: 0
-  ID: 0
 --- !u!212 &8438792106879919585
 SpriteRenderer:
   m_ObjectHideFlags: 0
