@@ -7,7 +7,7 @@ public class TextLerper : MonoBehaviour
     public bool Lerping = false;
     private float _distX;
     private float _distY;
-    float _lerpTimeTotal = 300f;
+    float _lerpTimeTotal = 700f;
     float _lerpPercent;
     private Vector2 _screenBottomLeft;
     private Vector2 _screenTopRight;
@@ -60,7 +60,7 @@ public class TextLerper : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (Lerping)
         {
