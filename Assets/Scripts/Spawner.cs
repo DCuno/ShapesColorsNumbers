@@ -161,8 +161,8 @@ public class Spawner : MonoBehaviour
     // Updates in the editor
     private void OnValidate()
     {
-        if (sizeSlider >= 9 && iterations > 4)
-            iterations = 4;
+        if (sizeSlider >= 9 && iterations > 6)
+            iterations = 6;
         else if (sizeSlider >= 7 && iterations > 8)
             iterations = 8;
         else if (sizeSlider >= 6 && iterations > 10)

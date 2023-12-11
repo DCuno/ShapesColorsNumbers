@@ -325,10 +325,10 @@ public class FunModeButtonManager : MonoBehaviour
 
         if (sizeSlider.value >= 9)
         {
-            if (amountSlider.value > 4)
-                amountSlider.value = 4;
+            if (amountSlider.value > 6)
+                amountSlider.value = 6;
             
-            amountSlider.maxValue = 4;
+            amountSlider.maxValue = 6;
         }
         else if (sizeSlider.value >= 7)
         {

@@ -50,7 +50,7 @@ public class Polygon : MonoBehaviour
     static private float s_smallestSizeSlider = 1;
     static private float s_largestSizeSlider = 10;
     static private float s_shapeTextSmallestRealSize = 0.175f;//0.1f;
-    static private float s_shapeTextLargestRealSize = 0.8f;//0.7f;
+    static private float s_shapeTextLargestRealSize = 0.85f;//0.7f;
     static private float s_numberTextSmallestRealSize = 0.35f;
     static private float s_numberTextLargestRealSize = 1.0f;
     static private float s_colorTextSmallestRealSize = 0.3f;
