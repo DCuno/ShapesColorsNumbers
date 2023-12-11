@@ -30,16 +30,13 @@ public class Polygon : MonoBehaviour
     private bool _voice;
     private bool _text;
     static private float s_gravityScale = 30f;
-    private float _gravityLerpTimer = 0.0f;
-    static private float s_gravityLerpTimeTotal = 500.0f;
-    private float _lerpPercent;
     static private float s_gravityStopMargin = 0.05f;
     private PhysicsMaterial2D _gravityOnMaterial;
     private PhysicsMaterial2D _gravityOffMaterial;
 
     // Physics
     private Touch touch;
-    private float _initYV = 15.0f;
+    private float _initYV = 8.0f;
     static private float s_initXVMin = 0.06f;
     static private float s_initXVMax = 2.0f;
     static private float s_initAngV = 300.0f;
@@ -52,8 +49,8 @@ public class Polygon : MonoBehaviour
     static private float s_maxGravity = 1.5f;
     static private float s_smallestSizeSlider = 1;
     static private float s_largestSizeSlider = 10;
-    static private float s_shapeTextSmallestRealSize = 0.15f;//0.1f;
-    static private float s_shapeTextLargestRealSize = 0.9f;//0.7f;
+    static private float s_shapeTextSmallestRealSize = 0.175f;//0.1f;
+    static private float s_shapeTextLargestRealSize = 0.8f;//0.7f;
     static private float s_numberTextSmallestRealSize = 0.35f;
     static private float s_numberTextLargestRealSize = 1.0f;
     static private float s_colorTextSmallestRealSize = 0.3f;
@@ -71,7 +68,12 @@ public class Polygon : MonoBehaviour
     private List<Vector2> _simplifiedPoints = new List<Vector2>();
 
     // Update timer
-    private float _gravityWaitTimer = 0f;
+    private float _velocityLerpTimer = 0f;
+    static private float s_velocityLerpTimeTotal = 3f;
+    private float _velocityLerpPercent;
+    private float _gravityLerpTimer = 0.0f;
+    static private float s_gravityLerpTimeTotal = 500.0f;
+    private float _gravityLerpPercent;
 
     // Polygon variables
     [Tooltip("Select sprites the polygon can become")]
@@ -81,7 +83,7 @@ public class Polygon : MonoBehaviour
     public bool IsInPlayArea = false;
     public bool IsInSpawner = true;
     public bool IsPopped = false;
-    [SerializeField] public int ID;
+    //[SerializeField] public int ID;
     private GameObject _shadowObj;
     static private float s_shadowDist = 0.2f;
     private Vector2 _maxWidthVector;
@@ -91,8 +93,97 @@ public class Polygon : MonoBehaviour
 
     /*private void OnDrawGizmos()
     {
-        Gizmos.DrawIcon(new Vector2(gameObject.transform.position.x + s_maxWidthVector.x, gameObject.transform.position.y + s_maxWidthVector.y), "circle.png");
+        //Bounds objBounds = _spriteRenderer.bounds;
+        //Vector2 bottomLeft = new Vector2(objBounds.center.x - objBounds.extents.x, objBounds.center.y - objBounds.extents.y); // Left and Bottom
+        //Vector2 topRight = new Vector2(objBounds.center.x + objBounds.extents.x, objBounds.center.y + objBounds.extents.y); // Right and Top
+        Gizmos.matrix = Matrix4x4.identity;
+
+
+        // Get the SpriteRenderer component attached to the GameObject
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Get the edges of the rotated sprite box
+        Vector2[] edges = GetRotatedSpriteEdges();
+
+        // Display the edges information
+        *//*Debug.Log("Left Edge: " + edges[0].x);
+        Debug.Log("Right Edge: " + edges[1].x);
+        Debug.Log("Bottom Edge: " + edges[0].y);
+        Debug.Log("Top Edge: " + edges[1].y);*//*
+
+        Gizmos.DrawIcon(new Vector2(edges[0].x, edges[0].y), "circle.png");
+        Gizmos.DrawIcon(new Vector2(edges[1].x, edges[1].y), "circle.png");
+        Gizmos.DrawIcon(new Vector2(edges[0].x, edges[1].y), "circle.png");
+        Gizmos.DrawIcon(new Vector2(edges[1].x, edges[0].y), "circle.png");
+        Debug.Log(Shape + " " + _spriteRenderer.sprite.vertices.Length);
     }*/
+
+    Vector2[] GetRotatedSpriteEdges()
+    {
+        Vector2[] edges = new Vector2[2];
+
+        if (_spriteRenderer == null)
+        {
+            Debug.LogError("SpriteRenderer not found!");
+            return edges;
+        }
+
+        // Get the sprite's vertices in local space
+        Vector2[] vertices = _spriteRenderer.sprite.vertices;
+
+        // Find the min and max points after rotation
+        Matrix4x4 localToWorldMatrix = _spriteRenderer.transform.localToWorldMatrix;
+        Vector3 min = localToWorldMatrix.MultiplyPoint(vertices[0]);
+        Vector3 max = localToWorldMatrix.MultiplyPoint(vertices[0]);
+
+        // Iterate through vertices to find min and max after rotation
+        for (int i = 1; i < vertices.Length; i++)
+        {
+            Vector3 vertexWorldPos = localToWorldMatrix.MultiplyPoint(vertices[i]);
+            min = Vector3.Min(min, vertexWorldPos);
+            max = Vector3.Max(max, vertexWorldPos);
+        }
+
+        // Set the edges based on the rotated min and max points
+        edges[0] = new Vector2(min.x, min.y); // Left and Bottom
+        edges[1] = new Vector2(max.x, max.y); // Right and Top
+
+        return edges;
+    }
+
+    private bool EnterPlayArea()
+    {
+        Vector2[] boundsVec = GetRotatedSpriteEdges();
+        Vector2 bottomLeft = boundsVec[0];
+        Vector2 topRight = boundsVec[1];
+
+        if ((bottomLeft.x < _screenTopRight.x && bottomLeft.x > _screenBottomLeft.x)
+            && (topRight.x < _screenTopRight.x && topRight.x > _screenBottomLeft.x)
+            && (bottomLeft.y < _screenTopRight.y && bottomLeft.y > _screenBottomLeft.y)
+            && (topRight.y < _screenTopRight.y && topRight.y > _screenBottomLeft.y))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool ExitPlayArea()
+    {
+        Vector2[] boundsVec = GetRotatedSpriteEdges();
+        Vector2 bottomLeft = boundsVec[0];
+        Vector2 topRight = boundsVec[1];
+
+        if ((bottomLeft.x > _screenTopRight.x && bottomLeft.x < _screenBottomLeft.x)
+            || (topRight.x > _screenTopRight.x && topRight.x < _screenBottomLeft.x)
+            || (bottomLeft.y > _screenTopRight.y && bottomLeft.y < _screenBottomLeft.y)
+            || (topRight.y > _screenTopRight.y && topRight.y < _screenBottomLeft.y))
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     private void Awake()
     {
@@ -104,8 +195,8 @@ public class Polygon : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _camera = Camera.main;
 
-        ID = PlayerPrefs.GetInt("PolygonID") + 1;
-        PlayerPrefs.SetInt("PolygonID", ID);
+        /*ID = PlayerPrefs.GetInt("PolygonID") + 1;
+        PlayerPrefs.SetInt("PolygonID", ID);*/
 
         _gravityOffMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOffMaterial");
         _gravityOnMaterial = Resources.Load<PhysicsMaterial2D>("Physics/GravityOnMaterial");
@@ -138,7 +229,6 @@ public class Polygon : MonoBehaviour
                 if ((Input.acceleration.x <= s_gravityStopMargin && Input.acceleration.x >= -s_gravityStopMargin) 
                     && (Input.acceleration.y <= s_gravityStopMargin && Input.acceleration.y >= -s_gravityStopMargin))
                 {
-                    //Physics2D.gravity = new Vector2(0f, 0f);
                     _gravityLerpTimer += Time.deltaTime;
 
                     if (_gravityLerpTimer > s_gravityLerpTimeTotal)
@@ -146,9 +236,9 @@ public class Polygon : MonoBehaviour
                         _gravityLerpTimer = s_gravityLerpTimeTotal;
                     }
 
-                    _lerpPercent = _gravityLerpTimer / s_gravityLerpTimeTotal;
-                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, _lerpPercent);
-                    _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, _lerpPercent);
+                    _gravityLerpPercent = _gravityLerpTimer / s_gravityLerpTimeTotal;
+                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, _gravityLerpPercent);
+                    _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, _gravityLerpPercent);
                 }
                 else
                 {
@@ -161,17 +251,18 @@ public class Polygon : MonoBehaviour
             PushSlowShapes();            
         }
 
-        if (IsInPlayArea && !IsInSpawner)
+        if (!IsInPlayArea && EnterPlayArea())
         {
-            if (!EdgesOn)
-                Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("shapes"), LayerMask.NameToLayer("Edge"), true);
+            /*if (!EdgesOn)
+                Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("shapes"), LayerMask.NameToLayer("Edge"), true);*/
 
+            IsInPlayArea = true;
             gameObject.layer = LayerMask.NameToLayer("shapes");
             _polyCollider2D.isTrigger = false;
         }
 
-        if (!IsInPlayArea && !IsInSpawner)
-            InBoundsSolid();
+        if (IsInPlayArea)
+            OutOfBoundsRecall();
 
         // DEBUG POPPER
         if (Input.GetKeyDown(KeyCode.K))
@@ -179,13 +270,6 @@ public class Polygon : MonoBehaviour
             Pop();
         }
     }
-
-    public void FixedUpdate()
-    {
-        if (IsInPlayArea || !IsInSpawner)
-            OutOfBoundsRecall();
-    }
-
 
     public void Creation(Spawner.Shape shape, Color unityColor, Spawner.Colors color, float size, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
     {
@@ -312,34 +396,17 @@ public class Polygon : MonoBehaviour
             float randomAngularVelocity = Random.Range(-s_pushAngV * _normV, s_pushAngV * _normV);
             Vector2 randomVelocity = new Vector2(Random.Range(s_pushVMin * _normV, s_pushVMax * _normV), Random.Range(s_pushVMin * _normV, s_pushVMax * _normV));
 
-            _rigidbody2D.velocity = randomVelocity;
-            _rigidbody2D.angularVelocity = randomAngularVelocity;
+            _rigidbody2D.AddForce(randomVelocity,ForceMode2D.Impulse);
+            //_rigidbody2D.angularVelocity = randomAngularVelocity;
             //Debug.Log("pushing " + this.name + " - angular velocity: " + randomAngularVelocity + " velocity: " + randomVelocity);
         }
     }
 
-    private void InBoundsSolid()
-    {
-        float curX = gameObject.transform.position.x + _shapeWidth;
-        float curY = gameObject.transform.position.y + _shapeHeight;
-
-        if (curX < _screenTopRight.x && curX > _screenBottomLeft.x
-            && curY < _screenTopRight.y && curY > _screenBottomLeft.y)
-        {
-            IsInPlayArea = true;
-        }
-    }
-
-
     private void OutOfBoundsRecall()
     {
-        float curX = gameObject.transform.position.x + _shapeWidth;
-        float curY = gameObject.transform.position.y + _shapeHeight;
-
         if (EdgesOn)
         {
-            if (curX > _screenTopRight.x || curX < _screenBottomLeft.x
-                || curY > _screenTopRight.y || curY < _screenBottomLeft.y)
+            if (ExitPlayArea())
             {
                 TeleportSound();
                 gameObject.transform.position = Vector2.zero;
@@ -347,6 +414,9 @@ public class Polygon : MonoBehaviour
         }
         else
         {
+            float curX = gameObject.transform.position.x + _shapeWidth;
+            float curY = gameObject.transform.position.y + _shapeHeight;
+
             if (curX > _screenTopRight.x)
             {
                 gameObject.transform.position = new Vector2(_screenBottomLeft.x, gameObject.transform.position.y);
@@ -540,7 +610,7 @@ public class Polygon : MonoBehaviour
         }
 
         if (_rigidbody2D.velocity.y > s_maxVy || _rigidbody2D.velocity.y < -s_maxVy)
-        { 
+        {
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, s_maxVy * Mathf.Sign(_rigidbody2D.velocity.y));
         }
     }

@@ -287,6 +287,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5263228019757947182}
     m_Modifications:
+    - target: {fileID: 550948101196275372, guid: 54c310df22031f64c8d43c0c429a3624, type: 3}
+      propertyPath: settingsCanvas
+      value: 
+      objectReference: {fileID: 6311703857006921390, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
     - target: {fileID: 550948101196275374, guid: 54c310df22031f64c8d43c0c429a3624, type: 3}
       propertyPath: m_Name
       value: Spawner

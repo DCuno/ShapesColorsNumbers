@@ -91,6 +91,11 @@ public class Spawner : MonoBehaviour
         DoneSpawning = false;
         finished = false;
         _tilt = tilt;
+        Polygon curPolygon;
+
+        // Initialize normal gravity in case tilt mode was used on a previous game
+        Physics2D.gravity = new Vector2(0.0f, -9.8f);
+
         //float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
         {
@@ -99,16 +104,24 @@ public class Spawner : MonoBehaviour
                 yield return new WaitForSeconds(0.05f);
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
                 Color _tmpColor = RandomColor(colors);
-                shapesList[i].GetComponent<Polygon>().Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, topic, voice, text);
-                yield return new WaitForSeconds(0.08f);
+                curPolygon = shapesList[i].GetComponent<Polygon>();
+                curPolygon.Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, topic, voice, text);
+                //yield return new WaitForSeconds(0.08f);
+                
+                while (curPolygon != null && !curPolygon.IsInPlayArea)
+                {
+                    yield return null;
+                }
             }
         }
 
+        yield return new WaitForSeconds(0.5f);
+
         DoneSpawning = true;
 
-        if (!_tilt)
+        if (_tilt)
         {
-            Physics2D.gravity = new Vector2(1f, 1f);
+            Physics2D.gravity = new Vector2(0f, 0f);
         }
 
         yield break;
@@ -138,15 +151,6 @@ public class Spawner : MonoBehaviour
         {
             Physics2D.gravity = new Vector2(Input.acceleration.x * 1.5f, Input.acceleration.y * 1.5f);
         }
-    }
-
-    public void FixedUpdate()
-    {
-        if (DoneSpawning && _tilt)
-            Physics2D.gravity = new Vector2(0f, 0f);
-
-        if (_tilt)
-            GravityLimiter();
     }
 
     private float SpawnAmountRatio(float amount)
@@ -285,8 +289,7 @@ public class Spawner : MonoBehaviour
 
             if (SceneManager.GetActiveScene().name == "FunModeGameScene2")
             {
-                // After 1 second of game running time, start checking if all the shapes are gone.
-                if (finishedCheck >= 1.0f)
+                if (DoneSpawning)
                 {
                     // Shapes have been popped, pull down menu.
                     if (this.transform.childCount == 0)
@@ -301,8 +304,7 @@ public class Spawner : MonoBehaviour
             }
             else if (SceneManager.GetActiveScene().name == "LessonsScene")
             {
-                // After 1 second of game running time, start checking if all the shapes are gone.
-                if (finishedCheck >= 1.0f)
+                if (DoneSpawning)
                 {
                     // Shapes have been popped, pull down menu.
                     if (this.transform.childCount == 0)
@@ -325,6 +327,8 @@ public class Spawner : MonoBehaviour
             }
         }
 
+        if (_tilt && DoneSpawning)
+            GravityLimiter();
     }
 
     private void DeleteAllChildren()

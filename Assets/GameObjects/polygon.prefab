@@ -60,8 +60,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a7bdea6ab44230b41a11d0dd089b5db5, type: 3}
   - {fileID: 21300000, guid: c0530922c76ede0489b7a4a844359ecd, type: 3}
   - {fileID: 21300000, guid: ef039b5ec9e2b0c4c81fed4576a4ee22, type: 3}
+  Shape: 0
   Color: 0
-  IsSolid: 0
+  IsInPlayArea: 0
+  IsInSpawner: 1
   IsPopped: 0
   ID: 0
 --- !u!212 &8438792106879919585
@@ -153,7 +155,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.7, y: 2.7}
+    oldSize: {x: 10.8, y: 10.8}
     newSize: {x: 10.8, y: 10.8}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
