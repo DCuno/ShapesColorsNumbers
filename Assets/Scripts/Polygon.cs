@@ -80,6 +80,8 @@ public class Polygon : MonoBehaviour
     public Sprite[] PolygonSprites;
     public Spawner.Shape Shape;
     public Spawner.Colors Color;
+    private const int LARGE = 8;
+    private const int MEDIUM = 4;
     public bool IsInPlayArea = false;
     public bool IsInSpawner = true;
     public bool IsPopped = false;
@@ -279,9 +281,9 @@ public class Polygon : MonoBehaviour
         // Maps slider position to real size
         MapTextSliders(size);
 
-        if (size >= 8)
+        if (size >= LARGE)
             _popMapSize = PopParticles[0];
-        else if (size >= 4)
+        else if (size >= MEDIUM)
             _popMapSize = PopParticles[1];
         else
             _popMapSize = PopParticles[2];
@@ -308,25 +310,62 @@ public class Polygon : MonoBehaviour
             _rigidbody2D.sharedMaterial = _gravityOffMaterial;
         }
 
+        if (size >= LARGE)
+            _popMapSize = PopParticles[0];
+        else if (size >= 4)
+            _popMapSize = PopParticles[1];
+        else
+            _popMapSize = PopParticles[2];
+
         switch (shape)
         {
             case Spawner.Shape.Triangle:
-                _spriteRenderer.sprite = PolygonSprites[0];
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[0];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[1];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[2];
                 break;
             case Spawner.Shape.Square:
-                _spriteRenderer.sprite = PolygonSprites[1];
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[3];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[4];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[5];
                 break;
             case Spawner.Shape.Pentagon:
-                _spriteRenderer.sprite = PolygonSprites[2];
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[6];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[7];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[8];
                 break;
             case Spawner.Shape.Hexagon:
-                _spriteRenderer.sprite = PolygonSprites[3];
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[9];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[10];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[11];
                 break;
             case Spawner.Shape.Circle:
-                _spriteRenderer.sprite = PolygonSprites[4];
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[12];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[13];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[14];
                 break;
             case Spawner.Shape.Star:
-                _spriteRenderer.sprite = PolygonSprites[5];
+                if (size >= LARGE)
+                    _spriteRenderer.sprite = PolygonSprites[15];
+                else if (size >= MEDIUM)
+                    _spriteRenderer.sprite = PolygonSprites[16];
+                else
+                    _spriteRenderer.sprite = PolygonSprites[17];
                 break;
         }
 
