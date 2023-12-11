@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7220921541810955125}
   - component: {fileID: 9020669875885986858}
   - component: {fileID: 3337254791584141625}
+  - component: {fileID: -1891907916091464847}
   m_Layer: 6
   m_Name: WordText
   m_TagString: Player
@@ -81,7 +82,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!50 &2752387986762421600
 Rigidbody2D:
@@ -272,3 +273,16 @@ MonoBehaviour:
   _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
+--- !u!114 &-1891907916091464847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2227421312996591478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae205bab676702c49bf9368b6974c143, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Lerping: 0

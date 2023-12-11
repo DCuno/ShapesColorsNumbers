@@ -8,7 +8,7 @@ public class LessonsManager : MonoBehaviour
     List<GameObject> ShapesList;
     List<GameObject> ColorsList;
     List<GameObject> NumbersList;
-    GameObject spawner;
+    Spawner _spawner;
     public List<SpawnerSettings> SpawnerSettings;
     private int spawnerSettingsIndex;
     private static AudioSource _SFXSource;
@@ -26,7 +26,7 @@ public class LessonsManager : MonoBehaviour
         ShapesList = new List<GameObject>(6);
         ColorsList = new List<GameObject>(6);
         NumbersList = new List<GameObject>(10);
-        spawner = GameObject.FindGameObjectWithTag("spawner");
+        _spawner = GameObject.FindGameObjectWithTag("spawner").GetComponent<Spawner>();
 
         _SFXSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
         _SFXAudio = _SFXSource.GetComponent<Audio>();
@@ -92,16 +92,21 @@ public class LessonsManager : MonoBehaviour
                 i.gameObject.SetActive(false);
 
                 //spawner.GetComponent<Spawner>().SettingsSetup(new List<Spawner.Shape> { (Spawner.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 1, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
-                //spawner.GetComponent<Spawner>().Started = true;
-                spawner.GetComponent<Spawner>().SettingsSetup(SpawnerSettings[spawnerSettingsIndex++]);
+                _spawner.Started = true;
+                _spawner.SettingsSetup(new List<Spawner.Shape> { (Spawner.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 1, true, false, Spawner.Topics.Shapes, true, true);
+                spawnerSettingsIndex++;
+                //_spawner.SettingsSetup(SpawnerSettings[spawnerSettingsIndex++]);
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
 
+                _spawner.Started = true;
+                _spawner.SettingsSetup(new List<Spawner.Shape> { (Spawner.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 7, true, false, Spawner.Topics.Shapes, true, true);
+                spawnerSettingsIndex++;
                 //spawner.GetComponent<Spawner>().SettingsSetup(new List<Spawner.Shape> { (Spawner.Shape)idx }, new List<Spawner.Colors> { Spawner.Colors.White }, 5, 7, true, false, Spawner.Topics.Shapes, Spawner.Topics.Shapes);
                 //spawner.GetComponent<Spawner>().Started = true;
-                spawner.GetComponent<Spawner>().SettingsSetup(SpawnerSettings[spawnerSettingsIndex++]);
+                //_spawner.SettingsSetup(SpawnerSettings[spawnerSettingsIndex++]);
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
 
                 idx++;
             }
@@ -121,15 +126,15 @@ public class LessonsManager : MonoBehaviour
                 yield return new WaitForSeconds(3);
                 i.gameObject.SetActive(false);
 
-                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 1, true, false, Spawner.Topics.Colors, true, true);
-                spawner.GetComponent<Spawner>().Started = true;
+                _spawner.SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 1, true, false, Spawner.Topics.Colors, true, true);
+                _spawner.Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
 
-                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 7, true, false, Spawner.Topics.Colors, true, true);
-                spawner.GetComponent<Spawner>().Started = true;
+                _spawner.SettingsSetup(_allShapes, new List<Spawner.Colors> { (Spawner.Colors)idx }, 5, 7, true, false, Spawner.Topics.Colors, true, true);
+                _spawner.Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
                 idx++;
             }
 
@@ -147,10 +152,10 @@ public class LessonsManager : MonoBehaviour
                 yield return new WaitForSeconds(3);
                 i.gameObject.SetActive(false);
 
-                spawner.GetComponent<Spawner>().SettingsSetup(_allShapes, _allColors, 5, idx + 1, true, false, Spawner.Topics.Numbers, true, true);
-                spawner.GetComponent<Spawner>().Started = true;
+                _spawner.SettingsSetup(_allShapes, _allColors, 5, idx + 1, true, false, Spawner.Topics.Numbers, true, true);
+                _spawner.Started = true;
 
-                yield return new WaitWhile(() => spawner.GetComponent<Spawner>().Started);
+                yield return new WaitWhile(() => _spawner.Started);
                 idx++;
             }
         }

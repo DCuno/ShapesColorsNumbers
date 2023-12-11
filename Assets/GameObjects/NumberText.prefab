@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 302334646490541293}
   - component: {fileID: 8303669256676557938}
   - component: {fileID: 4415062937761152045}
+  - component: {fileID: -8921267824834961790}
   m_Layer: 6
   m_Name: NumberText
   m_TagString: Player
@@ -81,7 +82,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &2002266564941493272
 MonoBehaviour:
@@ -272,3 +273,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-8921267824834961790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002266564941493273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae205bab676702c49bf9368b6974c143, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Lerping: 0

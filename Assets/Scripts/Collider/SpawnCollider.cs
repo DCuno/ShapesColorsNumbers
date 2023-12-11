@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class SpawnCollider : MonoBehaviour
 {
-    private void OnTriggerExit2D(Collider2D collision)
+    /*private void OnTriggerExit2D(Collider2D collision)
     {
         Polygon polygon = collision.gameObject.GetComponent<Polygon>();
 
         if (polygon != null)
             polygon.IsInSpawner = false;
-        /*Polygon polygon = collision.gameObject.GetComponent<Polygon>();
+        *//*Polygon polygon = collision.gameObject.GetComponent<Polygon>();
         if (polygon != null && polygon.EdgesOn)
         {
             *//*GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
@@ -26,6 +26,6 @@ public class SpawnCollider : MonoBehaviour
         {
             polygon.IsInPlayArea = true;
             //collision.gameObject.GetComponent<Polygon>().IsInPlayArea = true;
-        }*/
-    }
+        }*//*
+    }*/
 }
