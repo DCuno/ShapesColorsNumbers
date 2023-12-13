@@ -231,7 +231,7 @@ public class FunModeButtonManager : MonoBehaviour
 
         spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, topic, voice, text);
         spawner.GetComponent<Spawner>().Started = true;
-        Destroy(GameObject.FindGameObjectWithTag("SettingsCanvasScroll"));
+        //Destroy(GameObject.FindGameObjectWithTag("SettingsCanvasScroll"));
     }
 
     public void BackButton()

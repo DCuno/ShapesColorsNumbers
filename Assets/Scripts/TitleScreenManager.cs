@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TitleScreenManager : MonoBehaviour
 {
     [SerializeField] private AudioMixer _mixer;
     private Audio _sfx;
+
+    public GameObject[] UIButtonImages;
 
     void Start()
     {
