@@ -104,7 +104,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,7 +117,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -182,18 +183,20 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 22863611}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &180557335
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1341760403281236100, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
@@ -289,12 +292,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2511573534410270868}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98891bd15dd490e49ac07699d2fdab6a, type: 3}
 --- !u!1001 &2511573534410270867
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2511573534194878492, guid: 823d3f53980e6e24c9051ba4c4d143e1, type: 3}
@@ -367,6 +374,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2511573534410270870, guid: 823d3f53980e6e24c9051ba4c4d143e1, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 823d3f53980e6e24c9051ba4c4d143e1, type: 3}
 --- !u!20 &2511573534410270868 stripped
 Camera:
@@ -378,6 +388,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5263228019757947168, guid: a39441faca6a8b94bba1e992598e498a, type: 3}
@@ -472,13 +483,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5263228021680805561, guid: a39441faca6a8b94bba1e992598e498a, type: 3}
+      propertyPath: settingsCanvas
+      value: 
+      objectReference: {fileID: 6311703857006921390, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
+    - target: {fileID: 6598529438153908914, guid: a39441faca6a8b94bba1e992598e498a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a39441faca6a8b94bba1e992598e498a, type: 3}
 --- !u!1001 &6593181033314656914
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6593181032902845505, guid: acb55925e4ab657409a1e2c3db242769, type: 3}
@@ -530,12 +553,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: acb55925e4ab657409a1e2c3db242769, type: 3}
 --- !u!1001 &7284672972676432829
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6311703856796093853, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
@@ -553,10 +580,6 @@ PrefabInstance:
     - target: {fileID: 6311703857006921386, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
       propertyPath: m_Pivot.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6311703857006921386, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6311703857006921386, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
       propertyPath: m_AnchorMax.x
@@ -638,6 +661,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SettingsCanvas2
       objectReference: {fileID: 0}
+    - target: {fileID: 6311703857006921390, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
+      propertyPath: m_TagString
+      value: SettingsCanvasScroll
+      objectReference: {fileID: 0}
     - target: {fileID: 6311703857076953269, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -669,6 +696,23 @@ PrefabInstance:
     - target: {fileID: 6311703858601021612, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620898412923101400, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e6dd4f5b6ecfd74bb20609daf522761, type: 3}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 2511573534410270867}
+  - {fileID: 7284672972676432829}
+  - {fileID: 22863614}
+  - {fileID: 5263228021395122550}
+  - {fileID: 6593181033314656914}
+  - {fileID: 180557335}

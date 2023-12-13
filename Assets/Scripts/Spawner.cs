@@ -92,6 +92,7 @@ public class Spawner : MonoBehaviour
         finished = false;
         _tilt = tilt;
         Polygon curPolygon;
+        Destroy(GameObject.FindGameObjectWithTag("SettingsCanvasScroll"));
 
         // Initialize normal gravity in case tilt mode was used on a previous game
         Physics2D.gravity = new Vector2(0.0f, -9.8f);

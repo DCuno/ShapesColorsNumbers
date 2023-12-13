@@ -80,6 +80,7 @@ TagManager:
   - VoiceOnToggle
   - TextOnToggle
   - TopicsPanelGroup
+  - UIButton
   layers:
   - Default
   - TransparentFX
@@ -91,7 +92,7 @@ TagManager:
   - SpawningShapes
   - Background
   - Edge
-  - 
+  - UIButton
   - 
   - 
   - 
