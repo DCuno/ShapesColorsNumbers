@@ -79,7 +79,7 @@ public class FunModeButtonManager : MonoBehaviour
         GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>().value = amount;
         // Edgeless feature turned off... probably forever.
         //GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn = edges;
-        GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn = tilt;
+        //GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn = tilt;
 
         /*tempToggles = GameObject.FindGameObjectWithTag("EdgesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
@@ -100,7 +100,7 @@ public class FunModeButtonManager : MonoBehaviour
             }
         }*/
 
-        tempToggles = GameObject.FindGameObjectWithTag("TiltPanelGroup").GetComponentsInChildren<Toggle>();
+        /*tempToggles = GameObject.FindGameObjectWithTag("TiltPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
             if (i.name.Equals("On"))
@@ -117,7 +117,7 @@ public class FunModeButtonManager : MonoBehaviour
                 else
                     i.isOn = true;
             }
-        }
+        }*/
 
         tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
@@ -136,7 +136,7 @@ public class FunModeButtonManager : MonoBehaviour
         tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            if (i.name.Equals("On"))
+            if (i.name.Equals("Toggle"))
             {
                 if (voice)
                     i.isOn = true;
@@ -155,7 +155,7 @@ public class FunModeButtonManager : MonoBehaviour
         tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            if (i.name.Equals("On"))
+            if (i.name.Equals("Toggle"))
             {
                 if (text)
                     i.isOn = true;
@@ -212,7 +212,8 @@ public class FunModeButtonManager : MonoBehaviour
         // Edgeless feature turned off... probably forever.
         //edges = GameObject.FindGameObjectWithTag("EdgesToggleOn").GetComponent<Toggle>().isOn;
         edges = true;
-        tilt = GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn;
+        //tilt = GameObject.FindGameObjectWithTag("TiltToggleOn").GetComponent<Toggle>().isOn;
+        tilt = false;
 
 
         tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
@@ -395,7 +396,7 @@ public class FunModeButtonManager : MonoBehaviour
             changingVoiceTextToggles = true;
 
             // Don't change anything if the TextToggle "Off" is on.
-            if (GameObject.FindGameObjectWithTag("TextOffToggle").GetComponent<Toggle>().isOn)
+            if (!GameObject.FindGameObjectWithTag("TextOnToggle").GetComponent<Toggle>().isOn)
             {
                 changingVoiceTextToggles = false;
                 return;
@@ -429,13 +430,13 @@ public class FunModeButtonManager : MonoBehaviour
             changingVoiceTextToggles = true;
 
             // Don't change anything if the VoiceToggle "Off" is on.
-            if (GameObject.FindGameObjectWithTag("VoiceOffToggle").GetComponent<Toggle>().isOn)
+            if (!GameObject.FindGameObjectWithTag("TextOnToggle").GetComponent<Toggle>().isOn)
             {
                 changingVoiceTextToggles = false;
                 return;
             }
 
-            Toggle[] voiceToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+            Toggle[] voiceToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
             System.Enum.TryParse(toggle.name, out Spawner.Topics textTopic);
 
             // Change the VoiceToggles to match the TextToggles
@@ -475,13 +476,13 @@ public class FunModeButtonManager : MonoBehaviour
     public void ScrollArrowUpButton()
     {
         SettingsCanvasScrollRect.verticalNormalizedPosition = 0f;
-        SettingsCanvasScrollRect.velocity = new Vector2(0, -2500f);
+        SettingsCanvasScrollRect.velocity = new Vector2(0, -5000f);
     }
     
     // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
     public void ScrollArrowDownButton()
     {
         SettingsCanvasScrollRect.verticalNormalizedPosition = 1f;
-        SettingsCanvasScrollRect.velocity = new Vector2(0, 2500f);
+        SettingsCanvasScrollRect.velocity = new Vector2(0, 5000f);
     }
 }
