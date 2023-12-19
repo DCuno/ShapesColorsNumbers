@@ -18,6 +18,10 @@ public class OptionsManager : MonoBehaviour
     [Range(0, 1)] public float DefaultSliderPercentage = 0.31f;
     float curMusicSliderVal;
     float curSFXSliderVal;
+    Toggle _musicToggle;
+    Toggle _sfxToggle;
+    bool _curSFXMute;
+    bool _curMusicMute;
 
     private void Awake()
     {
@@ -46,13 +50,17 @@ public class OptionsManager : MonoBehaviour
             _mixer = GameObject.FindGameObjectWithTag("MusicSource").GetComponent<AudioSource>().outputAudioMixerGroup.audioMixer;
         }
 
+        if  (_musicToggle == null)
+        {
+            _musicToggle = GameObject.FindGameObjectWithTag("MusicMute").GetComponent<Toggle>();
+        }
+
+        if (_sfxToggle == null)
+        {
+            _sfxToggle = GameObject.FindGameObjectWithTag("SoundEffectsMute").GetComponent<Toggle>();
+        }
+
         LoadFromPrefs();
-
-        /*curMusicSliderVal = _musicSlider.value;
-        curSFXSliderVal = _soundEffectsSlider.value;*/
-
-        SoundEffectsSlider();
-        MusicSlider();
     }
 
     // Start is called before the first frame update
@@ -72,28 +80,30 @@ public class OptionsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (curMusicSliderVal != _musicSlider.value)
+        if (curMusicSliderVal != _musicSlider.value || _curMusicMute == _musicToggle.isOn)
         {
-            //StartCoroutine(SetMixerFloat("Music", SliderToDecibelMusic(_musicSlider.value)));
-            //SetMixerFloat("Music", SliderToDecibelMusic(_musicSlider.value));
-            //_mixer.SetFloat("Music", (float)_musicSlider.value);
-            //PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);
-
-            PlayerPrefs.SetFloat("Music", _musicSlider.value);
-            _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+            _curMusicMute = !_musicToggle.isOn;
             curMusicSliderVal = _musicSlider.value;
+            PlayerPrefs.SetFloat("Music", _musicSlider.value);
+            PlayerPrefs.SetInt("MusicMute", _musicToggle.isOn == true ? 1 : 0);
+
+            if (_curMusicMute)
+                _mixer.SetFloat("Music", -80f);
+            else
+                _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
         }
 
-        if (curSFXSliderVal != _soundEffectsSlider.value)
+        if (curSFXSliderVal != _soundEffectsSlider.value || _curSFXMute == _sfxToggle.isOn)
         {
-            //StartCoroutine(SetMixerFloat("SFX", SliderToDecibelSFX(_soundEffectsSlider.value)));
-            //SetMixerFloat("SFX", SliderToDecibelSFX(_soundEffectsSlider.value));
-            //_mixer.SetFloat("SFX", (float)_soundEffectsSlider.value);
-            //PlayerPrefs.SetFloat("SFX", (float)_soundEffectsSlider.value);
-
-            PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
-            _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+            _curSFXMute = !_sfxToggle.isOn;
             curSFXSliderVal = _soundEffectsSlider.value;
+            PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
+            PlayerPrefs.SetInt("SFXMute", _sfxToggle.isOn == true ? 1 : 0);
+
+            if (_curSFXMute)
+                _mixer.SetFloat("SFX", -80f);
+            else
+                _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
         }
     }
 
@@ -101,6 +111,22 @@ public class OptionsManager : MonoBehaviour
     {
         _musicSlider.value = PlayerPrefs.GetFloat("Music", 5f);
         _soundEffectsSlider.value = PlayerPrefs.GetFloat("SFX", 5f);
+        _musicToggle.isOn = PlayerPrefs.GetInt("MusicMute", 1) == 1;
+        _sfxToggle.isOn = PlayerPrefs.GetInt("SFXMute", 1) == 1;
+        _curMusicMute = !_musicToggle.isOn;
+        _curSFXMute = !_sfxToggle.isOn;
+        curMusicSliderVal = _musicSlider.value;
+        curSFXSliderVal = _soundEffectsSlider.value;
+
+        if (_curMusicMute)
+            _mixer.SetFloat("Music", -80f);
+        else
+            _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+
+        if (_curSFXMute)
+            _mixer.SetFloat("SFX", -80f);
+        else
+            _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
     }
 
     private void SaveToPrefs()
@@ -137,7 +163,7 @@ public class OptionsManager : MonoBehaviour
     public void SoundEffectsSlider()
     {
         //Slider _soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
-        _mixer.SetFloat("SFX", _soundEffectsSlider.value);
+        _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
         //PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
         //_SFXSliderCounter.text = _soundEffectsSlider.value.ToString();
         GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>().text = _soundEffectsSlider.value.ToString();
@@ -146,7 +172,7 @@ public class OptionsManager : MonoBehaviour
     public void MusicSlider()
     {
         //_musicSliderCounter.text = _musicSlider.value.ToString();
-        _mixer.SetFloat("Music", _soundEffectsSlider.value);
+        _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
         GameObject.FindGameObjectWithTag("MusicSliderCounter").GetComponent<TextMeshProUGUI>().text = _musicSlider.value.ToString();
     }
 
