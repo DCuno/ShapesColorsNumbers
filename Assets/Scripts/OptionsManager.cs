@@ -75,18 +75,24 @@ public class OptionsManager : MonoBehaviour
         if (curMusicSliderVal != _musicSlider.value)
         {
             //StartCoroutine(SetMixerFloat("Music", SliderToDecibelMusic(_musicSlider.value)));
-            SetMixerFloat("Music", SliderToDecibelMusic(_musicSlider.value));
-            curMusicSliderVal = _musicSlider.value;
+            //SetMixerFloat("Music", SliderToDecibelMusic(_musicSlider.value));
             //_mixer.SetFloat("Music", (float)_musicSlider.value);
             //PlayerPrefs.SetFloat("Music", (float)_musicSlider.value);
+
+            PlayerPrefs.SetFloat("Music", _musicSlider.value);
+            _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+            curMusicSliderVal = _musicSlider.value;
         }
 
         if (curSFXSliderVal != _soundEffectsSlider.value)
         {
             //StartCoroutine(SetMixerFloat("SFX", SliderToDecibelSFX(_soundEffectsSlider.value)));
-            SetMixerFloat("SFX", SliderToDecibelSFX(_soundEffectsSlider.value));
+            //SetMixerFloat("SFX", SliderToDecibelSFX(_soundEffectsSlider.value));
             //_mixer.SetFloat("SFX", (float)_soundEffectsSlider.value);
             //PlayerPrefs.SetFloat("SFX", (float)_soundEffectsSlider.value);
+
+            PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
+            _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
             curSFXSliderVal = _soundEffectsSlider.value;
         }
     }
@@ -114,20 +120,33 @@ public class OptionsManager : MonoBehaviour
     {
         SaveToPrefs();
         SceneManager.LoadScene(sceneName: "TitleScene");
+        //StartCoroutine(BackCoR());
+    }
+
+    public IEnumerator BackCoR()
+    {
+        SaveToPrefs();
+        yield return new WaitForSeconds(1f);
+        var async = SceneManager.LoadSceneAsync(sceneName: "TitleScene");
+
+        async.allowSceneActivation = false;
+        yield return new WaitForSeconds(0.5f);
+        async.allowSceneActivation = true;
     }
 
     public void SoundEffectsSlider()
     {
         //Slider _soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
-        //_mixer.SetFloat("SFX", _soundEffectsSlider.value);
+        _mixer.SetFloat("SFX", _soundEffectsSlider.value);
         //PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
-        _SFXSliderCounter.text = _soundEffectsSlider.value.ToString();
+        //_SFXSliderCounter.text = _soundEffectsSlider.value.ToString();
         GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>().text = _soundEffectsSlider.value.ToString();
     }
 
     public void MusicSlider()
     {
-        _musicSliderCounter.text = _musicSlider.value.ToString();
+        //_musicSliderCounter.text = _musicSlider.value.ToString();
+        _mixer.SetFloat("Music", _soundEffectsSlider.value);
         GameObject.FindGameObjectWithTag("MusicSliderCounter").GetComponent<TextMeshProUGUI>().text = _musicSlider.value.ToString();
     }
 
