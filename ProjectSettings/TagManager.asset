@@ -81,6 +81,8 @@ TagManager:
   - TextOnToggle
   - TopicsPanelGroup
   - UIButton
+  - SoundEffectsMute
+  - MusicMute
   layers:
   - Default
   - TransparentFX

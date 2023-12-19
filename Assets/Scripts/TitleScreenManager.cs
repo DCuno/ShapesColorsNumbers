@@ -20,9 +20,18 @@ public class TitleScreenManager : MonoBehaviour
         // Setup Volumes from Player Prefs
         _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
         _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+
+        if (PlayerPrefs.GetInt("MusicMute", 1) == 0)
+            _mixer.SetFloat("Music", -80f);
+        else
+            _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+
+        if (PlayerPrefs.GetInt("SFXMute", 1) == 0)
+            _mixer.SetFloat("SFX", -80f);
+        else
+            _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+
         _sfx = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>();
-        _mixer.GetFloat("Music", out float value);
-        _mixer.GetFloat("SFX", out float value2);
     }
 
     private void Update()
