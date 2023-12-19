@@ -60,6 +60,7 @@ public class OptionsManager : MonoBehaviour
             _sfxToggle = GameObject.FindGameObjectWithTag("SoundEffectsMute").GetComponent<Toggle>();
         }
 
+
         LoadFromPrefs();
     }
 
@@ -145,6 +146,7 @@ public class OptionsManager : MonoBehaviour
     public void BackButton()
     {
         //SaveToPrefs();
+        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
         SceneManager.LoadScene(sceneName: "TitleScene");
         //StartCoroutine(BackCoR());
     }
