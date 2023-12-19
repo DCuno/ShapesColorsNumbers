@@ -16,14 +16,13 @@ public class TitleScreenManager : MonoBehaviour
     void Start()
     {
         //if (_optionsManager == null && _optionsManager.name == "DontDestroyOnLoad")
-            DontDestroyOnLoad(_optionsManager);
+            //DontDestroyOnLoad(_optionsManager);
         // Setup Volumes from Player Prefs
         _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
         _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
         _sfx = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>();
         _mixer.GetFloat("Music", out float value);
         _mixer.GetFloat("SFX", out float value2);
-        print("Music Vol: " + " " + value + " SFX Vol: " + value2);
     }
 
     private void Update()

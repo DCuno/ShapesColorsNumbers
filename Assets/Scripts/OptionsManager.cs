@@ -118,7 +118,7 @@ public class OptionsManager : MonoBehaviour
 
     public void BackButton()
     {
-        SaveToPrefs();
+        //SaveToPrefs();
         SceneManager.LoadScene(sceneName: "TitleScene");
         //StartCoroutine(BackCoR());
     }
