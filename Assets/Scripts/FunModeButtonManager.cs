@@ -22,6 +22,7 @@ public class FunModeButtonManager : MonoBehaviour
     GameObject ScrollArrowUp;
     GameObject ScrollArrowDown;
     ScrollRect SettingsCanvasScrollRect;
+    private Audio _sfx;
 
     private void Awake()
     {
@@ -180,6 +181,7 @@ public class FunModeButtonManager : MonoBehaviour
         settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
 
         shapes = new List<Spawner.Shape>();
+        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
 
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
@@ -237,11 +239,14 @@ public class FunModeButtonManager : MonoBehaviour
 
     public void BackButton()
     {
+        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
+        //GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
         SceneManager.LoadScene(sceneName: "TitleScene");
     }
 
     public void RandomButton()
     {
+        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
         Toggle[] tempToggles;
 
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
@@ -475,6 +480,9 @@ public class FunModeButtonManager : MonoBehaviour
     // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
     public void ScrollArrowUpButton()
     {
+        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
+        ScrollArrowUp.SetActive(true);
+        ScrollArrowDown.SetActive(false);
         SettingsCanvasScrollRect.verticalNormalizedPosition = 0f;
         SettingsCanvasScrollRect.velocity = new Vector2(0, -5000f);
     }
@@ -482,6 +490,9 @@ public class FunModeButtonManager : MonoBehaviour
     // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
     public void ScrollArrowDownButton()
     {
+        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
+        ScrollArrowUp.SetActive(false);
+        ScrollArrowDown.SetActive(true);
         SettingsCanvasScrollRect.verticalNormalizedPosition = 1f;
         SettingsCanvasScrollRect.velocity = new Vector2(0, 5000f);
     }

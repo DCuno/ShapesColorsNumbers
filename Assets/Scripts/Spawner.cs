@@ -11,6 +11,7 @@ public class Spawner : MonoBehaviour
 
     public GameObject settingsCanvas;
     private GameObject spawnedSettingsCanvas;
+    private GameObject _gameBackButton;
 
     private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
     private List<GameObject> shapesList = new List<GameObject>();
@@ -68,6 +69,12 @@ public class Spawner : MonoBehaviour
         Gizmos.DrawIcon(new Vector2(0, _screenSize.y), "circle.png", true);
     }*/
 
+    public void Start()
+    {
+        _gameBackButton = GameObject.FindGameObjectWithTag("GameBackButton");
+        _gameBackButton.SetActive(false);
+    }
+
     public void SettingsSetup(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
     {
         StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, topic, voice, text));
@@ -118,6 +125,7 @@ public class Spawner : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
+        _gameBackButton.SetActive(true);
         DoneSpawning = true;
 
         if (_tilt)
@@ -298,6 +306,7 @@ public class Spawner : MonoBehaviour
                         finished = true;
                         Started = false;
                         finishedCheck = 0f;
+                        _gameBackButton.SetActive(false);
                         spawnedSettingsCanvas = Instantiate(settingsCanvas);
                         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
                     }
@@ -313,6 +322,7 @@ public class Spawner : MonoBehaviour
                         finished = true;
                         Started = false;
                         finishedCheck = 0f;
+                        _gameBackButton.SetActive(false);
                     }
                 }
             }
@@ -340,17 +350,19 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void ResetFunMode()
+    public void ResetFunMode()
     {
         finished = true;
         DeleteAllChildren();
+        _gameBackButton.SetActive(false);
         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
     }
 
-    private void LeaveLessons()
+    public void LeaveLessons()
     {
         finished = true;
         DeleteAllChildren();
+        _gameBackButton.SetActive(false);
         SceneManager.LoadScene(sceneName: "TitleScene");
     }
 }
