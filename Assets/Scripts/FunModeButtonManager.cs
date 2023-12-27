@@ -29,6 +29,7 @@ public class FunModeButtonManager : MonoBehaviour
         ScrollArrowUp = GameObject.FindGameObjectWithTag("ScrollArrowUp");
         ScrollArrowDown = GameObject.FindGameObjectWithTag("ScrollArrowDown");
         SettingsCanvasScrollRect = GameObject.FindGameObjectWithTag("SettingsCanvasScroll").GetComponentInChildren<ScrollRect>();
+        GameObject.FindGameObjectWithTag("SettingsCanvasScroll").GetComponent<Canvas>().worldCamera = Camera.main;
 
         // Default is scroll arrow down is showing
         ScrollArrowUp.SetActive(false);

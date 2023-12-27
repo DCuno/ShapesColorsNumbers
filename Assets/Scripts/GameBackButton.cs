@@ -7,10 +7,12 @@ public class GameBackButton : MonoBehaviour
 {
     Vector2 _startPos;
     Spawner _spawner;
+    Animator _anim;
     // Start is called before the first frame update
     void Start()
     {
         _spawner = GameObject.FindGameObjectWithTag("spawner").GetComponent<Spawner>();
+        _anim = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -21,20 +23,21 @@ public class GameBackButton : MonoBehaviour
 
     private void OnMouseDown()
     {
-        _startPos = Input.mousePosition;
+        _anim.SetTrigger("Press");
     }
 
     private void OnMouseDrag()
     {
+        //print("mouse: " + Camera.main.ScreenToWorldPoint(Input.mousePosition) + " transform: " + gameObject.transform.position/2f);
         if (SceneManager.GetActiveScene().name == "FunModeGameScene2")
         {
-            if (Input.mousePosition.normalized.x > gameObject.transform.position.normalized.x * 1 || Input.mousePosition.normalized.y > gameObject.transform.position.normalized.y * 1)
+            if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > gameObject.transform.position.x / 8f || Camera.main.ScreenToWorldPoint(Input.mousePosition).y < gameObject.transform.position.y / 2f)
                 _spawner.ResetFunMode();
 
         }
         else if (SceneManager.GetActiveScene().name == "LessonsScene")
         {
-            if (Input.mousePosition.normalized.x > gameObject.transform.position.normalized.x * 1 || Input.mousePosition.normalized.y > gameObject.transform.position.normalized.y * 1)
+            if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > gameObject.transform.position.x / 8f || Camera.main.ScreenToWorldPoint(Input.mousePosition).y < gameObject.transform.position.y / 2f)
                 _spawner.LeaveLessons();
         }
     }

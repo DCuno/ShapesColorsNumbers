@@ -354,6 +354,7 @@ public class Spawner : MonoBehaviour
     {
         finished = true;
         DeleteAllChildren();
+        _gameBackButton.GetComponent<Animator>().ResetTrigger("Press");
         _gameBackButton.SetActive(false);
         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
     }
@@ -362,6 +363,7 @@ public class Spawner : MonoBehaviour
     {
         finished = true;
         DeleteAllChildren();
+        _gameBackButton.GetComponent<Animator>().ResetTrigger("Press");
         _gameBackButton.SetActive(false);
         SceneManager.LoadScene(sceneName: "TitleScene");
     }
