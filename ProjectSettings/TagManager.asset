@@ -84,6 +84,7 @@ TagManager:
   - SoundEffectsMute
   - MusicMute
   - GameBackButton
+  - BatterySaverToggleOn
   layers:
   - Default
   - TransparentFX

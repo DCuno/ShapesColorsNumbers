@@ -15,8 +15,12 @@ public class TitleScreenManager : MonoBehaviour
 
     void Start()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 30;
+        Physics2D.simulationMode = SimulationMode2D.Script;
+
         //if (_optionsManager == null && _optionsManager.name == "DontDestroyOnLoad")
-            //DontDestroyOnLoad(_optionsManager);
+        //DontDestroyOnLoad(_optionsManager);
         // Setup Volumes from Player Prefs
         _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
         _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
