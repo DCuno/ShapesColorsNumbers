@@ -103,13 +103,20 @@ public class Spawner : MonoBehaviour
 
         // Initialize normal gravity in case tilt mode was used on a previous game
         Physics2D.gravity = new Vector2(0.0f, -9.8f);
+        QualitySettings.vSyncCount = 0;
+        Physics2D.simulationMode = SimulationMode2D.FixedUpdate;
+
+        if (PlayerPrefs.GetInt("BatterySaver", 0) == 0 ? true : false)
+            Application.targetFrameRate = 60;
+        else
+            Application.targetFrameRate = 30;
 
         //float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
         {
             if (!finished)
             {
-                yield return new WaitForSeconds(0.05f);
+                //yield return new WaitForSeconds(0.05f);
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
                 Color _tmpColor = RandomColor(colors);
                 curPolygon = shapesList[i].GetComponent<Polygon>();
@@ -307,6 +314,9 @@ public class Spawner : MonoBehaviour
                         Started = false;
                         finishedCheck = 0f;
                         _gameBackButton.SetActive(false);
+                        QualitySettings.vSyncCount = 0;
+                        Application.targetFrameRate = 30;
+                        Physics2D.simulationMode = SimulationMode2D.Script;
                         spawnedSettingsCanvas = Instantiate(settingsCanvas);
                         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
                     }
@@ -322,6 +332,9 @@ public class Spawner : MonoBehaviour
                         finished = true;
                         Started = false;
                         finishedCheck = 0f;
+                        QualitySettings.vSyncCount = 0;
+                        Application.targetFrameRate = 30;
+                        Physics2D.simulationMode = SimulationMode2D.Script;
                         _gameBackButton.SetActive(false);
                     }
                 }
@@ -356,6 +369,9 @@ public class Spawner : MonoBehaviour
         DeleteAllChildren();
         _gameBackButton.GetComponent<Animator>().ResetTrigger("Press");
         _gameBackButton.SetActive(false);
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 30;
+        Physics2D.simulationMode = SimulationMode2D.Script;
         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
     }
 
@@ -365,6 +381,9 @@ public class Spawner : MonoBehaviour
         DeleteAllChildren();
         _gameBackButton.GetComponent<Animator>().ResetTrigger("Press");
         _gameBackButton.SetActive(false);
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 30;
+        Physics2D.simulationMode = SimulationMode2D.Script;
         SceneManager.LoadScene(sceneName: "TitleScene");
     }
 }

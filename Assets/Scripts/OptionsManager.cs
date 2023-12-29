@@ -20,8 +20,10 @@ public class OptionsManager : MonoBehaviour
     float curSFXSliderVal;
     Toggle _musicToggle;
     Toggle _sfxToggle;
+    Toggle _batterySaverToggle;
     bool _curSFXMute;
     bool _curMusicMute;
+    bool _curBatterySaverToggleOn;
 
     private void Awake()
     {
@@ -58,6 +60,11 @@ public class OptionsManager : MonoBehaviour
         if (_sfxToggle == null)
         {
             _sfxToggle = GameObject.FindGameObjectWithTag("SoundEffectsMute").GetComponent<Toggle>();
+        }
+
+        if (_batterySaverToggle == null)
+        {
+            _batterySaverToggle = GameObject.FindGameObjectWithTag("BatterySaverToggleOn").GetComponent<Toggle>();
         }
 
 
@@ -106,6 +113,12 @@ public class OptionsManager : MonoBehaviour
             else
                 _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
         }
+
+        if (_curBatterySaverToggleOn != _batterySaverToggle.isOn)
+        {
+            PlayerPrefs.SetInt("BatterySaver", _batterySaverToggle.isOn ? 1 : 0);
+            _curBatterySaverToggleOn = _batterySaverToggle.isOn;
+        }
     }
 
     private void LoadFromPrefs()
@@ -114,8 +127,10 @@ public class OptionsManager : MonoBehaviour
         _soundEffectsSlider.value = PlayerPrefs.GetFloat("SFX", 5f);
         _musicToggle.isOn = PlayerPrefs.GetInt("MusicMute", 1) == 1;
         _sfxToggle.isOn = PlayerPrefs.GetInt("SFXMute", 1) == 1;
+        _batterySaverToggle.isOn = PlayerPrefs.GetInt("BatterySaver", 0) == 1 ? true : false;
         _curMusicMute = !_musicToggle.isOn;
         _curSFXMute = !_sfxToggle.isOn;
+        _curBatterySaverToggleOn = _batterySaverToggle.isOn;
         curMusicSliderVal = _musicSlider.value;
         curSFXSliderVal = _soundEffectsSlider.value;
 
@@ -229,19 +244,19 @@ public class OptionsManager : MonoBehaviour
             case 4:
                 return -9f;
             case 5:
-                return -6f;
+                return -8f;
             case 6:
-                return -3f;
+                return -7f; // new max
             case 7:
-                return 0f;
-            case 8:
-                return 3f;
-            case 9:
-                return 6f;
-            case 10:
-                return 9f;
-            default:
                 return -6f;
+            case 8:
+                return -5f;
+            case 9:
+                return -4f;
+            case 10:
+                return -3f;
+            default:
+                return -3f;
         }
     }
 
@@ -260,17 +275,17 @@ public class OptionsManager : MonoBehaviour
             case 4:
                 return -1f;
             case 5:
-                return 6f;
+                return 1f; // new max
             case 6:
-                return 8f;
+                return 2f;
             case 7:
-                return 10f;
+                return 3f;
             case 8:
-                return 12f;
+                return 4f;
             case 9:
-                return 14f;
+                return 5f;
             case 10:
-                return 16f;
+                return 6f;
             default:
                 return 6f;
         }
