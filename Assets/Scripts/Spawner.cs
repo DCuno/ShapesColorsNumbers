@@ -367,7 +367,7 @@ public class Spawner : MonoBehaviour
     {
         finished = true;
         DeleteAllChildren();
-        _gameBackButton.GetComponent<Animator>().ResetTrigger("Press");
+        _gameBackButton.GetComponent<GameBackButton>().ResetButton();
         _gameBackButton.SetActive(false);
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 30;
@@ -379,7 +379,7 @@ public class Spawner : MonoBehaviour
     {
         finished = true;
         DeleteAllChildren();
-        _gameBackButton.GetComponent<Animator>().ResetTrigger("Press");
+        _gameBackButton.GetComponent<GameBackButton>().ResetButton();
         _gameBackButton.SetActive(false);
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 30;
