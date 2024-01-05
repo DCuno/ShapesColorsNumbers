@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class Fps : MonoBehaviour
 {
     private float count;
-
+    Animator _anim;
+    TextMeshProUGUI tmp;
     private IEnumerator Start()
     {
+        tmp = gameObject.GetComponent<TextMeshProUGUI>();
         GUI.depth = 2;
         while (true)
         {
@@ -17,6 +20,15 @@ public class Fps : MonoBehaviour
 
     private void OnGUI()
     {
-        GUI.Label(new Rect(5, 40, 100, 25), "FPS: " + Mathf.Round(count));
+        tmp.text = "FPS:" + Mathf.Round(count) + "\n";
+        if (_anim != null)
+        {
+            tmp.text += "Press Bool: " + _anim.GetBool("Press 0") + "\n";
+        }
+        else
+        {
+            _anim = GameObject.FindGameObjectWithTag("GameBackButton").GetComponent<Animator>();
+            tmp.text += "Press Bool: " + _anim.GetBool("Press 0") + "\n";
+        }
     }
 }
