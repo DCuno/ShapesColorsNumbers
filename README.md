@@ -14,7 +14,9 @@ There will be two game modes:
   <p>There will be an edgeless mode where the shapes will loop from the other side endlessly. There will be a tilt mode where the player can tilt the tablet or phone and the shapes will slide whichever direction they tilt in. Lastly, the player will be able to select what voice or text will play/show upon popping the shape. </p>
 
 ### Android APK
-<p>https://github.com/DCuno/ShapesColorsNumbers/blob/main/ShapesColorsNumbers.apk</p>
+<p>If you have a newer phone, try the 64 bit version first, and if it doesn't install, then try the 32 bit. You will need to allow installing unsigned applications to try the game. Please google your phone to find relevant instructions to turn that on for your device.</p>
+<p>[Shapes Colors Numbers x32 bit](https://github.com/DCuno/ShapesColorsNumbers/blob/main/Shapes%20Colors%20Numbers-0.7-x32.apk)</p>
+<p>[Shapes Colors Numbers x64 bit](https://github.com/DCuno/ShapesColorsNumbers/blob/main/Shapes%20Colors%20Numbers-0.7-x64.apk)</p>
 
 ### Video Demonstration
 https://youtu.be/beKu6gRWhfk
