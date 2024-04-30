@@ -20,7 +20,7 @@ I will provide this for free on both iOS and Android for families to be able to 
 ### iOS Install Not Currently Available
 
 ### Video Demonstration
-https://youtu.be/beKu6gRWhfk
+https://youtu.be/EzIByV5eaCg
 
 ### Pictures
 
