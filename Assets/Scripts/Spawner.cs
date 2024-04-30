@@ -11,6 +11,7 @@ public class Spawner : MonoBehaviour
 
     public GameObject settingsCanvas;
     private GameObject spawnedSettingsCanvas;
+    private GameObject _gameBackButton;
 
     private const int minIter = 1, maxIter = 100, minSize = 1, maxSize = 10;
     private List<GameObject> shapesList = new List<GameObject>();
@@ -68,6 +69,12 @@ public class Spawner : MonoBehaviour
         Gizmos.DrawIcon(new Vector2(0, _screenSize.y), "circle.png", true);
     }*/
 
+    public void Start()
+    {
+        _gameBackButton = GameObject.FindGameObjectWithTag("GameBackButton");
+        _gameBackButton.SetActive(false);
+    }
+
     public void SettingsSetup(List<Shape> shapes, List<Colors> colors, float size, float amount, bool edges, bool tilt, Spawner.Topics topic, bool voice, bool text)
     {
         StartCoroutine(Spawn(shapes, colors, size, amount, edges, tilt, topic, voice, text));
@@ -92,16 +99,24 @@ public class Spawner : MonoBehaviour
         finished = false;
         _tilt = tilt;
         Polygon curPolygon;
+        Destroy(GameObject.FindGameObjectWithTag("SettingsCanvasScroll"));
 
         // Initialize normal gravity in case tilt mode was used on a previous game
         Physics2D.gravity = new Vector2(0.0f, -9.8f);
+        QualitySettings.vSyncCount = 0;
+        Physics2D.simulationMode = SimulationMode2D.FixedUpdate;
+
+        if (PlayerPrefs.GetInt("BatterySaver", 0) == 0 ? true : false)
+            Application.targetFrameRate = 60;
+        else
+            Application.targetFrameRate = 30;
 
         //float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
         {
             if (!finished)
             {
-                yield return new WaitForSeconds(0.05f);
+                //yield return new WaitForSeconds(0.05f);
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
                 Color _tmpColor = RandomColor(colors);
                 curPolygon = shapesList[i].GetComponent<Polygon>();
@@ -117,6 +132,7 @@ public class Spawner : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
+        _gameBackButton.SetActive(true);
         DoneSpawning = true;
 
         if (_tilt)
@@ -297,6 +313,10 @@ public class Spawner : MonoBehaviour
                         finished = true;
                         Started = false;
                         finishedCheck = 0f;
+                        _gameBackButton.SetActive(false);
+                        QualitySettings.vSyncCount = 0;
+                        Application.targetFrameRate = 30;
+                        Physics2D.simulationMode = SimulationMode2D.Script;
                         spawnedSettingsCanvas = Instantiate(settingsCanvas);
                         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
                     }
@@ -312,6 +332,10 @@ public class Spawner : MonoBehaviour
                         finished = true;
                         Started = false;
                         finishedCheck = 0f;
+                        QualitySettings.vSyncCount = 0;
+                        Application.targetFrameRate = 30;
+                        Physics2D.simulationMode = SimulationMode2D.Script;
+                        _gameBackButton.SetActive(false);
                     }
                 }
             }
@@ -339,17 +363,27 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void ResetFunMode()
+    public void ResetFunMode()
     {
         finished = true;
         DeleteAllChildren();
+        _gameBackButton.GetComponent<GameBackButton>().ResetButton();
+        _gameBackButton.SetActive(false);
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 30;
+        Physics2D.simulationMode = SimulationMode2D.Script;
         spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
     }
 
-    private void LeaveLessons()
+    public void LeaveLessons()
     {
         finished = true;
         DeleteAllChildren();
+        _gameBackButton.GetComponent<GameBackButton>().ResetButton();
+        _gameBackButton.SetActive(false);
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 30;
+        Physics2D.simulationMode = SimulationMode2D.Script;
         SceneManager.LoadScene(sceneName: "TitleScene");
     }
 }

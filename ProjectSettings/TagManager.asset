@@ -80,6 +80,12 @@ TagManager:
   - VoiceOnToggle
   - TextOnToggle
   - TopicsPanelGroup
+  - UIButton
+  - SoundEffectsMute
+  - MusicMute
+  - GameBackButton
+  - BatterySaverToggleOn
+  - fps
   layers:
   - Default
   - TransparentFX
@@ -91,7 +97,7 @@ TagManager:
   - SpawningShapes
   - Background
   - Edge
-  - 
+  - UIButton
   - 
   - 
   - 
