@@ -1,6 +1,7 @@
 # ShapesColorsNumbers
 
 Shapes Colors Numbers is an edutainment game with the goal of teaching children well... shapes, colors, and numbers!\
+
 I will provide this for free on both iOS and Android for families to be able to entertain and educate their children.
 
 There will be two game modes:
@@ -8,8 +9,7 @@ There will be two game modes:
   <p>This is a very short introduction to all the shapes, colors, and counting up to 10 to the player. Chapter selection is available to focus on specific lessons. </p>
   
    <h3>Sandbox Mode</h3>
-  <p>This mode allows the player to choose what shapes and colors the shapes will be, the size of the shapes, and the amount of the shapes. There is a random button that randomizes these selections for the player just for fun. </p>
-  <p>The player can select what voice or text will play/show upon popping the shape. </p>
+  <p>This mode allows the player to choose what shapes and colors the shapes will be, the size of the shapes, and the amount of the shapes. There is a random button that randomizes these selections for the player just for fun. The player can select what voice or text will play/show upon popping the shape. </p>
 
 ### Android APK
 <p>If you have a newer phone, try the 64 bit version first, and if it doesn't install, then try the 32 bit. You will need to allow installing unsigned applications to try the game. Please google your phone to find relevant instructions to turn that on for your device.</p>
