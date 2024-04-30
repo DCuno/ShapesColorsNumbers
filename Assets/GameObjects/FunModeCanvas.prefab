@@ -31,7 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 900263565772074423}
-  - {fileID: 2243175164846052367}
+  - {fileID: 2387835700005047496}
   - {fileID: 7232439959868496531}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -86,7 +86,7 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
---- !u!1001 &3266043105532771012
+--- !u!1001 &1391965099157643779
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -178,34 +178,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4481710973006045653, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4481710973006045653, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4509915072178823675, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
-      propertyPath: m_Pivot.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4509915072178823675, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
-      propertyPath: m_Pivot.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4509915072178823675, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6071641391224695655, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
-      propertyPath: m_Color.a
-      value: 0.39215687
-      objectReference: {fileID: 0}
-    - target: {fileID: 7385287886888198027, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
-      propertyPath: m_Color.a
-      value: 0.21568628
-      objectReference: {fileID: 0}
     - target: {fileID: 9092338626214195861, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
       propertyPath: m_Name
       value: GameBackButton
@@ -215,10 +187,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
---- !u!224 &2243175164846052367 stripped
+--- !u!224 &2387835700005047496 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3634979991177162443, guid: e047444886c1c854d8c22b1b5452b78a, type: 3}
-  m_PrefabInstance: {fileID: 3266043105532771012}
+  m_PrefabInstance: {fileID: 1391965099157643779}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3364589328466339549
 PrefabInstance:

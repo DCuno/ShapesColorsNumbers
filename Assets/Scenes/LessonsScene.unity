@@ -131,6 +131,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2123666667730413053, guid: a39441faca6a8b94bba1e992598e498a, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3298657190833701880, guid: a39441faca6a8b94bba1e992598e498a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5121592562507434340, guid: a39441faca6a8b94bba1e992598e498a, type: 3}
+      propertyPath: m_Color.a
+      value: 0.7607843
+      objectReference: {fileID: 0}
     - target: {fileID: 5263228019757947168, guid: a39441faca6a8b94bba1e992598e498a, type: 3}
       propertyPath: m_Name
       value: FunModeCanvas
