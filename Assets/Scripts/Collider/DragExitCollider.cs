@@ -19,10 +19,10 @@ public class DragExitCollider : MonoBehaviour
     {
         
     }
-
+    
     private void OnMouseExit()
     {
-        if (_gameBackButton.Touching)
+        if (_gameBackButton.Touching/* && _gameBackButton.TouchIndex*/)
         {
             if (SceneManager.GetActiveScene().name == "FunModeGameScene2")
             {
