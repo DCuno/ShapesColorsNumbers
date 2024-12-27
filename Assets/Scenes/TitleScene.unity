@@ -159,7 +159,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -215}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -104, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!210 &9228263
 SortingGroup:
@@ -223,9 +223,9 @@ MonoBehaviour:
   m_fontSize: 200
   m_fontSizeBase: 200
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 175
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 32
   m_VerticalAlignment: 512
@@ -2178,7 +2178,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 235}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -240.79999, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1281901045
 MonoBehaviour:
@@ -2230,9 +2230,9 @@ MonoBehaviour:
   m_fontSize: 200
   m_fontSizeBase: 200
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 175
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 32
   m_VerticalAlignment: 512
@@ -3456,7 +3456,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -346, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!210 &2122516290
 SortingGroup:
@@ -3520,9 +3520,9 @@ MonoBehaviour:
   m_fontSize: 200
   m_fontSizeBase: 200
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 175
+  m_fontSizeMax: 200
   m_fontStyle: 0
   m_HorizontalAlignment: 32
   m_VerticalAlignment: 512
