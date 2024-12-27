@@ -2,7 +2,7 @@
 
 Shapes Colors Numbers is an edutainment game with the goal of teaching children well... shapes, colors, and numbers!
 
-I will provide this for free on both iOS and Android for families to be able to entertain and educate their children.
+I will provide this for a low price on both iOS and Android for families to be able to entertain and educate their children.
 
 <p>There will be two game modes:</p>
 
