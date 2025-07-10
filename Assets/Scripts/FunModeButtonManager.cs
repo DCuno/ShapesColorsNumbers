@@ -187,10 +187,10 @@ public class FunModeButtonManager : MonoBehaviour
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
-            if (i.isOn)
-                if (System.Enum.TryParse(i.name, out Spawner.Shape result))
-                    shapes.Add(result);
-
+            if (i.isOn && System.Enum.TryParse(i.name, out Spawner.Shape result))
+            {  
+                shapes.Add(result);
+            }
         }
 
         if (shapes.Count == 0)

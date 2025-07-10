@@ -239,7 +239,7 @@ public class Polygon : MonoBehaviour
                     }
 
                     _gravityLerpPercent = _gravityLerpTimer / s_gravityLerpTimeTotal;
-                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, Vector3.zero, _gravityLerpPercent);
+                    _rigidbody2D.linearVelocity = Vector3.Lerp(_rigidbody2D.linearVelocity, Vector3.zero, _gravityLerpPercent);
                     _rigidbody2D.angularVelocity = Mathf.Lerp(_rigidbody2D.angularVelocity, 0f, _gravityLerpPercent);
                 }
                 else
@@ -429,8 +429,8 @@ public class Polygon : MonoBehaviour
     // Shapes slow down and stop eventually. This keeps them always moving.
     private void PushSlowShapes()
     {
-        if (_rigidbody2D.velocity.x <= s_slowestV * _normV && _rigidbody2D.velocity.x >= -s_slowestV * _normV
-                && _rigidbody2D.velocity.y <= s_slowestV * _normV && _rigidbody2D.velocity.y >= -s_slowestV * _normV)
+        if (_rigidbody2D.linearVelocity.x <= s_slowestV * _normV && _rigidbody2D.linearVelocity.x >= -s_slowestV * _normV
+                && _rigidbody2D.linearVelocity.y <= s_slowestV * _normV && _rigidbody2D.linearVelocity.y >= -s_slowestV * _normV)
         {
             float randomAngularVelocity = Random.Range(-s_pushAngV * _normV, s_pushAngV * _normV);
             Vector2 randomVelocity = new Vector2(Random.Range(s_pushVMin * _normV, s_pushVMax * _normV), Random.Range(s_pushVMin * _normV, s_pushVMax * _normV));
@@ -555,7 +555,7 @@ public class Polygon : MonoBehaviour
         float randomAngularVel = Random.Range(-s_initAngV, s_initAngV);
         int randomFlip = Random.Range(0, 2);
 
-        _rigidbody2D.velocity = randomFlip == 0 ? new Vector2(randomX, randomY) : new Vector2(randomX * -1, randomY);
+        _rigidbody2D.linearVelocity = randomFlip == 0 ? new Vector2(randomX, randomY) : new Vector2(randomX * -1, randomY);
 
         _rigidbody2D.angularVelocity = randomAngularVel;
     }
@@ -643,14 +643,14 @@ public class Polygon : MonoBehaviour
     // Extension that limits polygon velocity to maximum
     public void PolygonVelocityLimiter()
     {
-        if (_rigidbody2D.velocity.x > s_maxVx || _rigidbody2D.velocity.x < -s_maxVx)
+        if (_rigidbody2D.linearVelocity.x > s_maxVx || _rigidbody2D.linearVelocity.x < -s_maxVx)
         {
-            _rigidbody2D.velocity = new Vector2(s_maxVx * Mathf.Sign(_rigidbody2D.velocity.x), _rigidbody2D.velocity.y);
+            _rigidbody2D.linearVelocity = new Vector2(s_maxVx * Mathf.Sign(_rigidbody2D.linearVelocity.x), _rigidbody2D.linearVelocity.y);
         }
 
-        if (_rigidbody2D.velocity.y > s_maxVy || _rigidbody2D.velocity.y < -s_maxVy)
+        if (_rigidbody2D.linearVelocity.y > s_maxVy || _rigidbody2D.linearVelocity.y < -s_maxVy)
         {
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, s_maxVy * Mathf.Sign(_rigidbody2D.velocity.y));
+            _rigidbody2D.linearVelocity = new Vector2(_rigidbody2D.linearVelocity.x, s_maxVy * Mathf.Sign(_rigidbody2D.linearVelocity.y));
         }
     }
 
