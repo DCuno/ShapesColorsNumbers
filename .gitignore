@@ -9,6 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/.utmp/
 /Art/
 /Videos/
 /Recordings/
@@ -75,3 +76,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+.utmp/RelWithDebInfo/5l12n305/x86_64/configure_fingerprint.bin
+.utmp/RelWithDebInfo/5l12n305/x86/configure_fingerprint.bin
+.utmp/RelWithDebInfo/5l12n305/armeabi-v7a/configure_fingerprint.bin
+.utmp/RelWithDebInfo/5l12n305/arm64-v8a/configure_fingerprint.bin

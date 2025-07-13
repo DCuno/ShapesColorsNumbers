@@ -1,5 +1,0 @@
-E:/David_Main_Folder/Projects/ShapesColorsNumbers/.utmp/RelWithDebInfo/5l12n305/armeabi-v7a/CMakeFiles/edit_cache.dir
-E:/David_Main_Folder/Projects/ShapesColorsNumbers/.utmp/RelWithDebInfo/5l12n305/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-E:/David_Main_Folder/Projects/ShapesColorsNumbers/.utmp/RelWithDebInfo/5l12n305/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
-E:/David_Main_Folder/Projects/ShapesColorsNumbers/.utmp/RelWithDebInfo/5l12n305/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
-E:/David_Main_Folder/Projects/ShapesColorsNumbers/.utmp/RelWithDebInfo/5l12n305/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir

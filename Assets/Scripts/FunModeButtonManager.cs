@@ -23,6 +23,7 @@ public class FunModeButtonManager : MonoBehaviour
     GameObject ScrollArrowDown;
     ScrollRect SettingsCanvasScrollRect;
     private Audio _sfx;
+    private Image colorSliderBackground;
 
     private void Awake()
     {
@@ -33,6 +34,11 @@ public class FunModeButtonManager : MonoBehaviour
 
         // Default is scroll arrow down is showing
         ScrollArrowUp.SetActive(false);
+    }
+
+    private void Start()
+    {
+        
     }
 
     public void FunModeButtonManagerConstructor(Spawner.SpawnerSettingsStruct SpawnerSettings)
@@ -248,8 +254,9 @@ public class FunModeButtonManager : MonoBehaviour
     public void RandomButton()
     {
         GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
-        Toggle[] tempToggles;
 
+        // Randomize shapes
+        Toggle[] tempToggles;
         tempToggles = GameObject.FindGameObjectWithTag("ShapesPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
@@ -264,6 +271,7 @@ public class FunModeButtonManager : MonoBehaviour
             }
         }
 
+        // Randomize colors
         tempToggles = GameObject.FindGameObjectWithTag("ColorsPanelGroup").GetComponentsInChildren<Toggle>();
         foreach (Toggle i in tempToggles)
         {
@@ -278,50 +286,98 @@ public class FunModeButtonManager : MonoBehaviour
             }
         }
 
+        // Count how many color toggles are on
+        int toggleOnCount = 0;
+        foreach (Toggle i in tempToggles)
+        {
+            if (i.isOn)
+            {
+                toggleOnCount++;
+            }
+        }
+
+        // Randomize size slider
         Slider sizeSlider = GameObject.FindGameObjectWithTag("SizePanelGroup").GetComponentInChildren<Slider>();
         Slider amountSlider = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponentInChildren<Slider>();
-        sizeSlider.value = Random.Range(1,11);
+        sizeSlider.value = Random.Range(1, 11);
 
+        // Set amount slider based on size (your existing logic)
         if (sizeSlider.value >= 9)
         {
-            amountSlider.value = Random.Range(1,5);
-            amountSlider.maxValue = 4;
+            amountSlider.maxValue = 6; // Fixed: was 4, should match your other methods
+            amountSlider.value = Random.Range(Mathf.Max(1, toggleOnCount), amountSlider.maxValue + 1);
+            amountSlider.minValue = Mathf.Max(1, toggleOnCount);
         }
         else if (sizeSlider.value >= 7)
         {
-            amountSlider.value = Random.Range(1,9);
             amountSlider.maxValue = 8;
+            amountSlider.value = Random.Range(Mathf.Max(1, toggleOnCount), amountSlider.maxValue + 1);
+            amountSlider.minValue = Mathf.Max(1, toggleOnCount);
         }
         else if (sizeSlider.value >= 6)
         {
-            amountSlider.value = Random.Range(1,11);
             amountSlider.maxValue = 10;
+            amountSlider.value = Random.Range(Mathf.Max(1, toggleOnCount), amountSlider.maxValue + 1);
+            amountSlider.minValue = Mathf.Max(1, toggleOnCount);
         }
         else if (sizeSlider.value >= 5)
         {
-            amountSlider.value = Random.Range(1,15);
             amountSlider.maxValue = 14;
+            amountSlider.value = Random.Range(Mathf.Max(1, toggleOnCount), amountSlider.maxValue + 1);
+            amountSlider.minValue = Mathf.Max(1, toggleOnCount);
         }
         else if (sizeSlider.value >= 4)
         {
-            amountSlider.value = Random.Range(1,25);
             amountSlider.maxValue = 24;
+            amountSlider.value = Random.Range(Mathf.Max(1, toggleOnCount), amountSlider.maxValue + 1);
+            amountSlider.minValue = Mathf.Max(1, toggleOnCount);
         }
         else if (sizeSlider.value >= 3)
         {
-            amountSlider.value = Random.Range(1,36);
             amountSlider.maxValue = 35;
+            amountSlider.value = Random.Range(Mathf.Max(1, toggleOnCount), amountSlider.maxValue + 1);
+            amountSlider.minValue = Mathf.Max(1, toggleOnCount);
         }
         else if (sizeSlider.value >= 2)
         {
-            amountSlider.value = Random.Range(1,51);
             amountSlider.maxValue = 50;
+            amountSlider.value = Random.Range(Mathf.Max(1, toggleOnCount), amountSlider.maxValue + 1);
+            amountSlider.minValue = Mathf.Max(1, toggleOnCount);
         }
         else if (sizeSlider.value >= 1)
         {
-            amountSlider.value = Random.Range(1,101);
             amountSlider.maxValue = 100;
+            amountSlider.value = Random.Range(Mathf.Max(1, toggleOnCount), amountSlider.maxValue + 1);
+            amountSlider.minValue = Mathf.Max(1, toggleOnCount);
         }
+
+        // Handle the min == max visual case
+        HandleSliderMinMaxEqual();
+    }
+
+    public void ColorPanelToggle()
+    {
+        Toggle[] toggles = GameObject.FindGameObjectWithTag("ColorsPanelGroup").GetComponentsInChildren<Toggle>();
+        Slider amountSlider = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponent<Slider>();
+        GameObject.FindGameObjectWithTag("AmountSliderCounter").GetComponent<TextMeshProUGUI>().text = amountSlider.value.ToString();
+        int toggleOnCount = 0;
+        foreach (Toggle i in toggles)
+        {
+            //System.Enum.TryParse(i.name, out Spawner.Colors result);
+            if (i.isOn)
+            {
+                toggleOnCount++;
+            }
+        }
+
+        if (amountSlider.value < toggleOnCount)
+        {
+            amountSlider.value = toggleOnCount;
+        }
+        
+        amountSlider.minValue = Mathf.Max(1, toggleOnCount);
+
+        HandleSliderMinMaxEqual();
     }
 
     public void SizeSliderAmount()
@@ -386,12 +442,66 @@ public class FunModeButtonManager : MonoBehaviour
             
             amountSlider.maxValue = 100;
         }
+
+        HandleSliderMinMaxEqual();
     }
 
     public void AmountSliderAmount()
     {
+        Toggle[] toggles = GameObject.FindGameObjectWithTag("ColorsPanelGroup").GetComponentsInChildren<Toggle>();
         Slider amountSlider = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponent<Slider>();
         GameObject.FindGameObjectWithTag("AmountSliderCounter").GetComponent<TextMeshProUGUI>().text = amountSlider.value.ToString();
+        int toggleOnCount = 0;
+        foreach (Toggle i in toggles)
+        {
+            //System.Enum.TryParse(i.name, out Spawner.Colors result);
+            if (i.isOn)
+            {
+                toggleOnCount++;
+            }
+        }
+
+        if (amountSlider.value < toggleOnCount)
+        { 
+            amountSlider.value = toggleOnCount;
+        }
+
+        if (amountSlider.minValue < toggleOnCount)
+        {
+            amountSlider.minValue = toggleOnCount;
+        }
+
+        HandleSliderMinMaxEqual();
+    }
+
+    private void HandleSliderMinMaxEqual()
+    {
+        Slider amountSlider = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponent<Slider>();
+        colorSliderBackground = GameObject.FindGameObjectWithTag("AmountPanelGroup").GetComponent<Slider>().transform.Find("Background")?.GetComponent<Image>();
+
+        if (amountSlider.minValue == amountSlider.maxValue)
+        {
+            // Force fill to appear full
+            amountSlider.fillRect.anchorMax = new Vector2(1f, amountSlider.fillRect.anchorMax.y);
+            // Force handle to appear at the right
+            amountSlider.handleRect.anchorMin = new Vector2(1f, amountSlider.handleRect.anchorMin.y);
+            amountSlider.handleRect.anchorMax = new Vector2(1f, amountSlider.handleRect.anchorMax.y);
+
+            // Set background to white
+            if (colorSliderBackground != null)
+            {
+                colorSliderBackground.color = Color.white;
+            }
+        }
+        else
+        {
+            // Restore original background color
+            if (colorSliderBackground != null)
+            {
+                // Convert hex #323232 to Color
+                colorSliderBackground.color = new Color32(50, 50, 50, 255); // #323232 in RGB
+            }
+        }
     }
 
     public void VoiceToggles(Toggle toggle)

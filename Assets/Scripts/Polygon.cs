@@ -80,8 +80,11 @@ public class Polygon : MonoBehaviour
     public Sprite[] PolygonSprites;
     public Spawner.Shape Shape;
     public Spawner.Colors Color;
+    public CircleCollider2D _ExtraInputMarginCollider;
+    private float _extraInputMarginRadius;
     private const int LARGE = 8;
     private const int MEDIUM = 4;
+    private const int SMALL = 3;
     public bool IsInPlayArea = false;
     public bool IsInSpawner = true;
     public bool IsPopped = false;
@@ -195,7 +198,7 @@ public class Polygon : MonoBehaviour
         _audioSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
         _audio = _audioSource.GetComponent<Audio>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _camera = Camera.main;
+        _camera = Camera.main; 
 
         /*ID = PlayerPrefs.GetInt("PolygonID") + 1;
         PlayerPrefs.SetInt("PolygonID", ID);*/
@@ -285,8 +288,15 @@ public class Polygon : MonoBehaviour
             _popMapSize = PopParticles[0];
         else if (size >= MEDIUM)
             _popMapSize = PopParticles[1];
+        // size == SMALL
         else
             _popMapSize = PopParticles[2];
+
+        // Makes small shapes easier to pop
+        if (size < SMALL)
+            _ExtraInputMarginCollider.radius = 8;
+        else
+            _ExtraInputMarginCollider.radius = 0.1f;
 
         this.Shape = shape;
         Color = color;

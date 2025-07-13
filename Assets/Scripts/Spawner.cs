@@ -111,6 +111,8 @@ public class Spawner : MonoBehaviour
         else
             Application.targetFrameRate = 30;
 
+        List<Color> colorSequence = GenerateColorSequence(colors, (int)amount);
+
         //float spawnSpeed = SpawnAmountRatio(amount);
         for (int i = 0; i < amount; i++)
         {
@@ -118,7 +120,7 @@ public class Spawner : MonoBehaviour
             {
                 //yield return new WaitForSeconds(0.05f);
                 shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-                Color _tmpColor = RandomColor(colors);
+                Color _tmpColor = colorSequence[i];
                 curPolygon = shapesList[i].GetComponent<Polygon>();
                 curPolygon.Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, topic, voice, text);
                 //yield return new WaitForSeconds(0.08f);
@@ -141,6 +143,51 @@ public class Spawner : MonoBehaviour
         }
 
         yield break;
+    }
+
+    private List<Color> GenerateColorSequence(List<Colors> selectedColors, int amount)
+    {
+        List<Color> colorSequence = new List<Color>();
+
+        // If no colors selected, all white
+        if (selectedColors == null || selectedColors.Count == 0)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                colorSequence.Add(Color.white);
+            }
+            return colorSequence;
+        }
+
+        // Sort selected colors by the enum order (Red, Orange, Yellow, Green, Blue, Purple)
+        selectedColors.Sort((a, b) => ((int)a).CompareTo((int)b));
+
+        // Calculate how many of each color
+        int baseCount = amount / selectedColors.Count;
+        int remainder = amount % selectedColors.Count;
+
+        // Build the color sequence with even distribution
+        for (int i = 0; i < selectedColors.Count; i++)
+        {
+            int colorCount = baseCount + (i < remainder ? 1 : 0); // Give extra to first colors
+            Color unityColor = EnumColortoUnityColor(selectedColors[i]);
+
+            for (int j = 0; j < colorCount; j++)
+            {
+                colorSequence.Add(unityColor);
+            }
+        }
+
+        // Shuffle the sequence to randomize order
+        for (int i = 0; i < colorSequence.Count; i++)
+        {
+            Color temp = colorSequence[i];
+            int randomIndex = Random.Range(i, colorSequence.Count);
+            colorSequence[i] = colorSequence[randomIndex];
+            colorSequence[randomIndex] = temp;
+        }
+
+        return colorSequence;
     }
 
     public void GravityLimiter()
