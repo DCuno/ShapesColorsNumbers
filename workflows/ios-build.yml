@@ -1,13 +1,11 @@
 name: Build iOS App
 
 on:
-  workflow_dispatch: # Allows manual triggering
-  push:
-    branches: [ main ] # Adjust branch name if needed
+  workflow_dispatch: # Manual trigger
 
 jobs:
   build:
-    name: Build for iOS
+    name: Build iOS App
     runs-on: macos-latest
     
     steps:
@@ -34,11 +32,22 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: iOS
-          projectPath: '.' # Adjust if Unity project is in subfolder
+          projectPath: '.'
 
-      # Upload iOS build artifact
-      - name: Upload iOS Build
+      # Build iOS app with Xcode and create .ipa
+      - name: Build iOS App
+        uses: yukiarrr/ios-build-action@v1.12.0
+        with:
+          project-path: build/iOS/Unity-iPhone.xcodeproj
+          p12-base64: ${{ secrets.P12_BASE64 }}
+          mobileprovision-base64: ${{ secrets.MOBILEPROVISION_BASE64 }}
+          code-signing-identity: ${{ secrets.CODE_SIGNING_IDENTITY }}
+          team-id: ${{ secrets.TEAM_ID }}
+          workspace-path: build/iOS/Unity-iPhone.xcworkspace
+
+      # Upload final .ipa file
+      - name: Upload iOS .ipa
         uses: actions/upload-artifact@v3
         with:
-          name: iOS-Build
-          path: build/iOS
+          name: iOS-App
+          path: "*.ipa"
