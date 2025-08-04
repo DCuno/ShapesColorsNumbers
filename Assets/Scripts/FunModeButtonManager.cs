@@ -49,9 +49,9 @@ public class FunModeButtonManager : MonoBehaviour
         amount = SpawnerSettings.amount;
         edges = SpawnerSettings.edges;
         tilt = SpawnerSettings.tilt;
-        topic = SpawnerSettings.topic;
-        voice = SpawnerSettings.voice;
-        text = SpawnerSettings.text;
+        //topic = SpawnerSettings.topic;
+        //voice = SpawnerSettings.voice;
+        //text = SpawnerSettings.text;
 
         Toggle[] tempToggles;
 
@@ -127,57 +127,60 @@ public class FunModeButtonManager : MonoBehaviour
             }
         }*/
 
-        tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
-        foreach (Toggle i in tempToggles)
-        {
-            System.Enum.TryParse(i.name, out Spawner.Topics result);
-            if (topic.Equals(result))
-            {
-                i.isOn = true;
-            }
-            else
-            {
-                i.isOn = false;
-            }
-        }
+        //// Shapes, Colors, Numbers topic toggle
+        //tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
+        //foreach (Toggle i in tempToggles)
+        //{
+        //    System.Enum.TryParse(i.name, out Spawner.Topics result);
+        //    if (topic.Equals(result))
+        //    {
+        //        i.isOn = true;
+        //    }
+        //    else
+        //    {
+        //        i.isOn = false;
+        //    }
+        //}
 
-        tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
-        foreach (Toggle i in tempToggles)
-        {
-            if (i.name.Equals("Toggle"))
-            {
-                if (voice)
-                    i.isOn = true;
-                else
-                    i.isOn = false;
-            }
-            else if (i.name.Equals("Off"))
-            {
-                if (voice)
-                    i.isOn = false;
-                else
-                    i.isOn = true;
-            }
-        }
+        //// Listen toggle
+        //tempToggles = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentsInChildren<Toggle>();
+        //foreach (Toggle i in tempToggles)
+        //{
+        //    if (i.name.Equals("Toggle"))
+        //    {
+        //        if (voice)
+        //            i.isOn = true;
+        //        else
+        //            i.isOn = false;
+        //    }
+        //    else if (i.name.Equals("Off"))
+        //    {
+        //        if (voice)
+        //            i.isOn = false;
+        //        else
+        //            i.isOn = true;
+        //    }
+        //}
 
-        tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
-        foreach (Toggle i in tempToggles)
-        {
-            if (i.name.Equals("Toggle"))
-            {
-                if (text)
-                    i.isOn = true;
-                else
-                    i.isOn = false;
-            }
-            else if (i.name.Equals("Off"))
-            {
-                if (text)
-                    i.isOn = false;
-                else
-                    i.isOn = true;
-            }
-        }
+        //// Read toggle
+        //tempToggles = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentsInChildren<Toggle>();
+        //foreach (Toggle i in tempToggles)
+        //{
+        //    if (i.name.Equals("Toggle"))
+        //    {
+        //        if (text)
+        //            i.isOn = true;
+        //        else
+        //            i.isOn = false;
+        //    }
+        //    else if (i.name.Equals("Off"))
+        //    {
+        //        if (text)
+        //            i.isOn = false;
+        //        else
+        //            i.isOn = true;
+        //    }
+        //}
     }
 
     public void PlayButton()
@@ -225,19 +228,24 @@ public class FunModeButtonManager : MonoBehaviour
         tilt = false;
 
 
-        tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
-        foreach (Toggle i in tempToggles)
-        {
-            if (i.isOn)
-                if (System.Enum.TryParse(i.name, out Spawner.Topics result))
-                {
-                    topic = result;
-                    break;
-                }
-        }
+        //tempToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
+        //foreach (Toggle i in tempToggles)
+        //{
+        //    if (i.isOn)
+        //        if (System.Enum.TryParse(i.name, out Spawner.Topics result))
+        //        {
+        //            topic = result;
+        //            break;
+        //        }
+        //}
 
-        voice = GameObject.FindGameObjectWithTag("VoiceOnToggle").GetComponent<Toggle>().isOn;
-        text = GameObject.FindGameObjectWithTag("TextOnToggle").GetComponent<Toggle>().isOn;
+        // Setting learning topic, voice on/off, text on/off
+        topic = (Spawner.Topics) PlayerPrefs.GetInt("LearningTopic", 0);
+        voice = PlayerPrefs.GetInt("Listen", 1) == 1;
+        text = PlayerPrefs.GetInt("Read", 1) == 1;
+
+        //voice = GameObject.FindGameObjectWithTag("VoiceOnToggle").GetComponent<Toggle>().isOn;
+        //text = GameObject.FindGameObjectWithTag("TextOnToggle").GetComponent<Toggle>().isOn;
 
         spawner.GetComponent<Spawner>().SettingsSetup(shapes, colors, size, amount, edges, tilt, topic, voice, text);
         spawner.GetComponent<Spawner>().Started = true;
@@ -594,8 +602,10 @@ public class FunModeButtonManager : MonoBehaviour
         GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
         ScrollArrowUp.SetActive(true);
         ScrollArrowDown.SetActive(false);
-        SettingsCanvasScrollRect.verticalNormalizedPosition = 0f;
-        SettingsCanvasScrollRect.velocity = new Vector2(0, -5000f);
+        SettingsCanvasScrollRect.verticalNormalizedPosition = 0.05f;
+        SettingsCanvasScrollRect.StopMovement();
+        SettingsCanvasScrollRect.velocity = Vector2.zero;
+        SettingsCanvasScrollRect.velocity = new Vector2(0, -2500f);
     }
     
     // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
@@ -604,7 +614,9 @@ public class FunModeButtonManager : MonoBehaviour
         GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
         ScrollArrowUp.SetActive(false);
         ScrollArrowDown.SetActive(true);
-        SettingsCanvasScrollRect.verticalNormalizedPosition = 1f;
-        SettingsCanvasScrollRect.velocity = new Vector2(0, 5000f);
+        SettingsCanvasScrollRect.verticalNormalizedPosition = 0.95f;
+        SettingsCanvasScrollRect.StopMovement();
+        SettingsCanvasScrollRect.velocity = Vector2.zero;
+        SettingsCanvasScrollRect.velocity = new Vector2(0, 2500f);
     }
 }

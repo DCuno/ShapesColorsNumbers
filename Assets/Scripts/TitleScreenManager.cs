@@ -36,6 +36,12 @@ public class TitleScreenManager : MonoBehaviour
             _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
 
         _sfx = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>();
+
+        PlayerPrefs.SetInt("Listen", PlayerPrefs.GetInt("Listen", 1));
+
+        PlayerPrefs.SetInt("Read", PlayerPrefs.GetInt("Read", 1));
+
+        PlayerPrefs.SetInt("LearningTopic", PlayerPrefs.GetInt("LearningTopic", 0));
     }
 
     private void Update()

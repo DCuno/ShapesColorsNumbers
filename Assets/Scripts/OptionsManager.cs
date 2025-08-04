@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Slider = UnityEngine.UI.Slider;
+using Toggle = UnityEngine.UI.Toggle;
 
 public class OptionsManager : MonoBehaviour
 {
@@ -16,11 +19,18 @@ public class OptionsManager : MonoBehaviour
 
     public float Multiplier = 30f;
     [Range(0, 1)] public float DefaultSliderPercentage = 0.31f;
-    float curMusicSliderVal;
-    float curSFXSliderVal;
+    float _curMusicSliderVal;
+    float _curSFXSliderVal;
     Toggle _musicToggle;
     Toggle _sfxToggle;
     Toggle _batterySaverToggle;
+    Toggle[] _topicsToggles;
+    ToggleGroup _topicsGroup;
+    Toggle _listenToggle;
+    Toggle _readToggle;
+    Spawner.Topics _curTopic;
+    bool _curListen;
+    bool _curRead;
     bool _curSFXMute;
     bool _curMusicMute;
     bool _curBatterySaverToggleOn;
@@ -67,8 +77,32 @@ public class OptionsManager : MonoBehaviour
             _batterySaverToggle = GameObject.FindGameObjectWithTag("BatterySaverToggleOn").GetComponent<Toggle>();
         }
 
+        // Shapes, Colors, Numbers topic toggle
+        if (_topicsToggles == null)
+        {
+            _topicsToggles = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentsInChildren<Toggle>();
+            _topicsGroup = GameObject.FindGameObjectWithTag("TopicsPanelGroup").GetComponentInChildren<ToggleGroup>();
+        }
+
+        // Listen toggle
+        if (_listenToggle == null)
+        {
+            _listenToggle = GameObject.FindGameObjectWithTag("VoicePanelGroup").GetComponentInChildren<Toggle>();
+        }
+
+        // Read toggle
+        if (_readToggle == null)
+        {
+            _readToggle = GameObject.FindGameObjectWithTag("TextPanelGroup").GetComponentInChildren<Toggle>();
+        }
 
         LoadFromPrefs();
+
+        // Add listeners after preferences are loaded, so no events are triggered
+        foreach (Toggle toggle in _topicsToggles)
+        {
+            toggle.onValueChanged.AddListener((isOn) => OnToggleGroupChanged(toggle, isOn));
+        }
     }
 
     // Start is called before the first frame update
@@ -88,10 +122,10 @@ public class OptionsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (curMusicSliderVal != _musicSlider.value || _curMusicMute == _musicToggle.isOn)
+        if (_curMusicSliderVal != _musicSlider.value || _curMusicMute == _musicToggle.isOn)
         {
             _curMusicMute = !_musicToggle.isOn;
-            curMusicSliderVal = _musicSlider.value;
+            _curMusicSliderVal = _musicSlider.value;
             PlayerPrefs.SetFloat("Music", _musicSlider.value);
             PlayerPrefs.SetInt("MusicMute", _musicToggle.isOn == true ? 1 : 0);
 
@@ -101,10 +135,10 @@ public class OptionsManager : MonoBehaviour
                 _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
         }
 
-        if (curSFXSliderVal != _soundEffectsSlider.value || _curSFXMute == _sfxToggle.isOn)
+        if (_curSFXSliderVal != _soundEffectsSlider.value || _curSFXMute == _sfxToggle.isOn)
         {
             _curSFXMute = !_sfxToggle.isOn;
-            curSFXSliderVal = _soundEffectsSlider.value;
+            _curSFXSliderVal = _soundEffectsSlider.value;
             PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
             PlayerPrefs.SetInt("SFXMute", _sfxToggle.isOn == true ? 1 : 0);
 
@@ -119,6 +153,27 @@ public class OptionsManager : MonoBehaviour
             PlayerPrefs.SetInt("BatterySaver", _batterySaverToggle.isOn ? 1 : 0);
             _curBatterySaverToggleOn = _batterySaverToggle.isOn;
         }
+
+        if (_curListen != _listenToggle.isOn)
+        { 
+            _curListen = _listenToggle.isOn;
+            PlayerPrefs.SetInt("Listen", _listenToggle.isOn == true ? 1 : 0);
+        }
+
+        if (_curRead != _readToggle.isOn)
+        {
+            _curRead = _readToggle.isOn;
+            PlayerPrefs.SetInt("Read", _readToggle.isOn == true ? 1 : 0);
+        }
+    }
+
+    private void OnToggleGroupChanged(Toggle changedToggle, bool isOn)
+    {
+        if (isOn)
+        {
+            System.Enum.TryParse(changedToggle.name, out Spawner.Topics result);
+            PlayerPrefs.SetInt("LearningTopic", (int)result);
+        }
     }
 
     private void LoadFromPrefs()
@@ -128,11 +183,30 @@ public class OptionsManager : MonoBehaviour
         _musicToggle.isOn = PlayerPrefs.GetInt("MusicMute", 1) == 1;
         _sfxToggle.isOn = PlayerPrefs.GetInt("SFXMute", 1) == 1;
         _batterySaverToggle.isOn = PlayerPrefs.GetInt("BatterySaver", 0) == 1 ? true : false;
+        _listenToggle.isOn = PlayerPrefs.GetInt("Listen", 1) == 1;
+        _readToggle.isOn = PlayerPrefs.GetInt("Read", 1) == 1;
+        int playerPrefsTopic = PlayerPrefs.GetInt("LearningTopic", 0);
+        foreach (Toggle toggle in _topicsToggles)
+        {
+            System.Enum.TryParse(toggle.name, out Spawner.Topics result);
+            if (playerPrefsTopic.Equals((int)result))
+            {
+                toggle.isOn = true;
+                _curTopic = result;
+            }
+            else
+            {
+                toggle.isOn = false;
+            }
+        }
+
         _curMusicMute = !_musicToggle.isOn;
         _curSFXMute = !_sfxToggle.isOn;
         _curBatterySaverToggleOn = _batterySaverToggle.isOn;
-        curMusicSliderVal = _musicSlider.value;
-        curSFXSliderVal = _soundEffectsSlider.value;
+        _curMusicSliderVal = _musicSlider.value;
+        _curSFXSliderVal = _soundEffectsSlider.value;
+        _curListen = _listenToggle.isOn;
+        _curRead = _readToggle.isOn;
 
         if (_curMusicMute)
             _mixer.SetFloat("Music", -80f);
