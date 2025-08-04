@@ -308,14 +308,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2657032158937754566, guid: 35399498c3d45b14ab39c923e190a9e6, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3403611344678319048, guid: 35399498c3d45b14ab39c923e190a9e6, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 3200
-      objectReference: {fileID: 0}
     - target: {fileID: 3688020255643477265, guid: 35399498c3d45b14ab39c923e190a9e6, type: 3}
       propertyPath: m_Name
       value: SettingsCanvas3
@@ -324,10 +316,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2511573534410270868}
-    - target: {fileID: 4800646363958907908, guid: 35399498c3d45b14ab39c923e190a9e6, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6004950525864627656, guid: 35399498c3d45b14ab39c923e190a9e6, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

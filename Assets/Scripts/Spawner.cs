@@ -413,21 +413,24 @@ public class Spawner : MonoBehaviour
     public void ResetFunMode()
     {
         finished = true;
-        DeleteAllChildren();
-        _gameBackButton.GetComponent<GameBackButton>().ResetButton();
-        _gameBackButton.SetActive(false);
+        //_gameBackButton.GetComponent<GameBackButton>().ResetButton();
+        //_gameBackButton.SetActive(false);
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 30;
         Physics2D.simulationMode = SimulationMode2D.Script;
-        spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
+
+        if (spawnedSettingsCanvas != null)
+            spawnedSettingsCanvas.GetComponentInChildren<FunModeButtonManager>().FunModeButtonManagerConstructor(currentSettings);
+
+        DeleteAllChildren();
     }
 
     public void LeaveLessons()
     {
         finished = true;
         DeleteAllChildren();
-        _gameBackButton.GetComponent<GameBackButton>().ResetButton();
-        _gameBackButton.SetActive(false);
+        //_gameBackButton.GetComponent<GameBackButton>().ResetButton();
+        //_gameBackButton.SetActive(false);
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 30;
         Physics2D.simulationMode = SimulationMode2D.Script;

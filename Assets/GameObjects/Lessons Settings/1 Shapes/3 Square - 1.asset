@@ -18,5 +18,6 @@ MonoBehaviour:
   Amount: 1
   Edges: 1
   Tilt: 0
-  Voice: 0
-  Text: 0
+  Topic: 0
+  Voice: 1
+  Text: 1
