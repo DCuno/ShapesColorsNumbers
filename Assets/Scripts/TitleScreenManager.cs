@@ -5,7 +5,7 @@ using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TitleScreenManager : MonoBehaviour
+public class TitleScreenManager
 {
     [SerializeField] private AudioMixer _mixer;
     [SerializeField] private OptionsManager _optionsManager;
@@ -95,18 +95,7 @@ public class TitleScreenManager : MonoBehaviour
     public void FunModeButton()
     {
         _sfx.PopSound();
-        //StartCoroutine(FunModeButtonConfettiWait());
         SceneManager.LoadScene(sceneName: "FunModeGameScene2");
-    }
-
-    private IEnumerator FunModeButtonConfettiWait()
-    {
-        _sfx.PopSound();
-        var async = SceneManager.LoadSceneAsync(sceneName: "FunModeGameScene2");
-
-        async.allowSceneActivation = false;
-        yield return new WaitForSeconds(0.5f);
-        async.allowSceneActivation = true;
     }
 
     public void OptionsButton()
