@@ -5,10 +5,9 @@ using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TitleScreenManager
+public class TitleScreenManager : Singleton<TitleScreenManager>
 {
     [SerializeField] private AudioMixer _mixer;
-    [SerializeField] private OptionsManager _optionsManager;
     private Audio _sfx;
 
     public GameObject[] UIButtonImages;

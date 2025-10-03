@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 using Slider = UnityEngine.UI.Slider;
 using Toggle = UnityEngine.UI.Toggle;
 
-public class OptionsManager : MonoBehaviour
+public class OptionsManager : Singleton<OptionsManager>
 {
     [SerializeField] private AudioMixer _mixer;
     [SerializeField] private Slider _soundEffectsSlider;
@@ -132,7 +132,7 @@ public class OptionsManager : MonoBehaviour
             if (_curMusicMute)
                 _mixer.SetFloat("Music", -80f);
             else
-                _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+                _mixer.SetFloat("Music", SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
         }
 
         if (_curSFXSliderVal != _soundEffectsSlider.value || _curSFXMute == _sfxToggle.isOn)
@@ -145,7 +145,7 @@ public class OptionsManager : MonoBehaviour
             if (_curSFXMute)
                 _mixer.SetFloat("SFX", -80f);
             else
-                _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+                _mixer.SetFloat("SFX", SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
         }
 
         if (_curBatterySaverToggleOn != _batterySaverToggle.isOn)
@@ -211,12 +211,12 @@ public class OptionsManager : MonoBehaviour
         if (_curMusicMute)
             _mixer.SetFloat("Music", -80f);
         else
-            _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+            _mixer.SetFloat("Music", SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
 
         if (_curSFXMute)
             _mixer.SetFloat("SFX", -80f);
         else
-            _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+            _mixer.SetFloat("SFX", SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
     }
 
     private void SaveToPrefs()
@@ -254,7 +254,7 @@ public class OptionsManager : MonoBehaviour
     public void SoundEffectsSlider()
     {
         //Slider _soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
-        _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+        _mixer.SetFloat("SFX", SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
         //PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
         //_SFXSliderCounter.text = _soundEffectsSlider.value.ToString();
         GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>().text = _soundEffectsSlider.value.ToString();
@@ -263,7 +263,7 @@ public class OptionsManager : MonoBehaviour
     public void MusicSlider()
     {
         //_musicSliderCounter.text = _musicSlider.value.ToString();
-        _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+        _mixer.SetFloat("Music", SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
         GameObject.FindGameObjectWithTag("MusicSliderCounter").GetComponent<TextMeshProUGUI>().text = _musicSlider.value.ToString();
     }
 

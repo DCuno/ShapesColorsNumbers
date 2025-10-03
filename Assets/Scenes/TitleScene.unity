@@ -3622,6 +3622,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 921119939}
   m_CullTransparentMesh: 0
+--- !u!1 &947549451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 947549453}
+  - component: {fileID: 947549452}
+  m_Layer: 0
+  m_Name: TutorialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &947549452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947549451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 412333eb572945f4fb75498adbcfc388, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _titleScreenCanvas: {fileID: 1231372766}
+  _optionsMenuCanvas: {fileID: 0}
+--- !u!4 &947549453
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947549451}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.32711, y: -0.46684, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &976560943
 GameObject:
   m_ObjectHideFlags: 0
@@ -6343,7 +6389,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mixer: {fileID: 24100000, guid: 1cc973fe64e8b4c4d91c1790a33b3fc8, type: 2}
-  _optionsManager: {fileID: 0}
   UIButtonImages: []
 --- !u!4 &1944064022
 Transform:
@@ -6506,7 +6551,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d23981fbcc7a514eaf88030c155d332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _TitleScreenManager: {fileID: 1944064021}
   _QuestionTMP: {fileID: 1033290601}
   _optionButton: {fileID: 323021504}
   _CloseWindowButton: {fileID: 4830655477399797581}
@@ -7206,3 +7250,4 @@ SceneRoots:
   - {fileID: 1944064022}
   - {fileID: 635281288}
   - {fileID: 1016179758}
+  - {fileID: 947549453}

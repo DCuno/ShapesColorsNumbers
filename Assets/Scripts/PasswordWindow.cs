@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class PasswordWindow : MonoBehaviour
 {
-    public TitleScreenManager _TitleScreenManager;
     public TextMeshProUGUI _QuestionTMP = null;
     private int _leftHandNum = 0;
     private int _rightHandNum = 0;
@@ -157,7 +156,7 @@ public class PasswordWindow : MonoBehaviour
         {
             ClearPasswordWindow();
             gameObject.SetActive(false);
-            _TitleScreenManager.OptionsButton();
+            TitleScreenManager.Instance.OptionsButton();
         }
     }
 }
