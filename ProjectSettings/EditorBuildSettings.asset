@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TitleScene.unity
     guid: d3fd2492254f0ee42b4abe78c7d323b1
   - enabled: 1
+    path: Assets/Scenes/OptionsScene.unity
+    guid: ade0244c5a6e4734a927edebba189f6a
+  - enabled: 1
     path: Assets/Scenes/LessonsSelectionScene.unity
     guid: 4ecef3a69291ee648bf2b57a7d2a5c51
   - enabled: 1
@@ -17,8 +20,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FunModeGameScene2.unity
     guid: ed361e10a252ddb49bcc19c2b1a25f09
-  - enabled: 1
-    path: Assets/Scenes/OptionsScene.unity
-    guid: ade0244c5a6e4734a927edebba189f6a
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 1620d4ccb0234e747809e6bbf747d1fd, type: 2}
+  m_UseUCBPForAssetBundles: 0

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -16,6 +17,13 @@ public class OptionsManager : MonoBehaviour
     [SerializeField] private Slider _musicSlider;
     [SerializeField] private TextMeshProUGUI _musicSliderCounter;
     [SerializeField] private TextMeshProUGUI _SFXSliderCounter;
+    [SerializeField] private ScrollRect _settingsScrollRect;
+    [SerializeField] private UnityEngine.UI.Button _backButton;
+
+    private const float SCROLL_FORCE = 5000f;
+    public const float SFX_SLIDER_DEFAULT = 5f;
+    public const float MUSIC_SLIDER_DEFAULT = 5f;
+    public const float MUTED_VOL = -80f;
 
     public float Multiplier = 30f;
     [Range(0, 1)] public float DefaultSliderPercentage = 0.31f;
@@ -35,7 +43,9 @@ public class OptionsManager : MonoBehaviour
     bool _curMusicMute;
     bool _curBatterySaverToggleOn;
 
-    private void Awake()
+    private UnityAction PopSound = null;
+
+    void Awake()
     {
         if (_musicSlider == null)
         {
@@ -55,6 +65,16 @@ public class OptionsManager : MonoBehaviour
         if (_SFXSliderCounter == null)
         {
             _SFXSliderCounter = GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>();
+        }
+
+        if (_settingsScrollRect == null)
+        {
+            _settingsScrollRect = GameObject.FindGameObjectWithTag("ScrollRect").GetComponent<ScrollRect>();
+        }
+
+        if (_backButton == null)
+        {
+            _backButton = GameObject.Find("Back (Button)").GetComponent<UnityEngine.UI.Button>();
         }
 
         if (_mixer == null)
@@ -103,6 +123,9 @@ public class OptionsManager : MonoBehaviour
         {
             toggle.onValueChanged.AddListener((isOn) => OnToggleGroupChanged(toggle, isOn));
         }
+
+        PopSound = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound;
+        _backButton.onClick.AddListener(BackButton);
     }
 
     // Start is called before the first frame update
@@ -124,44 +147,49 @@ public class OptionsManager : MonoBehaviour
     {
         if (_curMusicSliderVal != _musicSlider.value || _curMusicMute == _musicToggle.isOn)
         {
+            PopSound?.Invoke();
             _curMusicMute = !_musicToggle.isOn;
             _curMusicSliderVal = _musicSlider.value;
             PlayerPrefs.SetFloat("Music", _musicSlider.value);
             PlayerPrefs.SetInt("MusicMute", _musicToggle.isOn == true ? 1 : 0);
 
             if (_curMusicMute)
-                _mixer.SetFloat("Music", -80f);
+                _mixer.SetFloat("Music", OptionsManager.MUTED_VOL);
             else
-                _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+                _mixer.SetFloat("Music", SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", OptionsManager.MUSIC_SLIDER_DEFAULT)));
         }
 
         if (_curSFXSliderVal != _soundEffectsSlider.value || _curSFXMute == _sfxToggle.isOn)
         {
+            PopSound?.Invoke();
             _curSFXMute = !_sfxToggle.isOn;
             _curSFXSliderVal = _soundEffectsSlider.value;
             PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
             PlayerPrefs.SetInt("SFXMute", _sfxToggle.isOn == true ? 1 : 0);
 
             if (_curSFXMute)
-                _mixer.SetFloat("SFX", -80f);
+                _mixer.SetFloat("SFX", OptionsManager.MUTED_VOL);
             else
-                _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+                _mixer.SetFloat("SFX", SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", OptionsManager.SFX_SLIDER_DEFAULT)));
         }
 
         if (_curBatterySaverToggleOn != _batterySaverToggle.isOn)
         {
+            PopSound?.Invoke();
             PlayerPrefs.SetInt("BatterySaver", _batterySaverToggle.isOn ? 1 : 0);
             _curBatterySaverToggleOn = _batterySaverToggle.isOn;
         }
 
         if (_curListen != _listenToggle.isOn)
-        { 
+        {
+            PopSound?.Invoke();
             _curListen = _listenToggle.isOn;
             PlayerPrefs.SetInt("Listen", _listenToggle.isOn == true ? 1 : 0);
         }
 
         if (_curRead != _readToggle.isOn)
         {
+            PopSound?.Invoke();
             _curRead = _readToggle.isOn;
             PlayerPrefs.SetInt("Read", _readToggle.isOn == true ? 1 : 0);
         }
@@ -171,6 +199,7 @@ public class OptionsManager : MonoBehaviour
     {
         if (isOn)
         {
+            PopSound?.Invoke();
             System.Enum.TryParse(changedToggle.name, out Spawner.Topics result);
             PlayerPrefs.SetInt("LearningTopic", (int)result);
         }
@@ -178,8 +207,8 @@ public class OptionsManager : MonoBehaviour
 
     private void LoadFromPrefs()
     {
-        _musicSlider.value = PlayerPrefs.GetFloat("Music", 5f);
-        _soundEffectsSlider.value = PlayerPrefs.GetFloat("SFX", 5f);
+        _musicSlider.value = PlayerPrefs.GetFloat("Music", OptionsManager.MUSIC_SLIDER_DEFAULT);
+        _soundEffectsSlider.value = PlayerPrefs.GetFloat("SFX", OptionsManager.SFX_SLIDER_DEFAULT);
         _musicToggle.isOn = PlayerPrefs.GetInt("MusicMute", 1) == 1;
         _sfxToggle.isOn = PlayerPrefs.GetInt("SFXMute", 1) == 1;
         _batterySaverToggle.isOn = PlayerPrefs.GetInt("BatterySaver", 0) == 1 ? true : false;
@@ -209,14 +238,14 @@ public class OptionsManager : MonoBehaviour
         _curRead = _readToggle.isOn;
 
         if (_curMusicMute)
-            _mixer.SetFloat("Music", -80f);
+            _mixer.SetFloat("Music", OptionsManager.MUTED_VOL);
         else
-            _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+            _mixer.SetFloat("Music", SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", OptionsManager.MUSIC_SLIDER_DEFAULT)));
 
         if (_curSFXMute)
-            _mixer.SetFloat("SFX", -80f);
+            _mixer.SetFloat("SFX", OptionsManager.MUTED_VOL);
         else
-            _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+            _mixer.SetFloat("SFX", SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", OptionsManager.SFX_SLIDER_DEFAULT)));
     }
 
     private void SaveToPrefs()
@@ -235,7 +264,9 @@ public class OptionsManager : MonoBehaviour
     public void BackButton()
     {
         //SaveToPrefs();
-        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
+        if (PlayerPrefs.GetInt("Tutorial", 0) == 0)
+            PopSound?.Invoke();
+
         SceneManager.LoadScene(sceneName: "TitleScene");
         //StartCoroutine(BackCoR());
     }
@@ -251,10 +282,20 @@ public class OptionsManager : MonoBehaviour
         async.allowSceneActivation = true;
     }
 
+    public void MoveScrollRectDown()
+    {
+        _settingsScrollRect.velocity = new Vector2(_settingsScrollRect.velocity.x, SCROLL_FORCE);
+    }
+
+    public void MoveScrollRectUp()
+    {
+        _settingsScrollRect.velocity = new Vector2(_settingsScrollRect.velocity.x, -SCROLL_FORCE);
+    }
+
     public void SoundEffectsSlider()
     {
         //Slider _soundEffectsSlider = GameObject.FindGameObjectWithTag("SoundEffectsSlider").GetComponent<Slider>();
-        _mixer.SetFloat("SFX", OptionsManager.SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", 5f)));
+        _mixer.SetFloat("SFX", SliderToDecibelSFX(PlayerPrefs.GetFloat("SFX", OptionsManager.SFX_SLIDER_DEFAULT)));
         //PlayerPrefs.SetFloat("SFX", _soundEffectsSlider.value);
         //_SFXSliderCounter.text = _soundEffectsSlider.value.ToString();
         GameObject.FindGameObjectWithTag("SoundEffectsSliderCounter").GetComponent<TextMeshProUGUI>().text = _soundEffectsSlider.value.ToString();
@@ -263,7 +304,7 @@ public class OptionsManager : MonoBehaviour
     public void MusicSlider()
     {
         //_musicSliderCounter.text = _musicSlider.value.ToString();
-        _mixer.SetFloat("Music", OptionsManager.SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", 5f)));
+        _mixer.SetFloat("Music", SliderToDecibelMusic(PlayerPrefs.GetFloat("Music", OptionsManager.MUSIC_SLIDER_DEFAULT)));
         GameObject.FindGameObjectWithTag("MusicSliderCounter").GetComponent<TextMeshProUGUI>().text = _musicSlider.value.ToString();
     }
 
@@ -308,29 +349,29 @@ public class OptionsManager : MonoBehaviour
         switch (value)
         {
             case 0:
-                return -80f;
+                return MUTED_VOL;
             case 1:
-                return -18f;
+                return -23f;
             case 2:
-                return -15f;
+                return -22f;
             case 3:
-                return -12f;
+                return -21f;
             case 4:
-                return -9f;
+                return -20f;
             case 5:
-                return -8f;
+                return -19f;
             case 6:
-                return -7f; // new max
+                return -18f;
             case 7:
-                return -6f;
+                return -17f;
             case 8:
-                return -5f;
+                return -16f;
             case 9:
-                return -4f;
+                return -15f;
             case 10:
-                return -3f;
+                return -14f;
             default:
-                return -3f;
+                return -19f;
         }
     }
 
@@ -339,29 +380,29 @@ public class OptionsManager : MonoBehaviour
         switch (value)
         {
             case 0:
-                return -80f;
+                return MUTED_VOL;
             case 1:
-                return -4f;
+                return -14f;
             case 2:
-                return -3f;
+                return -12f;
             case 3:
-                return -2f;
+                return -10f;
             case 4:
-                return -1f;
+                return -8f;
             case 5:
-                return 1f; // new max
+                return -5f;
             case 6:
-                return 2f;
+                return -4f;
             case 7:
-                return 3f;
+                return -3f;
             case 8:
-                return 4f;
+                return -2f;
             case 9:
-                return 5f;
+                return -1f;
             case 10:
-                return 6f;
+                return 1f;
             default:
-                return 6f;
+                return -5f;
         }
     }
 }
