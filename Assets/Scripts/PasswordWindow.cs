@@ -1,10 +1,16 @@
+using System;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class PasswordWindow : MonoBehaviour
 {
+    [SerializeField] private Canvas _titleScreenCanvas = null;
+    [SerializeField] private GameObject _raycastBlockerPrefab = null;
+    private GameObject _raycastBlocker = null;
     public TextMeshProUGUI _QuestionTMP = null;
     private int _leftHandNum = 0;
     private int _rightHandNum = 0;
@@ -28,48 +34,97 @@ public class PasswordWindow : MonoBehaviour
     public Button _ClearButton = null;
     public Button _EqualsButton = null;
 
+    private UnityAction PopSound = null;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _optionButton.onClick.AddListener(OpenWindow);
-        _CloseWindowButton.onClick.AddListener(CloseWindow);
-        _0Button.onClick.AddListener(() => NumberButtonPress(0));
-        _1Button.onClick.AddListener(() => NumberButtonPress(1));
-        _2Button.onClick.AddListener(() => NumberButtonPress(2));
-        _3Button.onClick.AddListener(() => NumberButtonPress(3));
-        _4Button.onClick.AddListener(() => NumberButtonPress(4));
-        _5Button.onClick.AddListener(() => NumberButtonPress(5));
-        _6Button.onClick.AddListener(() => NumberButtonPress(6));
-        _7Button.onClick.AddListener(() => NumberButtonPress(7));
-        _8Button.onClick.AddListener(() => NumberButtonPress(8));
-        _9Button.onClick.AddListener(() => NumberButtonPress(9));
-        _ClearButton.onClick.AddListener(ClearGuess);
+        if (_raycastBlockerPrefab == null)
+        {
+            Debug.LogError($"Couldn't get {nameof(_raycastBlockerPrefab)}. Tutorial will not function correctly. Please load the prefab into the {nameof(_raycastBlockerPrefab)} field.");
+            return;
+        }
+
+        if (_titleScreenCanvas == null)
+            _titleScreenCanvas = FindFirstObjectByType<Canvas>();
+
+        if ( _titleScreenCanvas == null)
+        {
+            Debug.LogError($"Couldn't get {nameof(_titleScreenCanvas)}. Password Window will not function correctly.");
+            return;
+        }
+
+        PopSound = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound;
+
+        _optionButton.onClick.AddListener(OptionButtonPressed);
+        _CloseWindowButton.onClick.AddListener(CloseButtonPressed);
+        _0Button.onClick.AddListener(() => NumberButtonPressed(0));
+        _1Button.onClick.AddListener(() => NumberButtonPressed(1));
+        _2Button.onClick.AddListener(() => NumberButtonPressed(2));
+        _3Button.onClick.AddListener(() => NumberButtonPressed(3));
+        _4Button.onClick.AddListener(() => NumberButtonPressed(4));
+        _5Button.onClick.AddListener(() => NumberButtonPressed(5));
+        _6Button.onClick.AddListener(() => NumberButtonPressed(6));
+        _7Button.onClick.AddListener(() => NumberButtonPressed(7));
+        _8Button.onClick.AddListener(() => NumberButtonPressed(8));
+        _9Button.onClick.AddListener(() => NumberButtonPressed(9));
+        _ClearButton.onClick.AddListener(ClearGuessButtonPressed);
         _EqualsButton.onClick.AddListener(CheckAnswer);
         CloseWindow();
     }
 
     private void OnDestroy()
     {
-        _optionButton.onClick.RemoveListener(OpenWindow);
-        _CloseWindowButton.onClick.RemoveListener(CloseWindow);
-        _0Button.onClick.RemoveListener(() => NumberButtonPress(0));
-        _1Button.onClick.RemoveListener(() => NumberButtonPress(1));
-        _2Button.onClick.RemoveListener(() => NumberButtonPress(2));
-        _3Button.onClick.RemoveListener(() => NumberButtonPress(3));
-        _4Button.onClick.RemoveListener(() => NumberButtonPress(4));
-        _5Button.onClick.RemoveListener(() => NumberButtonPress(5));
-        _6Button.onClick.RemoveListener(() => NumberButtonPress(6));
-        _7Button.onClick.RemoveListener(() => NumberButtonPress(7));
-        _8Button.onClick.RemoveListener(() => NumberButtonPress(8));
-        _9Button.onClick.RemoveListener(() => NumberButtonPress(9));
-        _ClearButton.onClick.RemoveListener(ClearGuess);
+        _optionButton.onClick.RemoveListener(OptionButtonPressed);
+        _CloseWindowButton.onClick.RemoveListener(CloseButtonPressed);
+        _0Button.onClick.RemoveListener(() => NumberButtonPressed(0));
+        _1Button.onClick.RemoveListener(() => NumberButtonPressed(1));
+        _2Button.onClick.RemoveListener(() => NumberButtonPressed(2));
+        _3Button.onClick.RemoveListener(() => NumberButtonPressed(3));
+        _4Button.onClick.RemoveListener(() => NumberButtonPressed(4));
+        _5Button.onClick.RemoveListener(() => NumberButtonPressed(5));
+        _6Button.onClick.RemoveListener(() => NumberButtonPressed(6));
+        _7Button.onClick.RemoveListener(() => NumberButtonPressed(7));
+        _8Button.onClick.RemoveListener(() => NumberButtonPressed(8));
+        _9Button.onClick.RemoveListener(() => NumberButtonPressed(9));
+        _ClearButton.onClick.RemoveListener(ClearGuessButtonPressed);
         _EqualsButton.onClick.RemoveListener(CheckAnswer);
         CloseWindow();
     }
 
-    private void OpenWindow()
+    private void OptionButtonPressed()
     {
+        PopSound?.Invoke();
+        OpenWindow();
+    }
+
+    private void CloseButtonPressed()
+    {
+        PopSound?.Invoke();
+        CloseWindow();
+    }
+
+    public void OpenWindowTutorial()
+    {
+        GenerateQuestion();
+        _question = $"{_leftHandNum} x {_rightHandNum} = ?";
+        _QuestionTMP.text = _question;
+        gameObject.SetActive(true);
+    }
+
+    public void OpenWindow()
+    {
+        _raycastBlocker = Instantiate(_raycastBlockerPrefab, _titleScreenCanvas.transform);
+
+        if (_raycastBlocker == null)
+        {
+            Debug.LogError($"Failed to instantiate {nameof(_raycastBlocker)}. Password Window will not function correctly.");
+            return;
+        }
+
+        gameObject.transform.SetAsLastSibling();
+
         GenerateQuestion();
         _question = $"{_leftHandNum} x {_rightHandNum} = ?";
         _QuestionTMP.text = _question;
@@ -79,6 +134,7 @@ public class PasswordWindow : MonoBehaviour
     private void CloseWindow()
     {
         ClearPasswordWindow();
+        RemoveRaycastBlocker();
         gameObject.SetActive(false);
     }
 
@@ -95,8 +151,9 @@ public class PasswordWindow : MonoBehaviour
         };
     }
 
-    private void NumberButtonPress(int number)
+    private void NumberButtonPressed(int number)
     {
+        PopSound?.Invoke();
         if (_isLeftHandAnswerCleared)
         {
             if (number == 0)
@@ -122,14 +179,14 @@ public class PasswordWindow : MonoBehaviour
 
             if (_safetyClose == 3)
             {
-                ClearPasswordWindow();
-                gameObject.SetActive(false);
+                CloseWindow();
             }
         }
     }
 
-    private void ClearGuess()
+    private void ClearGuessButtonPressed()
     {
+        PopSound?.Invoke();
         _safetyClose = 0;
         _isLeftHandAnswerCleared = true;
         _isRightHandAnswerCleared = true;
@@ -150,12 +207,21 @@ public class PasswordWindow : MonoBehaviour
         _QuestionTMP.text = _question;
     }
 
+    private void RemoveRaycastBlocker()
+    {
+        if (_raycastBlocker != null)
+        {
+            Destroy(_raycastBlocker);
+            _raycastBlocker = null;
+        }
+    }
+
     private void CheckAnswer()
     {
+        PopSound?.Invoke();
         if (_curTotal == _leftHandNum * _rightHandNum)
         {
-            ClearPasswordWindow();
-            gameObject.SetActive(false);
+            CloseWindow();
             TitleScreenManager.Instance.OptionsButton();
         }
     }

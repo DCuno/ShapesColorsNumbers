@@ -431,6 +431,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -452,6 +454,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
@@ -2190,6 +2193,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2211,6 +2216,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -4535,6 +4541,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4556,6 +4564,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
@@ -7543,9 +7552,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7743696102661518448, guid: 23cac87b78393774a8b25219ffa78221, type: 3}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: OptionsManager, Assembly-CSharp
-        m_MethodName: BackButton
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7767,6 +7776,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7743696102661518448, guid: 23cac87b78393774a8b25219ffa78221, type: 3}
+      propertyPath: _backButton
+      value: 
+      objectReference: {fileID: 2139198421}
+    - target: {fileID: 7743696102661518448, guid: 23cac87b78393774a8b25219ffa78221, type: 3}
       propertyPath: _musicSlider
       value: 
       objectReference: {fileID: 1653129379}
@@ -7778,6 +7791,10 @@ PrefabInstance:
       propertyPath: _musicSliderCounter
       value: 
       objectReference: {fileID: 2065619453}
+    - target: {fileID: 7743696102661518448, guid: 23cac87b78393774a8b25219ffa78221, type: 3}
+      propertyPath: _settingsScrollRect
+      value: 
+      objectReference: {fileID: 769818394}
     - target: {fileID: 7743696102661518448, guid: 23cac87b78393774a8b25219ffa78221, type: 3}
       propertyPath: _soundEffectsSlider
       value: 

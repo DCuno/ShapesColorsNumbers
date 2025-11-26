@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
   - shape
   - edge
@@ -86,6 +86,7 @@ TagManager:
   - GameBackButton
   - BatterySaverToggleOn
   - fps
+  - PasswordWindow
   layers:
   - Default
   - TransparentFX
@@ -126,3 +127,5 @@ TagManager:
   - name: New Layer
     uniqueID: 831749217
     locked: 0
+  m_RenderingLayers:
+  - Default

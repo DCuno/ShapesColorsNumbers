@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7565659308466579681}
   - component: {fileID: 7160228573114646791}
   m_Layer: 0
-  m_Name: Tutorial Message Bubble
+  m_Name: Tutorial Message Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,10 +34,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &7160228573114646791
 Canvas:
   m_ObjectHideFlags: 0
@@ -72,10 +72,6 @@ PrefabInstance:
     - target: {fileID: 942409175226132996, guid: 8ec84dc3dff7b384497f516a4ae26c95, type: 3}
       propertyPath: m_Name
       value: Raycast Blocker
-      objectReference: {fileID: 0}
-    - target: {fileID: 6003702887200297286, guid: 8ec84dc3dff7b384497f516a4ae26c95, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7971351511943563162, guid: 8ec84dc3dff7b384497f516a4ae26c95, type: 3}
       propertyPath: m_Pivot.x
