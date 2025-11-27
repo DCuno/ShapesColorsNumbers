@@ -70,14 +70,14 @@ public class DragToExit : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
         _gameBackButton = GameObject.FindGameObjectWithTag("GameBackButton").GetComponent<GameBackButton>();
         _spawner = GameObject.FindGameObjectWithTag("spawner").GetComponent<Spawner>();
-        _spawner.OnShapesPopped.AddListener(TriggerExit);
+        _spawner.OnShapesPopped.AddListener(HideExitButton);
         OnExitTriggered += QuitLesson;
     }
 
     private void OnDestroy()
     {
         OnExitTriggered -= QuitLesson;
-        _spawner.OnShapesPopped.RemoveListener(TriggerExit);
+        _spawner.OnShapesPopped.RemoveListener(HideExitButton);
     }
 
     private void QuitLesson()
@@ -516,18 +516,26 @@ public class DragToExit : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     void TriggerExit()
     {
-        OnExitTriggered?.Invoke();
         // Hide target indicator and ghost guide on successful exit
         ResetPositionInstant();
         ShowTargetIndicator(false);
         ShowGhostGuide(false);
         gameObject.SetActive(false);
 
+        OnExitTriggered?.Invoke();
         // You can add scene transition logic here
-        Debug.Log("Exit triggered!");
+        //Debug.Log("Exit triggered!");
 
         // Example: Load previous scene or trigger your existing exit system
         // SceneManager.LoadScene("PreviousScene");
+    }
+
+    private void HideExitButton()
+    {
+        ResetPositionInstant();
+        ShowTargetIndicator(false);
+        ShowGhostGuide(false);
+        gameObject.SetActive(false);
     }
 
     void SetColor(Color color)
