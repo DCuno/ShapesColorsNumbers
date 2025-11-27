@@ -70,12 +70,14 @@ public class DragToExit : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
         _gameBackButton = GameObject.FindGameObjectWithTag("GameBackButton").GetComponent<GameBackButton>();
         _spawner = GameObject.FindGameObjectWithTag("spawner").GetComponent<Spawner>();
+        _spawner.OnShapesPopped.AddListener(TriggerExit);
         OnExitTriggered += QuitLesson;
     }
 
     private void OnDestroy()
     {
         OnExitTriggered -= QuitLesson;
+        _spawner.OnShapesPopped.RemoveListener(TriggerExit);
     }
 
     private void QuitLesson()
@@ -516,8 +518,10 @@ public class DragToExit : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     {
         OnExitTriggered?.Invoke();
         // Hide target indicator and ghost guide on successful exit
+        ResetPositionInstant();
         ShowTargetIndicator(false);
         ShowGhostGuide(false);
+        gameObject.SetActive(false);
 
         // You can add scene transition logic here
         Debug.Log("Exit triggered!");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
 
 public class Polygon : MonoBehaviour
 {
@@ -95,6 +96,8 @@ public class Polygon : MonoBehaviour
     private Vector2 _centerVector;
     private float _shapeWidth;
     private float _shapeHeight;
+
+    public UnityEvent<GameObject> OnPolygonPopped;
 
     /*private void OnDrawGizmos()
     {
@@ -539,6 +542,7 @@ public class Polygon : MonoBehaviour
         IsPopped = true;
         PopSound();
         VoiceSound();
+        OnPolygonPopped?.Invoke(gameObject);
         Instantiate(_popMapSize, this.gameObject.GetComponent<Renderer>().bounds.center, Quaternion.identity, this.gameObject.transform.parent);
         SpawnPopText();
         Destroy(this.gameObject);

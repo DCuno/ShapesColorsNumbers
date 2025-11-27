@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class Spawner : MonoBehaviour
@@ -30,6 +31,8 @@ public class Spawner : MonoBehaviour
     [SerializeField]
     private SpawnerSettings SpawnerSettings;
     private SpawnerSettingsStruct currentSettings;
+
+    public UnityEvent OnShapesPopped;
 
     public struct SpawnerSettingsStruct
     {
@@ -123,6 +126,7 @@ public class Spawner : MonoBehaviour
                 Color _tmpColor = colorSequence[i];
                 curPolygon = shapesList[i].GetComponent<Polygon>();
                 curPolygon.Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, topic, voice, text);
+                curPolygon.OnPolygonPopped.AddListener(RemovePolygon);
                 //yield return new WaitForSeconds(0.08f);
                 
                 while (curPolygon != null && !curPolygon.IsInPlayArea)
@@ -143,6 +147,14 @@ public class Spawner : MonoBehaviour
         }
 
         yield break;
+    }
+
+    private void RemovePolygon(GameObject poppedPolygon)
+    {
+        shapesList.Remove(poppedPolygon);
+
+        if (shapesList.Count == 0)
+            OnShapesPopped?.Invoke();
     }
 
     private List<Color> GenerateColorSequence(List<Colors> selectedColors, int amount)
