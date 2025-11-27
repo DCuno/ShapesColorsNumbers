@@ -122,11 +122,12 @@ public class Spawner : MonoBehaviour
             if (!finished)
             {
                 //yield return new WaitForSeconds(0.05f);
-                shapesList.Add(Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform));
-                Color _tmpColor = colorSequence[i];
-                curPolygon = shapesList[i].GetComponent<Polygon>();
-                curPolygon.Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, topic, voice, text);
+                GameObject curPolygonGameObject = Instantiate(shape, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform);
+                shapesList.Add(curPolygonGameObject);
+                curPolygon = curPolygonGameObject.GetComponent<Polygon>();
                 curPolygon.OnPolygonPopped.AddListener(RemovePolygon);
+                Color _tmpColor = colorSequence[i];
+                curPolygon.Creation(RandomShape(shapes), _tmpColor, UnityColorToEnumColor(_tmpColor), size, edges, tilt, topic, voice, text);
                 //yield return new WaitForSeconds(0.08f);
                 
                 while (curPolygon != null && !curPolygon.IsInPlayArea)
@@ -153,7 +154,7 @@ public class Spawner : MonoBehaviour
     {
         shapesList.Remove(poppedPolygon);
 
-        if (shapesList.Count == 0)
+        if (shapesList.Count == 0 && DoneSpawning)
             OnShapesPopped?.Invoke();
     }
 

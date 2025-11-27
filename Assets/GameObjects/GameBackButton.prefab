@@ -635,8 +635,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exitThreshold: 0.1
   snapBackSpeed: 10
-  requireHoldInZone: 0
-  holdTime: 0.5
+  requireHoldInZone: 1
+  holdTime: 0.01
   normalColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 0.15686275}
   draggingColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
   exitZoneColor: {r: 0, g: 1, b: 0, a: 1}

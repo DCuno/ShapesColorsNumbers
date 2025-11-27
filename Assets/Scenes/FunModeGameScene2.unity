@@ -308,6 +308,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2602478410574542006, guid: 35399498c3d45b14ab39c923e190a9e6, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3688020255643477265, guid: 35399498c3d45b14ab39c923e190a9e6, type: 3}
       propertyPath: m_Name
       value: SettingsCanvas3

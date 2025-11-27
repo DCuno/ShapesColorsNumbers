@@ -19,6 +19,8 @@ public class OptionsManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _SFXSliderCounter;
     [SerializeField] private ScrollRect _settingsScrollRect;
     [SerializeField] private UnityEngine.UI.Button _backButton;
+    public GameObject ScrollArrowUp;
+    public GameObject ScrollArrowDown;
 
     private const float SCROLL_FORCE = 5000f;
     public const float SFX_SLIDER_DEFAULT = 5f;
@@ -97,6 +99,16 @@ public class OptionsManager : MonoBehaviour
             _batterySaverToggle = GameObject.FindGameObjectWithTag("BatterySaverToggleOn").GetComponent<Toggle>();
         }
 
+        if (ScrollArrowUp == null)
+        {
+            ScrollArrowUp = GameObject.FindGameObjectWithTag("ScrollArrowUp");
+        }
+
+        if (ScrollArrowDown == null)
+        {
+            ScrollArrowDown = GameObject.FindGameObjectWithTag("ScrollArrowDown");
+        }
+
         // Shapes, Colors, Numbers topic toggle
         if (_topicsToggles == null)
         {
@@ -126,6 +138,8 @@ public class OptionsManager : MonoBehaviour
 
         PopSound = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound;
         _backButton.onClick.AddListener(BackButton);
+        ScrollArrowUp.SetActive(false);
+        _settingsScrollRect.onValueChanged.AddListener(ScrollArrow);
     }
 
     // Start is called before the first frame update
@@ -271,6 +285,21 @@ public class OptionsManager : MonoBehaviour
         //StartCoroutine(BackCoR());
     }
 
+    public void ScrollArrow(Vector2 position)
+    {
+        if (position.y >= 0.7f && ScrollArrowUp.activeSelf)
+        {
+            ScrollArrowUp.SetActive(false);
+            ScrollArrowDown.SetActive(true);
+        }
+
+        if (position.y < 0.3f && !ScrollArrowUp.activeSelf)
+        {
+            ScrollArrowUp.SetActive(true);
+            ScrollArrowDown.SetActive(false);
+        }
+    }
+
     public IEnumerator BackCoR()
     {
         SaveToPrefs();
@@ -404,5 +433,29 @@ public class OptionsManager : MonoBehaviour
             default:
                 return -5f;
         }
+    }
+
+    // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
+    public void ScrollArrowUpButton()
+    {
+        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
+        ScrollArrowUp.SetActive(true);
+        ScrollArrowDown.SetActive(false);
+        _settingsScrollRect.verticalNormalizedPosition = 0.05f;
+        _settingsScrollRect.StopMovement();
+        _settingsScrollRect.velocity = Vector2.zero;
+        _settingsScrollRect.velocity = new Vector2(0, -SCROLL_FORCE);
+    }
+
+    // Because of physics weirdness, have to set the position to a flat number before imparting velocity on the ScrollRect
+    public void ScrollArrowDownButton()
+    {
+        GameObject.FindGameObjectWithTag("SFXSource").GetComponent<Audio>().PopSound();
+        ScrollArrowUp.SetActive(false);
+        ScrollArrowDown.SetActive(true);
+        _settingsScrollRect.verticalNormalizedPosition = 0.95f;
+        _settingsScrollRect.StopMovement();
+        _settingsScrollRect.velocity = Vector2.zero;
+        _settingsScrollRect.velocity = new Vector2(0, SCROLL_FORCE);
     }
 }

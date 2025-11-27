@@ -49,5 +49,9 @@ MonoBehaviour:
   _musicSlider: {fileID: 0}
   _musicSliderCounter: {fileID: 0}
   _SFXSliderCounter: {fileID: 0}
+  _settingsScrollRect: {fileID: 0}
+  _backButton: {fileID: 0}
+  ScrollArrowUp: {fileID: 0}
+  ScrollArrowDown: {fileID: 0}
   Multiplier: 30
   DefaultSliderPercentage: 0.31

@@ -130,7 +130,7 @@ public class Polygon : MonoBehaviour
     {
         Vector2[] edges = new Vector2[2];
 
-        if (_spriteRenderer == null)
+        if (_spriteRenderer == null || _spriteRenderer.sprite == null)
         {
             Debug.LogError("SpriteRenderer not found!");
             return edges;
@@ -217,9 +217,12 @@ public class Polygon : MonoBehaviour
     void Update()
     {
         // Constantly update shadow position to follow the polygon
-        _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist, 
-                                                    gameObject.transform.position.y + -s_shadowDist, 
-                                                    gameObject.transform.position.z + s_shadowDist);
+        if (_shadowObj == null)
+            CreateShadow();
+        else
+            _shadowObj.transform.position = new Vector3(gameObject.transform.position.x + s_shadowDist,
+                                                        gameObject.transform.position.y + -s_shadowDist,
+                                                        gameObject.transform.position.z + s_shadowDist);
 
         PolygonVelocityLimiter();
 
