@@ -1,6 +1,6 @@
 **Privacy Policy**
 
-This privacy policy applies to the Shapes Colors Numbers app (hereby referred to as "Application") for mobile devices that was created by David Cuno (hereby referred to as "Service Provider") as a Commercial service. This service is intended for use "AS IS".
+This privacy policy applies to the Shapes Colors Numbers app (hereby referred to as "Application") for mobile devices that was created by David Cuno under the Developer Name Junebug Learning (hereby referred to as "Service Provider") as a Commercial service. This service is intended for use "AS IS".
 
 **What information does the Application obtain and how is it used?**
 
